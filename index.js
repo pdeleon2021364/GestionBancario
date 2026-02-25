@@ -1,7 +1,6 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { initServer } from './configs/app.js';
 
-dotenv.config();
 
 process.on('uncaughtException', (err)=> {
     console.error('Uncought Exception in Admin Server:', err);

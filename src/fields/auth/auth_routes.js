@@ -1,8 +1,32 @@
-import { Router } from 'express'
-import { login } from './auth_controller.js'
+import { Router } from 'express';
+import {
+  login,
+  register,
+  verifyEmail,
+  requestPasswordReset,
+  resetPassword
+} from './auth_controller.js';
 
-const router = Router()
+const router = Router();
 
-router.post('/login', login)
+router.post('/register', register);
+router.post('/login', login);
+router.get('/verify-email', verifyEmail);
+router.post('/request-reset', requestPasswordReset);
+router.post('/reset-password', resetPassword);
+router.get('/reset-password', (req, res) => {
+    const { token } = req.query;
 
-export default router
+    if (!token) {
+        return res.status(400).json({
+            success: false,
+            message: 'Token no proporcionado'
+        });
+    }
+
+    return res.send(`
+        <h1>Token recibido:</h1>
+        <p>${token}</p>
+    `);
+});
+export default router;

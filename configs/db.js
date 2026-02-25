@@ -1,53 +1,68 @@
 'use strict';
+
 import mongoose from "mongoose";
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+/* ===========================
+   🔹 PostgreSQL - Sequelize
+=========================== */
+
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: "postgres",
+    logging: false,
+  }
+);
+
+export const connectPostgres = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("PostgreSQL | conectado correctamente");
+  } catch (error) {
+    console.error("PostgreSQL | error de conexión:", error);
+  }
+};
+
+/* ===========================
+   🔹 MongoDB - Mongoose
+=========================== */
+
 export const dbConnection = async () => {
-    try {
-        mongoose.connection.on('error', () => {
-            console.log('MongoDB | no se pudo conectar a mongoDB');
-            mongoose.disconnect();
-        });
+  try {
+    mongoose.connection.on("connected", () => {
+      console.log("MongoDB | conectado correctamente");
+    });
 
-        mongoose.connection.on('connnecting', () => {
-            console.log('MongoDB | intentando conectar a mongoDB');
-        });
+    mongoose.connection.on("error", () => {
+      console.log("MongoDB | error de conexión");
+      mongoose.disconnect();
+    });
 
-        mongoose.connection.on('connected', () => {
-            console.log('MongoDB | conectado a mongoDB');
-        });
+    await mongoose.connect(process.env.URI_MONGO, {
+      serverSelectionTimeoutMS: 5000,
+      maxPoolSize: 10,
+    });
+  } catch (error) {
+    console.log(`Error al conectar MongoDB: ${error}`);
+  }
+};
 
-        mongoose.connection.on('open', () => {
-            console.log('MongoDB | conectado a la base de datos gestionbanco');
-        });
 
-        mongoose.connection.on('reconnected', () => {
-            console.log('MongoDB | reconectando a mongoDB');
-        });
 
-        mongoose.connection.on('disconnected', () => {
-            console.log('MongoDB | desconectando a mongoDB');
-        });
+const gracefulShutdown = async (signal) => {
+  console.log(`Recibido ${signal}. Cerrando conexiones...`);
+  await mongoose.connection.close();
+  await sequelize.close();
+  process.exit(0);
+};
 
-        await mongoose.connect(process.env.URI_MONGO, {
-            serverSelectionTimeoutMS: 5000,
-            maxPoolSize: 10
-        })
-    } catch (error) {
-        console.log(`Error al conectar la db: ${error}`);
-    }
-}
-
-const gracefulShutdown = async(signal) => {
-    console.log(`MongoDB | Received ${signal}. Closing database connection...`);
-    try {
-        await mongoose.connection.close();
-        console.log('MongoDB | Database connection closed succesfully');
-        process.exit(0);
-    } catch (error) {
-        console.error('MongoDB | Error during graceful shutdown:', error.message);
-        process.exit(1);
-    }
-}
-
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGURS2', () => gracefulShutdown('SIGURS2'));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
