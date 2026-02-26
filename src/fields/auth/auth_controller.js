@@ -143,7 +143,14 @@ export const login = async (req, res) => {
 export const verifyEmail = async (req, res) => {
     try {
 
-        const { token } = req.query;
+        const token = req.body?.token || req.query?.token;
+
+        if (!token) {
+            return res.status(400).json({
+                success: false,
+                message: 'Token no proporcionado'
+            });
+        }
 
         const user = await User.findOne({
             where: { emailToken: token }
@@ -277,6 +284,45 @@ export const resetPassword = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+/* ===========================
+   LIST USERS (ADMIN)
+=========================== */
+
+export const listUsers = async (req, res) => {
+    try {
+
+        const { page = 1, limit = 10 } = req.query;
+
+        const safePage = Math.max(parseInt(page, 10) || 1, 1);
+        const safeLimit = Math.max(parseInt(limit, 10) || 10, 1);
+        const offset = (safePage - 1) * safeLimit;
+
+        const { rows, count } = await User.findAndCountAll({
+            attributes: { exclude: ['password', 'emailToken', 'resetToken', 'resetTokenExpiration', 'deleteToken', 'deleteTokenExpiration'] },
+            limit: safeLimit,
+            offset,
+            order: [['createdAt', 'DESC']]
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: rows,
+            pagination: {
+                currentPage: safePage,
+                totalPages: Math.ceil(count / safeLimit),
+                totalRecords: count,
+                limit: safeLimit
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({
             success: false,
             message: error.message
         });

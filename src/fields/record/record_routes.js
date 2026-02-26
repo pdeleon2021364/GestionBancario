@@ -1,12 +1,52 @@
 import { Router } from 'express';
-import { createRecord, getRecords } from './record_controller.js';
+import {
+    createRecord,
+    getRecords,
+    updateRecord,
+    deleteRecord
+} from './record_controller.js';
+
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
 
 const router = Router();
 
-router.post('/create',    validateJWT,
-    requireRole('ADMIN_ROLE'),createRecord)
-router.get('/', getRecords)
+/**
+ * Crear historial
+ */
+router.post(
+    '/create',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    createRecord
+);
+
+/**
+ * Listar historiales
+ */
+router.get(
+    '/',
+    getRecords
+);
+
+/**
+ * Editar historial
+ */
+router.put(
+    '/update/:id',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    updateRecord
+);
+
+/**
+ * Eliminar historial
+ */
+router.delete(
+    '/delete/:id',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    deleteRecord
+);
 
 export default router;
