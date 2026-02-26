@@ -20,6 +20,66 @@ export const createFinancialProduct = async (req, res) => {
     }
 };
 
+export const updateFinancialProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+
+        const updatedProduct = await FinancialProduct.findByIdAndUpdate(
+            id,
+            data,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto financiero no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Producto financiero actualizado correctamente',
+            data: updatedProduct
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al actualizar el producto financiero',
+            error: error.message
+        });
+    }
+};
+
+export const deleteFinancialProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedProduct = await FinancialProduct.findByIdAndDelete(id);
+
+        if (!deletedProduct) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto financiero no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Producto financiero eliminado correctamente'
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al eliminar el producto financiero',
+            error: error.message
+        });
+    }
+};
+
 export const getFinancialProducts = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;

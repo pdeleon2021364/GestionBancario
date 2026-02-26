@@ -20,6 +20,66 @@ export const createTransaction = async (req, res) => {
     }
 };
 
+export const updateTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+
+        const updatedTransaction = await Transaction.findByIdAndUpdate(
+            id,
+            data,
+            { new: true, runValidators: true }
+        ).populate('cuentaOrigen cuentaDestino');
+
+        if (!updatedTransaction) {
+            return res.status(404).json({
+                success: false,
+                message: 'Transacción no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Transacción actualizada correctamente',
+            data: updatedTransaction
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al actualizar la transacción',
+            error: error.message
+        });
+    }
+};
+
+export const deleteTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedTransaction = await Transaction.findByIdAndDelete(id);
+
+        if (!deletedTransaction) {
+            return res.status(404).json({
+                success: false,
+                message: 'Transacción no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Transacción eliminada correctamente'
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al eliminar la transacción',
+            error: error.message
+        });
+    }
+};
+
 export const getTransactions = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;

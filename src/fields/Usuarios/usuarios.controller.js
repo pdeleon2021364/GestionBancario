@@ -106,7 +106,7 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // 🟢 Si es USER_ROLE → se elimina normal
+    // Si es USER_ROLE → se elimina normal
     if (user.rol === 'USER_ROLE') {
       await user.destroy();
 
@@ -116,7 +116,7 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // 🔴 Si es ADMIN_ROLE → enviar verificación por correo
+    //  Si es ADMIN_ROLE → enviar verificación por correo
     if (user.rol === 'ADMIN_ROLE') {
 
       const deleteToken = crypto.randomBytes(32).toString('hex');
