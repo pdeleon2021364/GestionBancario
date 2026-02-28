@@ -3,7 +3,8 @@ import {
     createCurrency,
     getCurrencies,
     updateCurrency,
-    deleteCurrency
+    deleteCurrency,
+    getCurrencyByCode
 } from './Currency_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -47,6 +48,14 @@ router.delete(
     validateJWT,
     requireRole('ADMIN_ROLE'),
     deleteCurrency
+);
+
+/**
+ * Obtener divisa por código
+ */
+router.get(
+    '/code/:codigo',
+    getCurrencyByCode
 );
 
 export default router;

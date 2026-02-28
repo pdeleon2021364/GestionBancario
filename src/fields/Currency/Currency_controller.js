@@ -20,6 +20,41 @@ export const createCurrency = async (req, res) => {
     }
 };
 
+export const getCurrencyByCode = async (req, res) => {
+    try {
+        const { codigo, code } = req.params;
+        const codeToFind = codigo || code;
+
+        if (!codeToFind) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe proporcionar el código de la divisa'
+            });
+        }
+
+        const currency = await Currency.findOne({ codigo: codeToFind.toUpperCase() });
+
+        if (!currency) {
+            return res.status(404).json({
+                success: false,
+                message: 'Divisa no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: currency
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar la divisa',
+            error: error.message
+        });
+    }
+};
+
 export const deleteCurrency = async (req, res) => {
     try {
         const { id } = req.params;

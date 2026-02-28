@@ -3,7 +3,8 @@ import {
     createExchangeRate,
     getExchangeRates,
     updateExchangeRate,
-    deleteExchangeRate
+    deleteExchangeRate,
+    getExchangeRateById
 } from './ExchangeRate_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -47,6 +48,14 @@ router.delete(
     validateJWT,
     requireRole('ADMIN_ROLE'),
     deleteExchangeRate
+);
+
+/**
+ * Obtener tipo de cambio por id
+ */
+router.get(
+    '/:id',
+    getExchangeRateById
 );
 
 export default router;

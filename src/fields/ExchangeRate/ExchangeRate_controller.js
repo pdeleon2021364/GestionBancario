@@ -53,6 +53,34 @@ export const updateExchangeRate = async (req, res) => {
     }
 };
 
+export const getExchangeRateById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const rate = await ExchangeRate.findById(id)
+            .populate('divisaBase divisaDestino');
+
+        if (!rate) {
+            return res.status(404).json({
+                success: false,
+                message: 'Tipo de cambio no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: rate
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar el tipo de cambio',
+            error: error.message
+        });
+    }
+};
+
 export const deleteExchangeRate = async (req, res) => {
     try {
         const { id } = req.params;

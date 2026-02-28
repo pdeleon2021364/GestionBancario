@@ -3,7 +3,9 @@ import {
     createTransaction,
     getTransactions,
     updateTransaction,
-    deleteTransaction
+    deleteTransaction,
+    getTransactionById,
+    getTransactionByTipo
 } from './transactions_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -47,6 +49,22 @@ router.delete(
     validateJWT,
     requireRole('ADMIN_ROLE'),
     deleteTransaction
+);
+
+/**
+ * Buscar transacción por id
+ */
+router.get(
+    '/:id',
+    getTransactionById
+);
+
+/**
+ * Buscar transacción por tipo
+ */
+router.get(
+    '/type/:tipo',
+    getTransactionByTipo
 );
 
 export default router;

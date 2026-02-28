@@ -20,6 +20,69 @@ export const createFinancialProduct = async (req, res) => {
     }
 };
 
+export const getFinancialProductById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const product = await FinancialProduct.findById(id);
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto financiero no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: product
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar el producto financiero',
+            error: error.message
+        });
+    }
+};
+
+export const getFinancialProductByName = async (req, res) => {
+    try {
+        const { nombre } = req.params;
+
+        if (!nombre) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe proporcionar el nombre del producto'
+            });
+        }
+
+        const product = await FinancialProduct.findOne({
+            nombre: { $regex: nombre, $options: 'i' } // búsqueda flexible
+        });
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto financiero no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: product
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar el producto financiero',
+            error: error.message
+        });
+    }
+};
+
 export const updateFinancialProduct = async (req, res) => {
     try {
         const { id } = req.params;

@@ -18,6 +18,7 @@ import financialproduct from '../src/fields/financialproduct/financialproduct_ro
 import recordRoutes from '../src/fields/record/record_routes.js';
 import transactionsRoutes from '../src/fields/transactions/transactions_routes.js';
 import authRoutes from '../src/fields/auth/auth_routes.js';
+import favoritesRoutes from '../src/fields/favorites/favorites_routes.js';
 
 const BASE_PATH = '/gestionbanco/v1';
 
@@ -40,7 +41,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/record`, recordRoutes);
     app.use(`${BASE_PATH}/transactions`, transactionsRoutes);
     app.use(`${BASE_PATH}/auth`, authRoutes);
-
+    app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
     app.get(`${BASE_PATH}/Health`, (req, res) => {
         res.status(200).json({
             status: 'Healthy',

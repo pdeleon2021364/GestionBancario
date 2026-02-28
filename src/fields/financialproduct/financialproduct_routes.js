@@ -3,7 +3,10 @@ import {
     createFinancialProduct,
     getFinancialProducts,
     updateFinancialProduct,
-    deleteFinancialProduct
+    deleteFinancialProduct,
+    getFinancialProductById,
+    getFinancialProductByName
+
 } from './financialproduct_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -47,6 +50,22 @@ router.delete(
     validateJWT,
     requireRole('ADMIN_ROLE'),
     deleteFinancialProduct
+);
+
+/**
+ * Buscar producto por id
+ */
+router.get(
+    '/:id',
+    getFinancialProductById
+);
+
+/**
+ * Buscar producto por nombre
+ */
+router.get(
+    '/name/:nombre',
+    getFinancialProductByName
 );
 
 export default router;

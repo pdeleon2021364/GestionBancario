@@ -3,7 +3,9 @@ import {
     createRecord,
     getRecords,
     updateRecord,
-    deleteRecord
+    deleteRecord,
+    getRecordById,
+    getRecordsByAccount
 } from './record_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -48,5 +50,15 @@ router.delete(
     requireRole('ADMIN_ROLE'),
     deleteRecord
 );
+
+/**
+ * Buscar historial por cuenta
+ */
+router.get('/account/:cuentaId', getRecordsByAccount);
+
+/**
+ * Buscar historial por id
+ */
+router.get('/:id', getRecordById);
 
 export default router;

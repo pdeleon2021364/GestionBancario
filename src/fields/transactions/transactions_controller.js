@@ -53,6 +53,70 @@ export const updateTransaction = async (req, res) => {
     }
 };
 
+export const getTransactionById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const transaction = await Transaction.findById(id)
+            .populate('cuentaOrigen cuentaDestino');
+
+        if (!transaction) {
+            return res.status(404).json({
+                success: false,
+                message: 'Transacción no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: transaction
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar la transacción',
+            error: error.message
+        });
+    }
+};
+
+export const getTransactionByTipo = async (req, res) => {
+    try {
+        const { tipo } = req.params;
+
+        if (!tipo) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe proporcionar el tipo de transacción'
+            });
+        }
+
+        const transaction = await Transaction.findOne({
+            tipo: { $regex: tipo, $options: 'i' }
+        }).populate('cuentaOrigen cuentaDestino');
+
+        if (!transaction) {
+            return res.status(404).json({
+                success: false,
+                message: 'Transacción no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: transaction
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar la transacción',
+            error: error.message
+        });
+    }
+};
+
 export const deleteTransaction = async (req, res) => {
     try {
         const { id } = req.params;

@@ -5,18 +5,88 @@ import nodemailer from 'nodemailer';
 import { Op } from 'sequelize';
 import User from '../Usuarios/usuarios.model.js';
 
-/* ===========================
-   REGISTER
-=========================== */
+
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+
+
+const emailTemplate = ({ title, message, buttonText, link, color }) => {
+    return `
+    <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:40px 0;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center">
+
+            <table width="500" style="background:#ffffff; border-radius:12px; padding:30px; box-shadow:0 6px 18px rgba(0,0,0,0.08);">
+
+              <tr>
+                <td align="center">
+                  <h2 style="margin:0; color:#1e293b;">GestionBanco</h2>
+                  <p style="color:#64748b; margin-top:5px;">${title}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:20px 0; color:#334155; font-size:15px; line-height:1.6;">
+                  ${message}
+                </td>
+              </tr>
+
+              <tr>
+                <td align="center">
+                  <a href="${link}" 
+                     style="
+                      background:${color};
+                      color:#ffffff;
+                      padding:14px 28px;
+                      border-radius:8px;
+                      text-decoration:none;
+                      font-weight:bold;
+                      display:inline-block;
+                      font-size:14px;
+                     ">
+                    ${buttonText}
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding-top:25px; font-size:13px; color:#94a3b8;">
+                  Si el botón no funciona copia este enlace:<br>
+                  <span style="word-break:break-all;">${link}</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding-top:30px; font-size:12px; color:#94a3b8; text-align:center;">
+                  © ${new Date().getFullYear()} GestionBanco - Todos los derechos reservados
+                </td>
+              </tr>
+
+            </table>
+
+          </td>
+        </tr>
+      </table>
+    </div>
+    `;
+};
+
+
 
 export const register = async (req, res) => {
     try {
 
         const { nombre, email, password } = req.body;
 
-        const existingUser = await User.findOne({
-            where: { email }
-        });
+        const existingUser = await User.findOne({ where: { email } });
 
         if (existingUser) {
             return res.status(400).json({
@@ -28,10 +98,7 @@ export const register = async (req, res) => {
         const encryptedPassword = await bcrypt.hash(password, 10);
         const emailToken = crypto.randomBytes(32).toString('hex');
 
-
-
         const totalUsers = await User.count();
-
         const rol = totalUsers === 0 ? 'ADMIN_ROLE' : 'USER_ROLE';
 
         await User.create({
@@ -43,25 +110,23 @@ export const register = async (req, res) => {
             emailVerified: false
         });
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
         const verifyLink =
             `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/verify-email?token=${emailToken}`;
 
         await transporter.sendMail({
             to: email,
-            subject: 'Verifica tu cuenta',
-            html: `
-        <h2>Bienvenido a GestionBanco</h2>
-        <p>Haz click para verificar tu cuenta:</p>
-        <a href="${verifyLink}">${verifyLink}</a>
-      `
+            subject: 'Verifica tu cuenta - GestionBanco',
+            html: emailTemplate({
+                title: 'Verificación de cuenta',
+                message: `
+                  Hola 👋 <br><br>
+                  Gracias por registrarte en <b>GestionBanco</b>.<br>
+                  Para activar tu cuenta haz clic en el botón:
+                `,
+                buttonText: 'Verificar cuenta',
+                link: verifyLink,
+                color: '#2563eb'
+            })
         });
 
         res.status(201).json({
@@ -77,16 +142,16 @@ export const register = async (req, res) => {
     }
 };
 
-
+/* ===========================
+   LOGIN
+=========================== */
 
 export const login = async (req, res) => {
     try {
 
         const { email, password } = req.body;
 
-        const user = await User.findOne({
-            where: { email }
-        });
+        const user = await User.findOne({ where: { email } });
 
         if (!user) {
             return res.status(400).json({
@@ -152,9 +217,7 @@ export const verifyEmail = async (req, res) => {
             });
         }
 
-        const user = await User.findOne({
-            where: { emailToken: token }
-        });
+        const user = await User.findOne({ where: { emailToken: token } });
 
         if (!user) {
             return res.status(400).json({
@@ -165,7 +228,6 @@ export const verifyEmail = async (req, res) => {
 
         user.emailVerified = true;
         user.emailToken = null;
-
         await user.save();
 
         res.json({
@@ -190,9 +252,7 @@ export const requestPasswordReset = async (req, res) => {
 
         const { email } = req.body;
 
-        const user = await User.findOne({
-            where: { email }
-        });
+        const user = await User.findOne({ where: { email } });
 
         if (!user) {
             return res.status(404).json({
@@ -205,28 +265,25 @@ export const requestPasswordReset = async (req, res) => {
 
         user.resetToken = resetToken;
         user.resetTokenExpiration = Date.now() + 3600000;
-
         await user.save();
-
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
 
         const resetLink =
             `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/reset-password?token=${resetToken}`;
 
         await transporter.sendMail({
             to: user.email,
-            subject: 'Recuperación de contraseña',
-            html: `
-        <h2>Restablecer contraseña</h2>
-        <p>Haz click en el siguiente enlace:</p>
-        <a href="${resetLink}">${resetLink}</a>
-      `
+            subject: 'Recuperación de contraseña - GestionBanco',
+            html: emailTemplate({
+                title: 'Restablecer contraseña',
+                message: `
+                  Hola 👋 <br><br>
+                  Recibimos una solicitud para cambiar tu contraseña.<br>
+                  Si fuiste tú, haz clic en el botón:
+                `,
+                buttonText: 'Restablecer contraseña',
+                link: resetLink,
+                color: '#ef4444'
+            })
         });
 
         res.json({
@@ -241,8 +298,6 @@ export const requestPasswordReset = async (req, res) => {
         });
     }
 };
-
-
 
 /* ===========================
    RESET PASSWORD
@@ -274,7 +329,6 @@ export const resetPassword = async (req, res) => {
         user.password = encryptedPassword;
         user.resetToken = null;
         user.resetTokenExpiration = null;
-
         await user.save();
 
         res.json({
@@ -291,7 +345,7 @@ export const resetPassword = async (req, res) => {
 };
 
 /* ===========================
-   LIST USERS (ADMIN)
+   LIST USERS
 =========================== */
 
 export const listUsers = async (req, res) => {
@@ -304,7 +358,7 @@ export const listUsers = async (req, res) => {
         const offset = (safePage - 1) * safeLimit;
 
         const { rows, count } = await User.findAndCountAll({
-            attributes: { exclude: ['password', 'emailToken', 'resetToken', 'resetTokenExpiration', 'deleteToken', 'deleteTokenExpiration'] },
+            attributes: { exclude: ['password', 'emailToken', 'resetToken', 'resetTokenExpiration'] },
             limit: safeLimit,
             offset,
             order: [['createdAt', 'DESC']]

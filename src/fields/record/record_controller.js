@@ -20,6 +20,63 @@ export const createRecord = async (req, res) => {
     }
 };
 
+export const getRecordById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const record = await Record.findById(id)
+            .populate('cuentaId listaTransacciones');
+
+        if (!record) {
+            return res.status(404).json({
+                success: false,
+                message: 'Historial no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: record
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar el historial',
+            error: error.message
+        });
+    }
+};
+
+export const getRecordsByAccount = async (req, res) => {
+    try {
+        const { cuentaId } = req.params;
+
+        const records = await Record.find({ cuentaId })
+            .populate('cuentaId listaTransacciones')
+            .sort({ createdAt: -1 });
+
+        if (!records.length) {
+            return res.status(404).json({
+                success: false,
+                message: 'No hay historial para esta cuenta'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: records
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar historial por cuenta',
+            error: error.message
+        });
+    }
+};
+
 export const updateRecord = async (req, res) => {
     try {
         const { id } = req.params;

@@ -3,7 +3,8 @@ import {
     createField,
     getFields,
     updateField,
-    deleteField
+    deleteField,
+    getAccountByAccountNumber   
 } from './bankAccount_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -52,5 +53,11 @@ router.delete(
     requireRole('ADMIN_ROLE'),
     deleteField
 );
+
+/**
+ * Buscar cuentas bancarias
+ */
+router.get('/search/:accountNumber', getAccountByAccountNumber);
+router.get('/search/numero/:numeroCuenta', getAccountByAccountNumber);
 
 export default router;

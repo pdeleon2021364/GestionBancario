@@ -1,5 +1,6 @@
 import Field from './bankAccount_model.js';
 
+
 export const createField = async (req, res) => {
     try {
 
@@ -54,6 +55,44 @@ export const deleteField = async (req, res) => {
         });
     }
 };
+
+
+
+export const getAccountByAccountNumber = async (req, res) => {
+    try {
+        const { accountNumber, numeroCuenta } = req.params;
+        const accountNumberToFind = numeroCuenta || accountNumber;
+
+        if (!accountNumberToFind) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe proporcionar un número de cuenta'
+            });
+        }
+
+        const account = await BankAccount.findOne({ numeroCuenta: accountNumberToFind });
+
+        if (!account) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: account
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar la cuenta',
+            error: error.message
+        });
+    }
+};
+
 
 export const updateField = async (req, res) => {
     try {
