@@ -5,17 +5,15 @@ import nodemailer from 'nodemailer';
 import { Op } from 'sequelize';
 import User from '../Usuarios/usuarios.model.js';
 
-
-
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-    }
+    },
+          tls: { rejectUnauthorized: false }
+
 });
-
-
 
 const emailTemplate = ({ title, message, buttonText, link, color }) => {
     return `
@@ -114,6 +112,8 @@ export const register = async (req, res) => {
             `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/verify-email?token=${emailToken}`;
 
         await transporter.sendMail({
+            from: `"Banco Digital" <${process.env.EMAIL_USER}>`,
+
             to: email,
             subject: 'Verifica tu cuenta - GestionBanco',
             html: emailTemplate({
@@ -136,6 +136,85 @@ export const register = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+/* ===========================
+   RESEND VERIFICATION EMAIL
+=========================== */
+
+export const resendVerification = async (req, res) => {
+    try {
+
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debes proporcionar un correo'
+            });
+        }
+
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Usuario no encontrado'
+            });
+        }
+
+        if (user.emailVerified) {
+            return res.status(400).json({
+                success: false,
+                message: 'La cuenta ya está verificada'
+            });
+        }
+
+        // Generar nuevo token
+        const newEmailToken = crypto.randomBytes(32).toString('hex');
+        user.emailToken = newEmailToken;
+        await user.save();
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const verifyLink =
+            `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/verify-email?token=${newEmailToken}`;
+
+            await transporter.sendMail({
+            from: `"Banco Digital" <${process.env.EMAIL_USER}>`,
+
+            to: email,
+            subject: 'Verifica tu cuenta - GestionBanco',
+            html: emailTemplate({
+                title: 'Verificación de cuenta',
+                message: `
+                  Hola 👋 <br><br>
+                  Gracias por registrarte en <b>GestionBanco</b>.<br>
+                  Para activar tu cuenta haz clic en el botón:
+                `,
+                buttonText: 'Verificar cuenta',
+                link: verifyLink,
+                color: '#2563eb'
+            })
+        });
+
+        return res.json({
+            success: true,
+            message: 'Correo de verificación reenviado correctamente'
+        });
+
+    } catch (error) {
+        return res.status(500).json({
             success: false,
             message: error.message
         });
@@ -271,6 +350,7 @@ export const requestPasswordReset = async (req, res) => {
             `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/reset-password?token=${resetToken}`;
 
         await transporter.sendMail({
+            from: `"Banco Digital" <${process.env.EMAIL_USER}>`,
             to: user.email,
             subject: 'Recuperación de contraseña - GestionBanco',
             html: emailTemplate({

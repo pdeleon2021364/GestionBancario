@@ -5,7 +5,7 @@ import {
   verifyEmail,
   requestPasswordReset,
   resetPassword,
-  listUsers
+  listUsers, resendVerification
 } from './auth_controller.js';
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
@@ -34,4 +34,7 @@ router.get('/reset-password', (req, res) => {
         <p>${token}</p>
     `);
 });
+
+router.post('/resend-verification', resendVerification);
+
 export default router;
