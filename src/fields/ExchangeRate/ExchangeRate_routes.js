@@ -6,6 +6,8 @@ import {
     deleteExchangeRate,
     getExchangeRateById
 } from './ExchangeRate_controller.js';
+import { convertCurrency } from './conversion_controller.js';
+
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
@@ -39,6 +41,7 @@ router.put(
     requireRole('ADMIN_ROLE'),
     updateExchangeRate
 );
+router.post('/convert', validateJWT,requireRole('ADMIN_ROLE'), convertCurrency);
 
 /**
  * Eliminar tipo de cambio

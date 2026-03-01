@@ -22,7 +22,6 @@ router.post(
     // uploadFieldImage.single('image'),
     // cleanUploaderFileOnFinish,
     validateJWT,
-    requireRole('ADMIN_ROLE'),
     createField
 );
 
@@ -40,7 +39,6 @@ router.get(
 router.put(
     '/update/:id',
     validateJWT,
-    requireRole('ADMIN_ROLE'),
     updateField
 );
 

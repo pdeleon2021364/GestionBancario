@@ -18,8 +18,6 @@ const router = Router();
  */
 router.post(
     '/create',
-    validateJWT,
-    requireRole('ADMIN_ROLE'),
     createTransaction
 );
 

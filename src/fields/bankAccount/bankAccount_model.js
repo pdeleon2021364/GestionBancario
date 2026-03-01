@@ -28,8 +28,7 @@ const fieldSchema = new mongoose.Schema(
             min: [0, 'El saldo no puede ser negativo']
         },
         usuarioId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            type: Number,
             required: true
         },
         estado: {
@@ -41,18 +40,16 @@ const fieldSchema = new mongoose.Schema(
         fechaCreacion: {
             type: Date,
             default: Date.now,
-            required: true    
-            
+            required: true
+
         },
-        
+
     },
     {
         timestamps: true
     }
 );
 
-fieldSchema.index({ isActive: 1 });
-fieldSchema.index({ fieldType: 1 });
-fieldSchema.index({ isActive: 1, fieldType: 1 });
+
 const BankAccount = mongoose.models.BankAccount || mongoose.model('BankAccount', fieldSchema);
 export default BankAccount;
