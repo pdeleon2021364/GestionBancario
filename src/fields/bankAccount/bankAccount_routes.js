@@ -4,7 +4,9 @@ import {
     getFields,
     updateField,
     deleteField,
-    getAccountByAccountNumber   
+    getAccountByAccountNumber,
+     sendAllBankAccountsPDF,  
+    sendBankAccountPDFById 
 } from './bankAccount_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -57,5 +59,22 @@ router.delete(
  */
 router.get('/search/:accountNumber', getAccountByAccountNumber);
 router.get('/search/numero/:numeroCuenta', getAccountByAccountNumber);
+
+router.get(
+    '/send-pdf/all/:email',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    sendAllBankAccountsPDF
+);
+
+/**
+ * Enviar PDF de UNA cuenta bancaria específica al correo indicado
+ */
+router.get(
+    '/send-pdf/:id/:email',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    sendBankAccountPDFById
+);
 
 export default router;
