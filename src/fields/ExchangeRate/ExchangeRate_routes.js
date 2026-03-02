@@ -1,0 +1,64 @@
+import { Router } from 'express';
+import {
+    createExchangeRate,
+    getExchangeRates,
+    updateExchangeRate,
+    deleteExchangeRate,
+    getExchangeRateById
+} from './ExchangeRate_controller.js';
+import { convertCurrency } from './conversion_controller.js';
+
+
+import { validateJWT } from '../../../middlewares/validate_jwt.js';
+import { requireRole } from '../../../middlewares/validate_role.js';
+
+const router = Router();
+
+/**
+ * Crear tipo de cambio
+ */
+router.post(
+    '/create',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    createExchangeRate
+);
+
+/**
+ * Listar tipos de cambio
+ */
+router.get(
+    '/',
+    getExchangeRates
+);
+
+/**
+ * Editar tipo de cambio
+ */
+router.put(
+    '/update/:id',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    updateExchangeRate
+);
+router.post('/convert', validateJWT,requireRole('ADMIN_ROLE'), convertCurrency);
+
+/**
+ * Eliminar tipo de cambio
+ */
+router.delete(
+    '/delete/:id',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    deleteExchangeRate
+);
+
+/**
+ * Obtener tipo de cambio por id
+ */
+router.get(
+    '/:id',
+    getExchangeRateById
+);
+
+export default router;
