@@ -1,0 +1,2216 @@
+{
+  "info": {
+    "_postman_id": "6df87b46-a67a-4ed7-990d-ea83e7e54d66",
+    "name": "GestionRestaurante Copy",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48329686",
+    "_collection_link": "https://go.postman.co/collection/48329686-6df87b46-a67a-4ed7-990d-ea83e7e54d66?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "CATEGORIA",
+      "item": [
+        {
+          "name": "Agregar categoria",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"asdadjk Frías\",\r\n  \"description\": \"lunabella, ensaladas y carpaccios\",\r\n  \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/category/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "category",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Categoria",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/category",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "category"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Categoria",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Entradas Calientes\",\r\n  \"description\": \"Hamburguesas, papas, pizza\",\r\n  \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/category/update/699334e5ce6d4e9afcbc2698",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "category",
+                "update",
+                "699334e5ce6d4e9afcbc2698"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Categoria",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/category/delete/69934156ce6d4e9afcbc26a3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "category",
+                "delete",
+                "69934156ce6d4e9afcbc26a3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PLATOS",
+      "item": [
+        {
+          "name": "Agregar platos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Hamburguesa Doble\",\r\n  \"description\": \"Hamburguesa con doble carne y queso\",\r\n  \"price\": 60,\r\n  \"category\": \"65f1c2a4b1234567890abcd1\",\r\n  \"restaurant\": \"65f1c2a4b1234567890abcd9\",\r\n  \"products\": [\r\n    {\r\n      \"product\": \"65f1c2a4b1234567890abcd2\",\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product\": \"65f1c2a4b1234567890abcd3\",\r\n      \"quantity\": 1\r\n    }\r\n  ],\r\n  \"isAvailable\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/dish/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "dish",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar platos",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/dish",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "dish"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar platos",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Hamburguesa Doble\",\r\n  \"description\": \"Hamburguesa con doble tozino y queso\",\r\n  \"price\": 60,\r\n  \"category\": \"65f1c2a4b1234567890abcd1\",\r\n  \"products\": [\r\n    {\r\n      \"product\": \"65f1c2a4b1234567890abcd2\",\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"product\": \"65f1c2a4b1234567890abcd3\",\r\n      \"quantity\": 1\r\n    }\r\n  ],\r\n  \"isAvailable\": true\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/dish/update/6993449beef43155d77a7218",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "dish",
+                "update",
+                "6993449beef43155d77a7218"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar platos",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/dish/delete/6998e64e10d6af8016736473",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "dish",
+                "delete",
+                "6998e64e10d6af8016736473"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "DETALLES DE ORDEN",
+      "item": [
+        {
+          "name": "Agregar detalle de orden",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"order\": \"69a4cdc03e5d7fb948409722\",\r\n  \"dish\": \"69a4e23946f0f83c4babeb07\",\r\n  \"quantity\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/orderDetail/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "orderDetail",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar detalle de orden",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/orderDetail",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "orderDetail"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar detalle de orden",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"order\": \"67b1f2c9a4d3e89123456789\",\r\n    \"dish\": \"6993473837a1c3bd279eee05\",\r\n    \"quantity\": 4,\r\n    \"price\": 260,\r\n    \"subtotal\": 165\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/orderDetail/update/699348adec51b9c50f69741e",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "orderDetail",
+                "update",
+                "699348adec51b9c50f69741e"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar detalle de orden",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/orderDetail/delete/699348adec51b9c50f69741e",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "orderDetail",
+                "delete",
+                "699348adec51b9c50f69741e"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ORDEN",
+      "item": [
+        {
+          "name": "Agregar orden",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user\": \"65f123abc4567890abcd1111\",\r\n  \"restaurant\": \"65f123abc4567890abcd2222\",\r\n  \"type\": \"delivery\",\r\n  \"status\": \"pending\",\r\n  \"address\": \"Zona 10, Ciudad de Guatemala\",\r\n  \"subtotal\": 200,\r\n  \"tax\": 24,\r\n  \"total\": 224\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/order/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "order",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar orden",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/order",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "order"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar orden",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"table\": \"65f1a2b3c4d5e6f789012345\",\r\n  \"total\": 180,\r\n  \"status\": \"active\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/order/update/69934c1d1c56db930bd1a5cf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "order",
+                "update",
+                "69934c1d1c56db930bd1a5cf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar orden",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/order/delete/69934c1d1c56db930bd1a5cf",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "order",
+                "delete",
+                "69934c1d1c56db930bd1a5cf"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RESERVACIONES",
+      "item": [
+        {
+          "name": "Agregar reservacion",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerName\": \"Pablo Claderon\",\r\n  \"customerPhone\": \"47391349\",\r\n  \"table\": \"69a3dba8519fcfa5a48d1cd0\",\r\n  \"date\": \"2026-04-28T18:00:00.000Z\",\r\n  \"numberOfPeople\": 3,\r\n  \"status\": \"pending\",\r\n  \"notes\": \"Negocios, llevar contrato\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/reservation/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "reservation",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar reservacion",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/reservation",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "reservation"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar reservaciones",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerName\": \"Irene yahaira\",\r\n  \"customerPhone\": \"55551234\",\r\n  \"table\": \"69a3dc0e519fcfa5a48d1cd8\",\r\n  \"date\": \"2026-02-20T19:00:00.000Z\",\r\n  \"numberOfPeople\": 4,\r\n  \"status\": \"pending\",\r\n  \"notes\": \"PARTY, llevar pastel\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/reservation/update/69a3dbc1519fcfa5a48d1cd4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "reservation",
+                "update",
+                "69a3dbc1519fcfa5a48d1cd4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar reservacion",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/reservation/delete/69a40b27e20421b2584e62b8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "reservation",
+                "delete",
+                "69a40b27e20421b2584e62b8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar  Reservacion ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/reservation/69a3dbc1519fcfa5a48d1cd4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "reservation",
+                "69a3dbc1519fcfa5a48d1cd4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar reservacion por Fecha",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/reservation/by-date?date=2026-02-20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "reservation",
+                "by-date"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-02-20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MESAS",
+      "item": [
+        {
+          "name": "Agregar Mesas",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"number\": 5,\r\n  \"capacity\": 4,\r\n  \"status\": \"available\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/table/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "table",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista mesas",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/table",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "table"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar mesas",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"number\": 5,\r\n  \"capacity\": 45,\r\n  \"status\": \"available\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/table/update/6993504ecbb21a6e8fcde1d4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "table",
+                "update",
+                "6993504ecbb21a6e8fcde1d4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar mesa",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/table/delete/6993504ecbb21a6e8fcde1d4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "table",
+                "delete",
+                "6993504ecbb21a6e8fcde1d4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion",
+      "item": [
+        {
+          "name": "Registrarse",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Pablo\",\r\n  \"surname\": \"Andres\",\r\n  \"username\": \"PabloAndres\",\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reenviar Verificacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"diegocoyote208@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/resend-verification",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "resend-verification"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver Usuarios",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/users/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Solicitud para Restablecer Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"diegocoyote208@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/request-reset",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "request-reset"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restablecer Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"token\": \"77eb3a593f11c2f71526c8365784cf16a29c4747653bd455d1d48d959991b2db\",\r\n  \"newPassword\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/reset-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Usuario",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"surname\": \"Mactzul\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/users/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "users",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Usuario / Eliminar Usuario ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "LOGIN",
+      "item": [
+        {
+          "name": "Registrarse",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Pablo\",\r\n  \"surname\": \"Andres\",\r\n  \"username\": \"PabloAndres\",\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logearse",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Solicitud de Reset de Contraseña",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"diegocoyote208@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/gestionbanco/v1/auth/request-reset",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "request-reset"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resetear Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"token\": \"07887c2cd4def64e78b941d4f9c8eac9630d437f1d470e54d1278f716b7ecbd4\",\r\n  \"newPassword\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/gestionbanco/v1/auth/reset-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver Usuarios",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Usuario/s",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"token\": \"997c8cf609a01713cac7855d4012749462a733e966f8190f4b08021dd6aacb05\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/auth/verify-email",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "auth",
+                "verify-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agregar usuarios",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Jefry\",\r\n  \"email\": \"jefrey@gmail.com\",\r\n  \"password\": \"1234lunabella\",\r\n  \"rol\": \"ADMIN\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/usuarios/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "usuarios",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar usuario",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/Usuarios/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "Usuarios",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MENU",
+      "item": [
+        {
+          "name": "Agregar menu",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Menú Principal\",\r\n  \"description\": \"Menú de platillos principales del día\",\r\n  \"restaurant\": \"69a4f8d38dcd60ee5759f9d1\",\r\n  \"dishes\": [\r\n    \"69a4e23946f0f83c4babeb07\",\r\n    \"64f1a2b3c4d5e6f7a8b9c0d3\"\r\n  ],\r\n  \"type\": \"DAILY\",\r\n  \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/menu/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "menu",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver menu",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/menu",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "menu"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar menus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Menú Principal\",\r\n  \"description\": \"Menú de menu de ofertas de 2x1\",\r\n  \"restaurant\": \"69a4f8d38dcd60ee5759f9d1\",\r\n  \"dishes\": [\r\n    \"69a4e23946f0f83c4babeb07\",\r\n    \"64f1a2b3c4d5e6f7a8b9c0d3\"\r\n  ],\r\n  \"type\": \"NORMAL\",\r\n  \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/menu/update/69a4f9138dcd60ee5759f9d3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "menu",
+                "update",
+                "69a4f9138dcd60ee5759f9d3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar menu",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/menu/delete/69a4f9138dcd60ee5759f9d3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "menu",
+                "delete",
+                "69a4f9138dcd60ee5759f9d3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RESTAURANTES",
+      "item": [
+        {
+          "name": "Agregar Restuarante",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Tacos Mexicanos GT\",\r\n  \"description\": \"Especialidad en tacos al pastor\",\r\n  \"address\": \"Zona 10, Guatemala\",\r\n  \"phone\": \"5555-5535\",\r\n  \"email\": \"diegocoyote208@gmail.com\",\r\n  \"category\": \"Parrilla\",\r\n  \"averagePrice\": 120,\r\n  \"openingHour\": \"08:00\",\r\n  \"closingHour\": \"22:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/restaurant/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "restaurant",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "REVIEWS",
+      "item": [
+        {
+          "name": "Crear Reseña",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"restaurant\": \"69a4e376dacd33b97e04c3cc\",\r\n  \"rating\": 4,\r\n  \"comment\": \"Excelente servicio pero no perfecto\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/review/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "review",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Reseña",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Reseña",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/review/update/69a4e392dacd33b97e04c3ce",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "review",
+                "update",
+                "69a4e392dacd33b97e04c3ce"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver Reseñas de Restaurantes",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/review/restaurant/69a4e376dacd33b97e04c3cc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "review",
+                "restaurant",
+                "69a4e376dacd33b97e04c3cc"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "EVENTOS",
+      "item": [
+        {
+          "name": "Agregar Eventos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"restaurant\": \"69a4e376dacd33b97e04c3cc\",\r\n  \"name\": \"Noche Italiana\",\r\n  \"description\": \"Descuento del 15% en pastas y vino\",\r\n  \"date\": \"2026-03-15\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/event/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "event",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Eventos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"restaurant\": \"69a4e376dacd33b97e04c3cc\",\r\n  \"name\": \"Noche Italiana\",\r\n  \"description\": \"Descuento del 15% en pastas y vino\",\r\n  \"date\": \"2026-03-15\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/event/ID_EVENTO",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "event",
+                "ID_EVENTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Eventos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"restaurant\": \"69a4e376dacd33b97e04c3cc\",\r\n  \"name\": \"Noche Italiana\",\r\n  \"description\": \"Descuento del 15% en pastas y vino\",\r\n  \"date\": \"2026-03-15\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/event/ID_EVENTO",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "event",
+                "ID_EVENTO"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PRODUCTO",
+      "item": [
+        {
+          "name": "Agregar Producto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Verduras variadas\",\r\n  \"stock\": 50,\r\n  \"cost\": 2.5,\r\n  \"isActive\": true\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar productos",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar productos",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Verduras y frutas abella\",\r\n  \"stock\": 50,\r\n  \"cost\": 2.5,\r\n  \"isActive\": true\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/update/69934e97cbb21a6e8fcde1c9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "update",
+                "69934e97cbb21a6e8fcde1c9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/delete/69934e97cbb21a6e8fcde1c9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "delete",
+                "69934e97cbb21a6e8fcde1c9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stock disponible",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/update/<_id>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "update",
+                "<_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filtrar por categoria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/category?category=Verduras",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "category"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Verduras"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sumarle unidades a un producto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/restock/<_id>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "restock",
+                "<_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener un producto por su ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activar/desactivar un producto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/restaurantManagement/v1/product/toggle/<_id>",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "restaurantManagement",
+                "v1",
+                "product",
+                "toggle",
+                "<_id>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
