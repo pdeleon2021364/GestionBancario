@@ -5,31 +5,21 @@ import mongoose from 'mongoose';
 const favoriteSchema = new mongoose.Schema(
 {
     user: {
-        type: String,
+        type: Number,
         required: true
     },
 
     alias: {
         type: String,
-        required: true,
-        trim: true
+        required: [true, 'El alias es obligatorio'],
+        trim: true,
+        maxLength: [50, 'El alias no puede superar 50 caracteres']
     },
 
-    accountNumber: {
-        type: String,
-        required: true,
-        trim: true
-    },
-
-    bankName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-
-    description: {
-        type: String,
-        trim: true
+    bankAccount: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BankAccount',
+        required: [true, 'La cuenta bancaria es obligatoria']
     }
 },
 {
@@ -37,6 +27,6 @@ const favoriteSchema = new mongoose.Schema(
 }
 );
 
-const Favorite = mongoose.model('Favorite', favoriteSchema);
+const Favorite = mongoose.models.Favorite || mongoose.model('Favorite', favoriteSchema);
 
 export default Favorite;

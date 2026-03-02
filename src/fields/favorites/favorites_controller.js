@@ -1,32 +1,72 @@
 import Favorite from './favorites_model.js';
 
 
+import BankAccount from '../bankAccount/bankAccount_model.js';
+import mongoose from 'mongoose';
+
+const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 export const createFavorite = async (req, res) => {
     try {
 
-        const data = {
-            ...req.body,
-            user: req.user.id
-        };
+        const { alias, bankAccount } = req.body;
 
-        const favorite = new Favorite(data);
-        await favorite.save();
+        if (!alias || !bankAccount) {
+            return res.status(400).json({
+                success: false,
+                message: 'alias y bankAccount son obligatorios'
+            });
+        }
 
-        res.status(201).json({
+        if (!isValidId(bankAccount)) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID de cuenta inválido'
+            });
+        }
+
+        const account = await BankAccount.findById(bankAccount);
+
+        if (!account) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta bancaria no encontrada'
+            });
+        }
+
+        // Evitar alias duplicado por usuario
+        const aliasExists = await Favorite.findOne({
+            user: req.user.id,
+            alias
+        });
+
+        if (aliasExists) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ya tienes un favorito con ese alias'
+            });
+        }
+
+        const favorite = await Favorite.create({
+            user: req.user.id,
+            alias,
+            bankAccount
+        });
+
+        return res.status(201).json({
             success: true,
             message: 'Favorito creado correctamente',
             data: favorite
         });
 
     } catch (error) {
-        res.status(400).json({
+        return res.status(500).json({
             success: false,
             message: 'Error al crear favorito',
             error: error.message
         });
     }
 };
-
 /**
  * Obtener favoritos del usuario
  */
@@ -36,9 +76,7 @@ export const getFavorites = async (req, res) => {
         const { page = 1, limit = 10 } = req.query;
 
         const favorites = await Favorite.find({ user: req.user.id })
-            .populate('user', 'name email')
-            .limit(parseInt(limit))
-            .skip((page - 1) * limit)
+            .populate('bankAccount', 'numeroCuenta tipoCuenta saldo estado')
             .sort({ createdAt: -1 });
 
         const total = await Favorite.countDocuments({ user: req.user.id });
@@ -198,6 +236,78 @@ export const deleteFavorite = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al eliminar favorito',
+            error: error.message
+        });
+    }
+};
+
+export const transferFromFavorite = async (req, res) => {
+    try {
+
+        const { favoriteId, amount, fromAccountId } = req.body;
+
+        if (!favoriteId || !amount || !fromAccountId) {
+            return res.status(400).json({
+                success: false,
+                message: 'favoriteId, amount y fromAccountId son obligatorios'
+            });
+        }
+
+        if (amount <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'El monto debe ser mayor a 0'
+            });
+        }
+
+        const favorite = await Favorite.findOne({
+            _id: favoriteId,
+            user: req.user.id
+        }).populate('bankAccount');
+
+        if (!favorite) {
+            return res.status(404).json({
+                success: false,
+                message: 'Favorito no encontrado'
+            });
+        }
+
+        const fromAccount = await BankAccount.findById(fromAccountId);
+
+        if (!fromAccount) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta origen no encontrada'
+            });
+        }
+
+        if (fromAccount.saldo < amount) {
+            return res.status(400).json({
+                success: false,
+                message: 'Fondos insuficientes'
+            });
+        }
+
+        // Transferencia
+        fromAccount.saldo -= amount;
+        favorite.bankAccount.saldo += amount;
+
+        await fromAccount.save();
+        await favorite.bankAccount.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Transferencia realizada correctamente',
+            data: {
+                fromAccount,
+                toAccount: favorite.bankAccount
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error en transferencia rápida',
             error: error.message
         });
     }

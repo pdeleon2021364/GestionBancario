@@ -5,7 +5,8 @@
         updateFavorite,
         deleteFavorite,
         getFavoriteById,
-        getFavoriteByAlias
+        getFavoriteByAlias,
+        transferFromFavorite
     } from './favorites_controller.js';
 
     import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -65,5 +66,8 @@ router.get(
     validateJWT,
     getFavoriteById
 );
+
+router.post('/transfer', validateJWT, transferFromFavorite);
+
 
     export default router;
