@@ -80,49 +80,50 @@ const emailTemplate = ({ title, message, buttonText, link, color }) => {
 
 
 export const register = async (req, res) => {
+    // Este endpoint ya NO debe usarse para crear clientes.
+    // Los clientes los crea el admin desde /usuarios/create
+    // Aquí solo se crea el primer ADMIN si no existe ninguno (seed inicial)
     try {
 
-        const { nombre, email, password } = req.body;
+        const totalUsers = await User.count();
 
-        const existingUser = await User.findOne({ where: { email } });
-
-        if (existingUser) {
-            return res.status(400).json({
+        if (totalUsers > 0) {
+            return res.status(403).json({
                 success: false,
-                message: 'El correo ya está registrado'
+                message: 'El registro público no está disponible. Contacta al administrador.'
             });
         }
+
+        // Solo se ejecuta si la base de datos está vacía → crea el ADMIN inicial
+        const { nombre, email, password } = req.body;
 
         const encryptedPassword = await bcrypt.hash(password, 10);
         const emailToken = crypto.randomBytes(32).toString('hex');
 
-        const totalUsers = await User.count();
-        const rol = totalUsers === 0 ? 'ADMIN_ROLE' : 'USER_ROLE';
-
         await User.create({
+            username: 'ADMINB',
             nombre,
             email,
             password: encryptedPassword,
-            rol,
+            rol: 'ADMIN_ROLE',
             emailToken,
-            emailVerified: false
+            emailVerified: false,
+            DPI: '0000000000000',      // Valor placeholder para el admin
+            direccion: 'Administración',
+            Cellphone: '00000000',
+            Monthlyincome: 99999,
+            jobname: 'Administrador'
         });
 
-        const verifyLink =
-            `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/verify-email?token=${emailToken}`;
+        const verifyLink = `http://localhost:${process.env.PORT}/gestionbanco/v1/auth/verify-email?token=${emailToken}`;
 
         await transporter.sendMail({
             from: `"Banco Digital" <${process.env.EMAIL_USER}>`,
-
             to: email,
             subject: 'Verifica tu cuenta - GestionBanco',
             html: emailTemplate({
                 title: 'Verificación de cuenta',
-                message: `
-                  Hola 👋 <br><br>
-                  Gracias por registrarte en <b>GestionBanco</b>.<br>
-                  Para activar tu cuenta haz clic en el botón:
-                `,
+                message: `Hola 👋 <br><br>Tu cuenta de administrador ha sido creada.<br>Para activarla haz clic en el botón:`,
                 buttonText: 'Verificar cuenta',
                 link: verifyLink,
                 color: '#2563eb'
@@ -131,7 +132,7 @@ export const register = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'Usuario creado. Revisa tu correo para verificar tu cuenta.'
+            message: 'Administrador inicial creado. Revisa tu correo para verificar tu cuenta.'
         });
 
     } catch (error) {
@@ -227,10 +228,12 @@ export const resendVerification = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
+        const { email, username, password } = req.body;
 
-        const { email, password } = req.body;
+        // Permite login con email O con username
+        const whereClause = email ? { email } : { username };
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: whereClause });
 
         if (!user) {
             return res.status(400).json({
@@ -255,20 +258,16 @@ export const login = async (req, res) => {
             });
         }
 
-        const payload = {
-            sub: user.id,
-            role: user.rol
-        };
-
         const token = jwt.sign(
-            payload,
+            { sub: user.id, role: user.rol },
             process.env.JWT_SECRET,
             { expiresIn: '2h' }
         );
 
         res.json({
             success: true,
-            token
+            token,
+            rol: user.rol  
         });
 
     } catch (error) {
