@@ -20,6 +20,15 @@ const BANK_ACCOUNT_FIELDS = [
 export const createField = async (req, res) => {
     try {
         const fieldData = req.body;
+        
+        // Validación de ingresos mínimos
+        const ingresos = parseFloat(fieldData.ingresos);
+        if (isNaN(ingresos) || ingresos < 100) {
+            return res.status(400).json({
+                success: false,
+                message: 'No se puede crear la cuenta: los ingresos deben ser de al menos Q100.00'
+            });
+        }
 
         if (req.file) {
             fieldData.photo = req.file.path;
@@ -283,5 +292,56 @@ export const sendBankAccountPDFById = async (req, res) => {
             message: 'Error al enviar el PDF',
             error: error.message
         });
+    }
+};
+
+export const getCuentasPorMovimientos = async (req, res) => {
+    try {
+        const { orden = 'desc' } = req.query;
+        const sortOrder = orden.toLowerCase() === 'asc' ? 1 : -1;
+
+        const Transaction = (await import('../transactions/transactions_model.js')).default;
+
+        const movimientosPorCuenta = await Transaction.aggregate([
+            {
+                $facet: {
+                    comoOrigen: [
+                        { $match: { cuentaOrigen: { $exists: true, $ne: null } } },
+                        { $group: { _id: '$cuentaOrigen', total: { $sum: 1 } } }
+                    ],
+                    comoDestino: [
+                        { $match: { cuentaDestino: { $exists: true, $ne: null } } },
+                        { $group: { _id: '$cuentaDestino', total: { $sum: 1 } } }
+                    ]
+                }
+            },
+            { $project: { combinado: { $concatArrays: ['$comoOrigen', '$comoDestino'] } } },
+            { $unwind: '$combinado' },
+            { $group: { _id: '$combinado._id', totalMovimientos: { $sum: '$combinado.total' } } },
+            { $sort: { totalMovimientos: sortOrder } }
+        ]);
+
+        const movimientosMap = {};
+        movimientosPorCuenta.forEach(m => {
+            movimientosMap[m._id.toString()] = m.totalMovimientos;
+        });
+
+        const cuentas = await Field.find().lean();
+        const resultado = cuentas
+            .map(c => ({ ...c, totalMovimientos: movimientosMap[c._id.toString()] || 0 }))
+            .sort((a, b) => sortOrder === 1
+                ? a.totalMovimientos - b.totalMovimientos
+                : b.totalMovimientos - a.totalMovimientos
+            );
+
+        return res.status(200).json({
+            success: true,
+            orden: sortOrder === 1 ? 'ascendente' : 'descendente',
+            totalCuentas: resultado.length,
+            data: resultado
+        });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 };
