@@ -41,7 +41,11 @@ const fieldSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
             required: true
-
+        },
+        ingresos: {
+            type: Number,
+            required: [true, 'Los ingresos son requeridos'],
+            min: [100, 'Los ingresos deben ser de al menos Q100.00']
         },
 
     },
