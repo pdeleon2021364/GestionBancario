@@ -1,3 +1,6 @@
+financialproduct_routes
+
+
 import { Router } from 'express';
 import {
     createFinancialProduct,
@@ -9,63 +12,43 @@ import {
 
 } from './financialproduct_controller.js';
 
-import { validateJWT } from '../../../middlewares/validate_jwt.js';
+import { validateJWT, validateClient } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
 
 const router = Router();
 
-/**
- * Crear producto financiero
- */
+
+router.use(validateJWT);
+router.use(validateClient);
+
+
 router.post(
     '/create',
-    validateJWT,
     requireRole('ADMIN_ROLE'),
     createFinancialProduct
 );
 
-/**
- * Listar productos financieros
- */
-router.get(
-    '/',
-    getFinancialProducts
-);
 
-/**
- * Editar producto financiero
- */
+router.get('/', getFinancialProducts);
+
+
+router.get('/name/:nombre', getFinancialProductByName);
+
+
+router.get('/:id', getFinancialProductById);
+
+
 router.put(
     '/update/:id',
-    validateJWT,
     requireRole('ADMIN_ROLE'),
     updateFinancialProduct
 );
 
-/**
- * Eliminar producto financiero
- */
+
 router.delete(
     '/delete/:id',
-    validateJWT,
     requireRole('ADMIN_ROLE'),
     deleteFinancialProduct
-);
-
-/**
- * Buscar producto por id
- */
-router.get(
-    '/:id',
-    getFinancialProductById
-);
-
-/**
- * Buscar producto por nombre
- */
-router.get(
-    '/name/:nombre',
-    getFinancialProductByName
 );
 
 export default router;
