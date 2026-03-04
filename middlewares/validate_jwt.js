@@ -1,4 +1,8 @@
-import jwt from 'jsonwebtoken'
+validate_jwt
+
+
+import jwt from 'jsonwebtoken';
+import BankAccount from '../src/fields/bankAccount/bankAccount_model.js';
 
 export const validateJWT = (req, res, next) => {
 
@@ -29,5 +33,37 @@ export const validateJWT = (req, res, next) => {
             success: false,
             message: 'Token inválido o expirado'
         })
+    }
+}
+
+export const validateClient = async (req, res, next) => {
+
+    // Los administradores no están sujetos a esta restricción
+    if (req.user.role === 'ADMIN_ROLE') {
+        return next();
+    }
+
+    try {
+        const account = await BankAccount.findOne({
+            usuarioId: req.user.id,
+            estado: 'activa'
+        });
+
+        if (!account) {
+            return res.status(403).json({
+                success: false,
+                message: 'Acceso denegado. Solo los clientes con una cuenta bancaria activa pueden acceder a este recurso.'
+            });
+        }
+
+        req.clientAccount = account;
+        next();
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al verificar la cuenta bancaria del cliente',
+            error: error.message
+        });
     }
 }
