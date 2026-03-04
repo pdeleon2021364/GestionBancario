@@ -397,3 +397,52 @@ export const getTransactions = async (req, res) => {
         });
     }
 };
+
+export const revertirDeposito = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const transaction = await Transaction.findById(id);
+
+        if (!transaction) {
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+        }
+
+        if (transaction.tipo !== 'deposito') {
+            return res.status(400).json({ success: false, message: 'Solo se pueden revertir depósitos' });
+        }
+
+        if (transaction.estado === 'revertido') {
+            return res.status(400).json({ success: false, message: 'Este depósito ya fue revertido' });
+        }
+
+        const diffSegundos = Math.floor((new Date() - new Date(transaction.createdAt)) / 1000);
+        if (diffSegundos > 60) {
+            return res.status(400).json({
+                success: false,
+                message: `No se puede revertir: ya pasaron ${diffSegundos} segundos. El límite es 60.`
+            });
+        }
+
+        const cuenta = await BankAccount.findById(transaction.cuentaDestino);
+        if (!cuenta) {
+            return res.status(404).json({ success: false, message: 'Cuenta destino no encontrada' });
+        }
+
+        cuenta.saldo -= transaction.monto;
+        await cuenta.save();
+
+        transaction.estado = 'revertido';
+        await transaction.save();
+
+        return res.status(200).json({
+            success: true,
+            message: `Depósito de Q${transaction.monto} revertido (${diffSegundos}s después)`,
+            data: { transaccion: transaction, saldoActual: cuenta.saldo }
+        });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
