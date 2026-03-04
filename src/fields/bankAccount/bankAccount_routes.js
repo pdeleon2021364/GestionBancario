@@ -6,7 +6,8 @@ import {
     deleteField,
     getAccountByAccountNumber,
      sendAllBankAccountsPDF,  
-    sendBankAccountPDFById 
+    sendBankAccountPDFById,
+    getCuentasPorMovimientos,
 } from './bankAccount_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -75,6 +76,13 @@ router.get(
     validateJWT,
     requireRole('ADMIN_ROLE'),
     sendBankAccountPDFById
+);
+
+router.get(
+    '/movimientos',
+    validateJWT,
+    requireRole('ADMIN_ROLE'),
+    getCuentasPorMovimientos
 );
 
 export default router;
