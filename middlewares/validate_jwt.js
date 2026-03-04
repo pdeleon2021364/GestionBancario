@@ -1,5 +1,3 @@
-validate_jwt
-
 
 import jwt from 'jsonwebtoken';
 import BankAccount from '../src/fields/bankAccount/bankAccount_model.js';

@@ -1,6 +1,3 @@
-financialproduct_model
-
-
 
 'use strict';
 

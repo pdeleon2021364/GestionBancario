@@ -1,5 +1,3 @@
-financialproduct_controller
-
 
 import FinancialProduct from './financialproduct_model.js';
 import User from '../Usuarios/usuarios.model.js';

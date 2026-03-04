@@ -1,5 +1,3 @@
-financialproduct_routes
-
 
 import { Router } from 'express';
 import {
