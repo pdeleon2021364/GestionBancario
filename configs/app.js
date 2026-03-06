@@ -11,7 +11,6 @@ import { helmetConfiguration } from './helmet-configuration.js';
 
 import usuariosRoutes from '../src/fields/Usuarios/usuarios.routes.js';
 import bankAccountRoutes from '../src/fields/bankAccount/bankAccount_routes.js';
-import roleRoutes from '../src/fields/Roles/role_routes.js';
 import currencyRoutes from '../src/fields/Currency/Currency_routes.js';
 import exchangeRateRoutes from '../src/fields/ExchangeRate/ExchangeRate_routes.js';
 import financialproduct from '../src/fields/financialproduct/financialproduct_routes.js';
@@ -34,7 +33,6 @@ const routes = (app) => {
 
     app.use(`${BASE_PATH}/Usuarios`, usuariosRoutes);
     app.use(`${BASE_PATH}/bankAccount`, bankAccountRoutes);
-    app.use(`${BASE_PATH}/Roles`, roleRoutes);
     app.use(`${BASE_PATH}/Currency`, currencyRoutes);
     app.use(`${BASE_PATH}/ExchangeRate`, exchangeRateRoutes);
     app.use(`${BASE_PATH}/financialproduct`, financialproduct);
