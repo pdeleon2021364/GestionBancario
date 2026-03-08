@@ -1,22 +1,22 @@
 import { Router } from 'express';
-import { createField, getFields, updateUser,deleteUser,confirmDeleteAdmin } from './usuarios.controller.js';
+import { createField, getFields, updateUser, deleteUser, confirmDeleteAdmin, updateMiCuenta } from './usuarios.controller.js';
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
- // import { uploadFieldImage } from '../../middlewares/file-uploader.js';
- // import { cleanUploaderFileOnFinish } from '../../middlewares/delete-file-on-error.js';
 
 const router = Router();
+
+// se pone antes el id del usuario
+router.put('/mi-cuenta', validateJWT, updateMiCuenta);
+
 router.put('/:id', validateJWT, requireRole('ADMIN_ROLE'), updateUser);
 router.delete('/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteUser);
 
 router.post(
     '/create',
-   //  uploadFieldImage.single('image'),
-   //  cleanUploaderFileOnFinish,
-   validateJWT,
+    validateJWT,
     requireRole('ADMIN_ROLE'),
     createField
-)
+);
 
 router.get('/', validateJWT, getFields);
 
