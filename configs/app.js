@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import bcrypt from 'bcryptjs';
 
 import { dbConnection, connectPostgres, sequelize } from './db.js';
 import { corsOptions } from './cors-configuration.js';
@@ -11,6 +12,7 @@ import { helmetConfiguration } from './helmet-configuration.js';
 
 import usuariosRoutes from '../src/fields/Usuarios/usuarios.routes.js';
 import bankAccountRoutes from '../src/fields/bankAccount/bankAccount_routes.js';
+import roleRoutes from '../src/fields/Roles/role_routes.js';
 import currencyRoutes from '../src/fields/Currency/Currency_routes.js';
 import exchangeRateRoutes from '../src/fields/ExchangeRate/ExchangeRate_routes.js';
 import financialproduct from '../src/fields/financialproduct/financialproduct_routes.js';
@@ -33,6 +35,7 @@ const routes = (app) => {
 
     app.use(`${BASE_PATH}/Usuarios`, usuariosRoutes);
     app.use(`${BASE_PATH}/bankAccount`, bankAccountRoutes);
+    app.use(`${BASE_PATH}/Roles`, roleRoutes);
     app.use(`${BASE_PATH}/Currency`, currencyRoutes);
     app.use(`${BASE_PATH}/ExchangeRate`, exchangeRateRoutes);
     app.use(`${BASE_PATH}/financialproduct`, financialproduct);
@@ -56,6 +59,43 @@ const routes = (app) => {
     });
 };
 
+//Crear admin ADMINB automáticamente si no existe
+const seedAdminUser = async () => {
+    try {
+        // Importación dinámica para evitar problemas de orden de carga
+        const { default: User } = await import('../src/fields/Usuarios/usuarios.model.js');
+
+        const adminExists = await User.findOne({ where: { username: 'ADMINB' } })
+            .catch(() => User.findOne({ where: { email: 'adminb@gestionbanco.local' } }));
+
+        if (!adminExists) {
+            const encryptedPassword = await bcrypt.hash('ADMINB', 10);
+            await User.create({
+                nombre: 'Administrador Principal',
+                username: 'ADMINB',
+                email: 'adminb@gestionbanco.local',
+                password: encryptedPassword,
+                rol: 'ADMIN_ROLE',
+                emailVerified: true
+            }).catch(async () => {
+                // Si el modelo no tiene username, crear sin él
+                await User.create({
+                    nombre: 'Administrador Principal',
+                    email: 'adminb@gestionbanco.local',
+                    password: encryptedPassword,
+                    rol: 'ADMIN_ROLE',
+                    emailVerified: true
+                });
+            });
+            console.log('Admin ADMINB creado automáticamente (email: adminb@gestionbanco.local, password: ADMINB)');
+        } else {
+            console.log('Admin ADMINB ya existe, no se crea de nuevo.');
+        }
+    } catch (err) {
+        console.warn('No se pudo crear el admin ADMINB automáticamente:', err.message);
+    }
+};
+
 export const initServer = async () => {
 
     const app = express();
@@ -67,6 +107,9 @@ export const initServer = async () => {
         await dbConnection();
         await connectPostgres();
         await sequelize.sync({ alter: true });
+
+        await seedAdminUser();
+
         middlewares(app);
         routes(app);
 
