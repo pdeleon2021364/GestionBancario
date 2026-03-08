@@ -105,15 +105,61 @@ export const createTransaction = async (req, res) => {
                 throw new Error('Debe proporcionar cuentaOrigen y cuentaDestino');
             }
 
-            if (cuentaOrigen === cuentaDestino) {
-                throw new Error('No puede transferir a la misma cuenta');
+            // ✅ Validación: límite Q2,000 por transferencia
+            if (monto > 2000) {
+                throw new Error('El monto no puede exceder Q2,000 por transferencia');
             }
 
-            const cuentaO = await BankAccount.findById(cuentaOrigen);
-            const cuentaD = await BankAccount.findById(cuentaDestino);
+            // Buscar cuentas: primero por _id, luego por numeroCuenta+tipoCuenta
+            let cuentaO, cuentaD;
+
+            // Soporte para buscar por { numeroCuenta, tipoCuenta } o por _id
+            if (typeof cuentaOrigen === 'object' && cuentaOrigen.numeroCuenta) {
+                cuentaO = await BankAccount.findOne({
+                    numeroCuenta: cuentaOrigen.numeroCuenta,
+                    tipoCuenta: cuentaOrigen.tipoCuenta
+                });
+            } else {
+                cuentaO = await BankAccount.findById(cuentaOrigen);
+            }
+
+            if (typeof cuentaDestino === 'object' && cuentaDestino.numeroCuenta) {
+                cuentaD = await BankAccount.findOne({
+                    numeroCuenta: cuentaDestino.numeroCuenta,
+                    tipoCuenta: cuentaDestino.tipoCuenta
+                });
+            } else {
+                cuentaD = await BankAccount.findById(cuentaDestino);
+            }
 
             if (!cuentaO || !cuentaD) {
                 throw new Error('Una de las cuentas no existe');
+            }
+
+            if (cuentaO._id.toString() === cuentaD._id.toString()) {
+                throw new Error('No puede transferir a la misma cuenta');
+            }
+
+            //límite diario Q10,000
+            const hoyInicio = new Date();
+            hoyInicio.setHours(0, 0, 0, 0);
+            const hoyFin = new Date();
+            hoyFin.setHours(23, 59, 59, 999);
+
+            const transferenciasHoy = await Transaction.aggregate([
+                {
+                    $match: {
+                        tipo: 'transferencia',
+                        cuentaOrigen: cuentaO._id,
+                        createdAt: { $gte: hoyInicio, $lte: hoyFin }
+                    }
+                },
+                { $group: { _id: null, total: { $sum: '$monto' } } }
+            ]);
+
+            const totalHoy = transferenciasHoy[0]?.total || 0;
+            if (totalHoy + monto > 10000) {
+                throw new Error(`Límite diario de Q10,000 excedido. Ya ha transferido Q${totalHoy} hoy.`);
             }
 
             if (cuentaO.saldo < monto) {
@@ -129,8 +175,8 @@ export const createTransaction = async (req, res) => {
             const transaction = await Transaction.create({
                 tipo,
                 monto,
-                cuentaOrigen,
-                cuentaDestino
+                cuentaOrigen: cuentaO._id,
+                cuentaDestino: cuentaD._id
             });
 
             // 🔹 Buscar usuarios en SQL
@@ -397,52 +443,3 @@ export const getTransactions = async (req, res) => {
         });
     }
 };
-
-export const revertirDeposito = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const transaction = await Transaction.findById(id);
-
-        if (!transaction) {
-            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
-        }
-
-        if (transaction.tipo !== 'deposito') {
-            return res.status(400).json({ success: false, message: 'Solo se pueden revertir depósitos' });
-        }
-
-        if (transaction.estado === 'revertido') {
-            return res.status(400).json({ success: false, message: 'Este depósito ya fue revertido' });
-        }
-
-        const diffSegundos = Math.floor((new Date() - new Date(transaction.createdAt)) / 1000);
-        if (diffSegundos > 60) {
-            return res.status(400).json({
-                success: false,
-                message: `No se puede revertir: ya pasaron ${diffSegundos} segundos. El límite es 60.`
-            });
-        }
-
-        const cuenta = await BankAccount.findById(transaction.cuentaDestino);
-        if (!cuenta) {
-            return res.status(404).json({ success: false, message: 'Cuenta destino no encontrada' });
-        }
-
-        cuenta.saldo -= transaction.monto;
-        await cuenta.save();
-
-        transaction.estado = 'revertido';
-        await transaction.save();
-
-        return res.status(200).json({
-            success: true,
-            message: `Depósito de Q${transaction.monto} revertido (${diffSegundos}s después)`,
-            data: { transaccion: transaction, saldoActual: cuenta.saldo }
-        });
-
-    } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
-    }
-};
-
-
