@@ -20,18 +20,14 @@ const BANK_ACCOUNT_FIELDS = [
 export const createField = async (req, res) => {
     try {
         const fieldData = req.body;
-        
-        // Validación de ingresos mínimos
-        const ingresos = parseFloat(fieldData.ingresos);
-        if (isNaN(ingresos) || ingresos < 100) {
-            return res.status(400).json({
-                success: false,
-                message: 'No se puede crear la cuenta: los ingresos deben ser de al menos Q100.00'
-            });
-        }
 
         if (req.file) {
             fieldData.photo = req.file.path;
+        }
+
+        // ✅ Generar número de cuenta automáticamente si no se envía
+        if (!fieldData.numeroCuenta) {
+            fieldData.numeroCuenta = Math.random().toString().slice(2, 12).padStart(10, '0');
         }
 
         const field = new Field(fieldData);
@@ -294,54 +290,50 @@ export const sendBankAccountPDFById = async (req, res) => {
         });
     }
 };
-
-export const getCuentasPorMovimientos = async (req, res) => {
+// ─────────────────────────────────────────────────────────────
+// NUEVO: Saldo + últimos 5 movimientos de una cuenta
+// GET /bankAccount/:id/resumen
+// ─────────────────────────────────────────────────────────────
+export const getAccountResumen = async (req, res) => {
     try {
-        const { orden = 'desc' } = req.query;
-        const sortOrder = orden.toLowerCase() === 'asc' ? 1 : -1;
+        const { id } = req.params;
 
-        const Transaction = (await import('../transactions/transactions_model.js')).default;
+        const cuenta = await Field.findById(id);
+        if (!cuenta) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta bancaria no encontrada'
+            });
+        }
 
-        const movimientosPorCuenta = await Transaction.aggregate([
-            {
-                $facet: {
-                    comoOrigen: [
-                        { $match: { cuentaOrigen: { $exists: true, $ne: null } } },
-                        { $group: { _id: '$cuentaOrigen', total: { $sum: 1 } } }
-                    ],
-                    comoDestino: [
-                        { $match: { cuentaDestino: { $exists: true, $ne: null } } },
-                        { $group: { _id: '$cuentaDestino', total: { $sum: 1 } } }
-                    ]
-                }
-            },
-            { $project: { combinado: { $concatArrays: ['$comoOrigen', '$comoDestino'] } } },
-            { $unwind: '$combinado' },
-            { $group: { _id: '$combinado._id', totalMovimientos: { $sum: '$combinado.total' } } },
-            { $sort: { totalMovimientos: sortOrder } }
-        ]);
+        const { default: Transaction } = await import('../transactions/transactions_model.js');
 
-        const movimientosMap = {};
-        movimientosPorCuenta.forEach(m => {
-            movimientosMap[m._id.toString()] = m.totalMovimientos;
-        });
-
-        const cuentas = await Field.find().lean();
-        const resultado = cuentas
-            .map(c => ({ ...c, totalMovimientos: movimientosMap[c._id.toString()] || 0 }))
-            .sort((a, b) => sortOrder === 1
-                ? a.totalMovimientos - b.totalMovimientos
-                : b.totalMovimientos - a.totalMovimientos
-            );
+        const ultimosMovimientos = await Transaction.find({
+            $or: [{ cuentaOrigen: cuenta._id }, { cuentaDestino: cuenta._id }]
+        })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .populate('cuentaOrigen cuentaDestino');
 
         return res.status(200).json({
             success: true,
-            orden: sortOrder === 1 ? 'ascendente' : 'descendente',
-            totalCuentas: resultado.length,
-            data: resultado
+            data: {
+                cuenta: {
+                    _id: cuenta._id,
+                    numeroCuenta: cuenta.numeroCuenta,
+                    tipoCuenta: cuenta.tipoCuenta,
+                    saldo: cuenta.saldo,
+                    estado: cuenta.estado
+                },
+                ultimos5Movimientos: ultimosMovimientos
+            }
         });
 
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener resumen de cuenta',
+            error: error.message
+        });
     }
 };

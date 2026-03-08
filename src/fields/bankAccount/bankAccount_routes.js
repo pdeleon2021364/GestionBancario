@@ -5,9 +5,9 @@ import {
     updateField,
     deleteField,
     getAccountByAccountNumber,
-     sendAllBankAccountsPDF,  
+    sendAllBankAccountsPDF,
     sendBankAccountPDFById,
-    getCuentasPorMovimientos,
+    getAccountResumen
 } from './bankAccount_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -61,6 +61,11 @@ router.delete(
 router.get('/search/:accountNumber', getAccountByAccountNumber);
 router.get('/search/numero/:numeroCuenta', getAccountByAccountNumber);
 
+/**
+ * Resumen de cuenta (saldo + últimos 5 movimientos)
+ */
+router.get('/:id/resumen', validateJWT, getAccountResumen);
+
 router.get(
     '/send-pdf/all/:email',
     validateJWT,
@@ -76,13 +81,6 @@ router.get(
     validateJWT,
     requireRole('ADMIN_ROLE'),
     sendBankAccountPDFById
-);
-
-router.get(
-    '/movimientos',
-    validateJWT,
-    requireRole('ADMIN_ROLE'),
-    getCuentasPorMovimientos
 );
 
 export default router;
