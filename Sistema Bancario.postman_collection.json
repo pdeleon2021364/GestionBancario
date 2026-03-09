@@ -8,7 +8,7 @@
   },
   "item": [
     {
-      "name": "Autenticacion",
+      "name": "LOGIN",
       "item": [
         {
           "name": "Registrarse",
@@ -17,7 +17,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Juan Perez\",\r\n  \"email\": \"diegocoyote208@gmail.com\",\r\n  \"password\": \"123\"\r\n}",
+              "raw": "{\r\n  \"username\": \"pablo123\",\r\n  \"nombre\": \"Pablo Andres\",\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"admin\",\r\n  \"DPI\": \"1234567890123\",\r\n  \"direccion\": \"Villa Nueva\",\r\n  \"Cellphone\": \"55556666\",\r\n  \"Monthlyincome\": 2500,\r\n  \"jobname\": \"Estudiante\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -25,58 +25,17 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/auth/register",
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/register",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
                 "gestionbanco",
                 "v1",
                 "auth",
                 "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Reenviar correo de Verificacion",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{vault:authorization-secret}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"diegocoyote208@gmail.com\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/auth/resend-verification",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3000",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "auth",
-                "resend-verification"
               ]
             }
           },
@@ -99,7 +58,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"admin@test.com\",\r\n  \"password\": \"123456\"\r\n}",
+              "raw": "{\r\n  \"email\": \"pablodeleonwxz@gmail.com\",\r\n  \"password\": \"ADMINB\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -107,12 +66,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/auth/login",
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/login",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
                 "gestionbanco",
                 "v1",
@@ -197,6 +156,428 @@
         },
         {
           "name": "Ver Usuarios",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Usuario/s",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"token\": \"b6d9554d4f5eec526f3289a16856192d62ec6c3fa16683b4dbcd942af8e911ff\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/verify-email",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "verify-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agregar usuarios",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"Diego\",\r\n  \"nickname\": \"Diego123\",\r\n  \"nombre\": \"Juan Diego\",\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"USERA\",\r\n  \"rol\": \"USER_ROLE\",\r\n  \"DPI\": \"1234567890123\",\r\n  \"direccion\": \"Zona 1, Ciudad de Guatemala\",\r\n  \"Cellphone\": \"55123456\",\r\n  \"Monthlyincome\": 3500.50,\r\n  \"jobname\": \"Programador\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/usuarios/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "usuarios",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar usuario",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/Usuarios/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "Usuarios",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar perfil",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nombre\": \"Juan Pérez\",\r\n    \"direccion\": \"4a Calle 5-10 Zona 1\",\r\n    \"jobname\": \"Ingeniero\",\r\n    \"Monthlyincome\": 5000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/Usuarios/mi-cuenta",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "Usuarios",
+                "mi-cuenta"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion",
+      "item": [
+        {
+          "name": "Registrarse",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"Diego123\",\r\n  \"nombre\": \"Diego Coyote\",\r\n  \"email\": \"gamemode123exisdi@gmail.com\",\r\n  \"password\": \"USERA\",\r\n  \"DPI\": \"1244567890123\",\r\n  \"direccion\": \"Villa Vieja\",\r\n  \"Cellphone\": \"5554666\",\r\n  \"Monthlyincome\": 2500,\r\n  \"jobname\": \"Estudiante\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reenviar correo de Verificacion",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"diegocoyote208@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/gestionbanco/v1/auth/resend-verification",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "resend-verification"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logearse",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"ADMINB\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Solicitud de Reset de Contraseña",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/auth/request-reset",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "request-reset"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resetear Contraseña",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"token\": \"07887c2cd4def64e78b941d4f9c8eac9630d437f1d470e54d1278f716b7ecbd4\",\r\n  \"newPassword\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/gestionbanco/v1/auth/reset-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver Usuarios",
           "request": {
             "method": "GET",
             "header": [],
@@ -227,6 +608,58 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"pepito90\",\r\n  \"nickname\": \"amdrew\",\r\n  \"nombre\": \"pablo\",\r\n  \"email\": \"andrewszpablo767@gmail.com\",\r\n  \"password\": \"Pass123!\",\r\n  \"DPI\": \"9638527410587\",\r\n  \"direccion\": \"4ta Calle 12-34, Zona 1\",\r\n  \"Cellphone\": \"50212345678\",\r\n  \"Monthlyincome\": 3500.00,\r\n  \"jobname\": \"Ingeniero\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/usuarios/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "usuarios",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -250,7 +683,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Cuenta Secundaria\",\r\n  \"numeroCuenta\": \"5808664541\",\r\n  \"tipoCuenta\": \"ahorro\",\r\n  \"saldo\": 5000,\r\n  \"usuarioId\": \"699237b494517f027353e6a4\",\r\n  \"estado\": \"activa\"\r\n}\r\n",
+              "raw": "{\r\n  \"nombre\": \"Cuenta Pablo Andres\",\r\n  \"numeroCuenta\": \"8596741425\",\r\n  \"tipoCuenta\": \"ahorro\",\r\n  \"saldo\": 5000,\r\n  \"usuarioId\": \"1\",\r\n  \"estado\": \"activa\",\r\n  \"ingresos\": \"2000\"\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -431,7 +864,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/bankAccount/send-pdf/69a3c69472fcd800afb23402/pdeleon-2021364@kinal.edu.gt ",
+              "raw": "http://localhost:3006/gestionbanco/v1/bankAccount/send-pdf/69aae2e4d64c2e1e22765b25/pdeleon-2021364@kinal.edu.gt ",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -442,7 +875,7 @@
                 "v1",
                 "bankAccount",
                 "send-pdf",
-                "69a3c69472fcd800afb23402",
+                "69aae2e4d64c2e1e22765b25",
                 "pdeleon-2021364@kinal.edu.gt "
               ]
             }
@@ -457,6 +890,16 @@
         {
           "name": "Agregar Divisas",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [],
             "body": {
@@ -469,16 +912,17 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/bankSystem/v1/divisas",
+              "raw": "http://localhost:3006/gestionbanco/v1/Currency/create",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
-                "bankSystem",
+                "gestionbanco",
                 "v1",
-                "divisas"
+                "Currency",
+                "create"
               ]
             }
           },
@@ -486,11 +930,38 @@
         },
         {
           "name": "Listar Divisas",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
-            "url": {
+            "body": {
+              "mode": "raw",
               "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/Currency",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "Currency"
+              ]
             }
           },
           "response": []
@@ -512,7 +983,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"nombre\": \"Dollar en su maximo exponente\",\r\n    \"codigo\": \"USD\",\r\n    \"simbolo\": \"$\"\r\n}",
+              "raw": "{\r\n    \"nombre\": \"Quetzal guatemalteco :c\",\r\n    \"codigo\": \"GTQ\",\r\n    \"simbolo\": \"Q\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -520,7 +991,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/Currency/update/699fc6a1e521c8b06201fd3e",
+              "raw": "http://localhost:3006/gestionbanco/v1/Currency/update/69aae495cdb02685e5969647",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -531,7 +1002,7 @@
                 "v1",
                 "Currency",
                 "update",
-                "699fc6a1e521c8b06201fd3e"
+                "69aae495cdb02685e5969647"
               ]
             }
           },
@@ -608,47 +1079,9 @@
             }
           },
           "response": []
-        }
-      ]
-    },
-    {
-      "name": "Exchanged",
-      "item": [
-        {
-          "name": "Agregar Exchanged",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/Currency/create",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "Currency",
-                "create"
-              ]
-            }
-          },
-          "response": []
         },
         {
-          "name": "Listar Exchanged",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Convertir Divisa",
+          "name": "Cambio de moneda",
           "request": {
             "auth": {
               "type": "bearer",
@@ -664,7 +1097,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"from\": \"6993b5555883ab06227dea83\",\r\n  \"to\": \"6993b5935883ab06227dea87\",\r\n  \"amount\": 150\r\n\r\n}",
+              "raw": "{\r\n    \"from\": \"USD\",\r\n    \"to\": \"GTQ\",\r\n    \"amount\": 100\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -672,18 +1105,75 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/ExchangeRate/convert",
+              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/convert",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
                 "gestionbanco",
                 "v1",
                 "ExchangeRate",
                 "convert"
               ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Exchanged",
+      "item": [
+        {
+          "name": "Agregar Exchanged",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nameDestiny\": \"USD A GTQ\",\r\n  \"divisaBase\": \"69aae694cdb02685e596964f\",\r\n  \"divisaDestino\": \"69aae495cdb02685e5969647\",\r\n  \"tasa\": 7.78\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "ExchangeRate",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Exchanged",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
             }
           },
           "response": []
@@ -705,7 +1195,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"nameDestiny\": \"Quetzal a dolar y mucho mas\",\r\n    \"divisaBase\": \"65cd1234f1a2b3c4d5e6f789\",\r\n    \"divisaDstino\": \"65cd9876f1a2b3c4d5e6f000\",\r\n    \"tasa\": 8.69\r\n}",
+              "raw": "{\r\n    \"nameDestiny\": \"Quetzal a dolar\",\r\n    \"divisaBase\": \"69aae495cdb02685e5969647\",\r\n    \"divisaDstino\": \"69aae694cdb02685e596964f\",\r\n    \"tasa\": 8.69\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -713,7 +1203,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/update/699fd2318485e149f4ab2615",
+              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/update/69aae6c1cdb02685e5969652",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -724,7 +1214,48 @@
                 "v1",
                 "ExchangeRate",
                 "update",
-                "699fd2318485e149f4ab2615"
+                "69aae6c1cdb02685e5969652"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Convertir Divisa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from\": \"69aae694cdb02685e596964f\",\r\n  \"to\": \"69aae495cdb02685e5969647\",\r\n  \"amount\": 100\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/convert",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "ExchangeRate",
+                "convert"
               ]
             }
           },
@@ -785,7 +1316,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/69923a80b8f643e94a9e3dd3",
+              "raw": "http://localhost:3006/gestionbanco/v1/ExchangeRate/69aae8f3cdb02685e596965b",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -795,7 +1326,7 @@
                 "gestionbanco",
                 "v1",
                 "ExchangeRate",
-                "69923a80b8f643e94a9e3dd3"
+                "69aae8f3cdb02685e596965b"
               ]
             }
           },
@@ -823,7 +1354,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Cuenta Ahorro Premium\",\r\n  \"descripcion\": \"Cuenta de ahorro con interes mensual y sin comisiones\",\r\n  \"tasaInteres\": 4.5,\r\n  \"tipoProducto\": \"AHORRO\",\r\n  \"activo\": true\r\n}\r\n",
+              "raw": "{\r\n  \"nombre\": \"Cuenta Ahorro Premium\",\r\n  \"descripcion\": \"Cuenta de ahorro con interes mensual y sin comisiones\",\r\n  \"tasaInteres\": 4.5,\r\n  \"tipoProducto\": \"AHORRO\",\r\n  \"activo\": true,\r\n  \"usuarioId\": \"1\"\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -849,11 +1380,78 @@
         },
         {
           "name": "Listar FinancialProduct",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
-            "url": {
+            "body": {
+              "mode": "raw",
               "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/financialproduct",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "financialproduct"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar FinancialProduct by Name",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/financialproduct/name/Cuenta Ahorro Premium",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "financialproduct",
+                "name",
+                "Cuenta Ahorro Premium"
+              ]
             }
           },
           "response": []
@@ -875,7 +1473,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Cuenta de Saldo Premium\",\r\n  \"descripcion\": \"Cuenta con alta tasa de rendimiento para ahorros superiores a $90,000.\",\r\n  \"tasaInteres\": 4.5,\r\n  \"tipoProducto\": \"Saldo\",\r\n  \"activo\": true\r\n}",
+              "raw": "{\r\n  \"nombre\": \"Cuenta de Saldo Platino\",\r\n  \"descripcion\": \"Cuenta con alta tasa de rendimiento para ahorros superiores a 100050000\",\r\n  \"tasaInteres\": 4.5,\r\n  \"tipoProducto\": \"Saldo\",\r\n  \"activo\": true\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -883,7 +1481,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/financialproduct/update/69a266453de26977eaabc631",
+              "raw": "http://localhost:3006/gestionbanco/v1/financialproduct/update/69aaeaa5cdb02685e5969665",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -894,7 +1492,7 @@
                 "v1",
                 "financialproduct",
                 "update",
-                "69a266453de26977eaabc631"
+                "69aaeaa5cdb02685e5969665"
               ]
             }
           },
@@ -965,7 +1563,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/FinancialProduct/name/Saldo",
+              "raw": "http://localhost:3006/gestionbanco/v1/FinancialProduct/69aaeaa5cdb02685e5969665",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -975,8 +1573,7 @@
                 "gestionbanco",
                 "v1",
                 "FinancialProduct",
-                "name",
-                "Saldo"
+                "69aaeaa5cdb02685e5969665"
               ]
             }
           },
@@ -1015,7 +1612,12 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Cuenta Ahorro Premium\",\r\n  \"descripcion\": \"Cuenta de ahorro con interes mensual y sin comisiones\",\r\n  \"tasaInteres\": 4.5,\r\n  \"tipoProducto\": \"AHORRO\",\r\n  \"activo\": true\r\n}\r\n"
+              "raw": "{\r\n  \"cuentaId\": \"69aae2e4d64c2e1e22765b25\",\r\n  \"listaTransacciones\": \"65e8a5c4f1a2b3c4d5e6f901\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "http://localhost:3006/gestionbanco/v1/record/create",
@@ -1160,164 +1762,6 @@
       ]
     },
     {
-      "name": "Rol",
-      "item": [
-        {
-          "name": "Agregar Rol",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"USER\",\r\n  \"permisos\": [\"CREATE_ACCOUNT\", \"TRANSFER\", \"VIEW_BALANCE\"]\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3000/bankSystem/v1/roles",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3000",
-              "path": [
-                "bankSystem",
-                "v1",
-                "roles"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Listar Rol",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Eliminar roles",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{vault:authorization-secret}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": ""
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/roles/delete/699fc7cbe521c8b06201fd42",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "roles",
-                "delete",
-                "699fc7cbe521c8b06201fd42"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Editar roles",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{vault:authorization-secret}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Terreno financiero\",\r\n  \"email\": \"finanzasestricto@ejemplo.com\",\r\n  \"permissions\": \"FULL_ACCESS\"\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/roles/update/699fc7cbe521c8b06201fd42",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "roles",
-                "update",
-                "699fc7cbe521c8b06201fd42"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Buscar roles",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/Roles",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "Roles"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "Transaccion",
       "item": [
         {
@@ -1327,7 +1771,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"tipoTransaccion\": \"deposito\",\r\n    \"monto\": 500,\r\n    \"cuenta\": \"698eb16211f03327a03d1cbc\"\r\n}",
+              "raw": "    {\r\n        \"tipo\": \"deposito\",\r\n        \"monto\": 500,\r\n        \"cuentaDestino\": \"69a3c69472fcd800afb23402\"\r\n    }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1335,16 +1779,17 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/bankSystem/v1/transacciones",
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions/create",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
-                "bankSystem",
+                "gestionbanco",
                 "v1",
-                "transacciones"
+                "transactions",
+                "create"
               ]
             }
           },
@@ -1367,7 +1812,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"tipo\": \"retiro\",\r\n  \"monto\": 200,\r\n  \"cuentaOrigen\": \"ID_CUENTA\"\r\n}",
+              "raw": "{\r\n  \"tipo\": \"retiro\",\r\n  \"monto\": 200,\r\n  \"cuentaOrigen\": \"69aae2e4d64c2e1e22765b25\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1375,12 +1820,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/transactions/create",
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions/create",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
                 "gestionbanco",
                 "v1",
@@ -1406,13 +1851,22 @@
             },
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"tipo\": \"deposito\",\r\n  \"monto\": 10.000,\r\n  \"cuentaOrigen\": \"69ae3fdac858b7aa3e1d1305\",\r\n  \"cuentaDestino\": \"69ae3ff2c858b7aa3e1d1307\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/transactions/create",
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions/create",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3000",
+              "port": "3006",
               "path": [
                 "gestionbanco",
                 "v1",
@@ -1425,11 +1879,38 @@
         },
         {
           "name": "Listar Transacciones",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"tipo\": \"deposito\",\r\n    \"monto\": 150.50,\r\n    \"cuentaOrigen\": \"65cad1234567890abcdef123\",\r\n    \"cuentaDestino\": \"65cad9876543210fedcba321\",\r\n    \"estado\": \"completado\"\r\n}"
+            },
             "url": {
-              "raw": ""
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "transactions"
+              ]
             }
           },
           "response": []
@@ -1451,7 +1932,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"tipo\": \"deposito\",\r\n    \"monto\": 1000.60,\r\n    \"cuentaOrigen\": \"65cad1234567890abcdef123\",\r\n    \"cuentaDestino\": \"65cad9876543210fedcba321\",\r\n    \"estado\": \"aun no completado\"\r\n}",
+              "raw": "{\r\n    \"monto\": 1000.60\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1459,7 +1940,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/transactions/update/69923d64d420f167d2864752",
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions/update/69aafce72dc6cde180022f46",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1470,7 +1951,7 @@
                 "v1",
                 "transactions",
                 "update",
-                "69923d64d420f167d2864752"
+                "69aafce72dc6cde180022f46"
               ]
             }
           },
@@ -1546,7 +2027,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/transactions/type/deposito",
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions/type/retiro",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1557,7 +2038,82 @@
                 "v1",
                 "transactions",
                 "type",
-                "deposito"
+                "retiro"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resumen de transacciones",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/bankAccount/69ae3ff2c858b7aa3e1d1307/resumen",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "bankAccount",
+                "69ae3ff2c858b7aa3e1d1307",
+                "resumen"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar transaccion",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"token\": \"{{vault:json-web-token}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/transactions/revertir/69ae4481b8ca7665a43bf36a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "transactions",
+                "revertir",
+                "69ae4481b8ca7665a43bf36a"
               ]
             }
           },
@@ -1585,7 +2141,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"alias\": \"Proveedor internet\",\r\n  \"accountNumber\": \"987654321\",\r\n  \"bankName\": \"Banco Industrial\",\r\n  \"description\": \"Pago mensual internet\"\r\n}",
+              "raw": "{\r\n  \"user\": 1,\r\n  \"alias\": \"Cuenta de Diego\",\r\n  \"bankAccount\": \"69aafc0f2dc6cde180022f3a\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1604,6 +2160,47 @@
                 "v1",
                 "favorites",
                 "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transferencia por Favoritos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"favoriteId\":\"69aafeea2dc6cde180022f5d\" ,\r\n  \"amount\": 100,\r\n  \"fromAccountId\":\"69aafc0f2dc6cde180022f3a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/gestionbanco/v1/favorites/transfer",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "gestionbanco",
+                "v1",
+                "favorites",
+                "transfer"
               ]
             }
           },
@@ -1759,7 +2356,7 @@
               "raw": ""
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/favorites/alias/Proveedor internet",
+              "raw": "http://localhost:3006/gestionbanco/v1/favorites/alias/Cuenta de Pablich",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1770,163 +2367,14 @@
                 "v1",
                 "favorites",
                 "alias",
-                "Proveedor internet"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "LOGIN",
-      "item": [
-        {
-          "name": "Registrarse",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Pablo Andres\",\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"123\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/auth/register",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "auth",
-                "register"
+                "Cuenta de Pablich"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Logearse",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{vault:authorization-secret}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"email\": \"pdeleon-2021364@kinal.edu.gt\",\r\n  \"password\": \"123\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/auth/login",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Solicitud de Reset de Contraseña",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{vault:authorization-secret}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"email\": \"diegocoyote208@gmail.com\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/auth/request-reset",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3000",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "auth",
-                "request-reset"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Resetear Contraseña",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"token\": \"07887c2cd4def64e78b941d4f9c8eac9630d437f1d470e54d1278f716b7ecbd4\",\r\n  \"newPassword\": \"1234\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3000/gestionbanco/v1/auth/reset-password",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3000",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "auth",
-                "reset-password"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Ver Usuarios",
+          "name": "Buscar favoritos Copy",
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },
@@ -1945,77 +2393,10 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/auth/users",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "auth",
-                "users"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Editar Usuario/s",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
               "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Eliminar Usuario",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Verify Email",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"token\": \"651c40e60229a9793c700cf79f485e04aae12a5d4195684bfb7d13b4a33c5d3a\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             },
             "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/auth/verify-email",
+              "raw": "http://localhost:3006/gestionbanco/v1/favorites/69aafeea2dc6cde180022f5d",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -2024,73 +2405,8 @@
               "path": [
                 "gestionbanco",
                 "v1",
-                "auth",
-                "verify-email"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Agregar usuarios",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Jefry\",\r\n  \"email\": \"jefrey@gmail.com\",\r\n  \"password\": \"1234lunabella\",\r\n  \"rol\": \"ADMIN\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/usuarios/create",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "usuarios",
-                "create"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Listar usuario",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:3006/gestionbanco/v1/Usuarios/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3006",
-              "path": [
-                "gestionbanco",
-                "v1",
-                "Usuarios",
-                ""
+                "favorites",
+                "69aafeea2dc6cde180022f5d"
               ]
             }
           },

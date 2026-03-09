@@ -70,17 +70,17 @@ const seedAdminUser = async () => {
                 nombre: 'Administrador Principal',
                 username: 'ADMINB',
                 nickname: 'ADMINB',
-                email: 'adminb@gestionbanco.local',
+                email: 'pablodeleonwxz@gmail.com',
                 password: encryptedPassword,
                 rol: 'ADMIN_ROLE',
-                DPI: '0000000000000',
+                DPI: '5974187456321',
                 direccion: 'Direccion por defecto',
-                Cellphone: '00000000',
+                Cellphone: '58086645',
                 Monthlyincome: 100,
                 jobname: 'Administrador',
                 emailVerified: true
             });
-            console.log('Admin ADMINB creado automáticamente (email: adminb@gestionbanco.local, password: ADMINB)');
+            console.log('Admin ADMINB creado automáticamente (email: pablodeleonwxz@gmail.com, password: ADMINB)');
         } else {
             console.log('Admin ADMINB ya existe, no se crea de nuevo.');
         }
