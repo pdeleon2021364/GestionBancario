@@ -25,6 +25,11 @@ export const createField = async (req, res) => {
             fieldData.photo = req.file.path;
         }
 
+        // ✅ Generar número de cuenta automáticamente si no se envía
+        if (!fieldData.numeroCuenta) {
+            fieldData.numeroCuenta = Math.random().toString().slice(2, 12).padStart(10, '0');
+        }
+
         const field = new Field(fieldData);
         await field.save();
 
@@ -281,6 +286,53 @@ export const sendBankAccountPDFById = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al enviar el PDF',
+            error: error.message
+        });
+    }
+};
+// ─────────────────────────────────────────────────────────────
+// NUEVO: Saldo + últimos 5 movimientos de una cuenta
+// GET /bankAccount/:id/resumen
+// ─────────────────────────────────────────────────────────────
+export const getAccountResumen = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const cuenta = await Field.findById(id);
+        if (!cuenta) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta bancaria no encontrada'
+            });
+        }
+
+        const { default: Transaction } = await import('../transactions/transactions_model.js');
+
+        const ultimosMovimientos = await Transaction.find({
+            $or: [{ cuentaOrigen: cuenta._id }, { cuentaDestino: cuenta._id }]
+        })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .populate('cuentaOrigen cuentaDestino');
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                cuenta: {
+                    _id: cuenta._id,
+                    numeroCuenta: cuenta.numeroCuenta,
+                    tipoCuenta: cuenta.tipoCuenta,
+                    saldo: cuenta.saldo,
+                    estado: cuenta.estado
+                },
+                ultimos5Movimientos: ultimosMovimientos
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener resumen de cuenta',
             error: error.message
         });
     }

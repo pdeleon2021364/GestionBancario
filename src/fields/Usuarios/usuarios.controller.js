@@ -195,3 +195,53 @@ export const confirmDeleteAdmin = async (req, res) => {
     });
   }
 };
+export const updateMiCuenta = async (req, res) => {
+  try {
+    // El JWT middleware expone req.user.sub con el id del usuario autenticado
+    const userId = req.user?.sub || req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autenticado'
+      });
+    }
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    // Solo se permiten estos campos — DPI, email y password no se tocan
+    const { nombre, direccion, jobname, Monthlyincome } = req.body;
+
+    const updateData = {};
+    if (nombre !== undefined)        updateData.nombre = nombre;
+    if (direccion !== undefined)     updateData.direccion = direccion;
+    if (jobname !== undefined)       updateData.jobname = jobname;
+    if (Monthlyincome !== undefined) updateData.Monthlyincome = Monthlyincome;
+
+    await user.update(updateData);
+
+    return res.json({
+      success: true,
+      message: 'Perfil actualizado correctamente',
+      data: {
+        nombre: user.nombre,
+        direccion: user.direccion,
+        jobname: user.jobname,
+        Monthlyincome: user.Monthlyincome
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};

@@ -36,7 +36,6 @@ export const createTransaction = async (req, res) => {
                 cuentaDestino
             });
 
-            // 🔹 Buscar usuario en SQL
             const usuario = await User.findByPk(cuenta.usuarioId);
 
             await sendEmail(
@@ -105,15 +104,59 @@ export const createTransaction = async (req, res) => {
                 throw new Error('Debe proporcionar cuentaOrigen y cuentaDestino');
             }
 
-            if (cuentaOrigen === cuentaDestino) {
-                throw new Error('No puede transferir a la misma cuenta');
+            // ✅ Límite Q2,000 por transferencia
+            if (monto > 2000) {
+                throw new Error('El monto no puede exceder Q2,000 por transferencia');
             }
 
-            const cuentaO = await BankAccount.findById(cuentaOrigen);
-            const cuentaD = await BankAccount.findById(cuentaDestino);
+            let cuentaO, cuentaD;
+
+            if (typeof cuentaOrigen === 'object' && cuentaOrigen.numeroCuenta) {
+                cuentaO = await BankAccount.findOne({
+                    numeroCuenta: cuentaOrigen.numeroCuenta,
+                    tipoCuenta: cuentaOrigen.tipoCuenta
+                });
+            } else {
+                cuentaO = await BankAccount.findById(cuentaOrigen);
+            }
+
+            if (typeof cuentaDestino === 'object' && cuentaDestino.numeroCuenta) {
+                cuentaD = await BankAccount.findOne({
+                    numeroCuenta: cuentaDestino.numeroCuenta,
+                    tipoCuenta: cuentaDestino.tipoCuenta
+                });
+            } else {
+                cuentaD = await BankAccount.findById(cuentaDestino);
+            }
 
             if (!cuentaO || !cuentaD) {
                 throw new Error('Una de las cuentas no existe');
+            }
+
+            if (cuentaO._id.toString() === cuentaD._id.toString()) {
+                throw new Error('No puede transferir a la misma cuenta');
+            }
+
+            // ✅ Límite diario Q10,000
+            const hoyInicio = new Date();
+            hoyInicio.setHours(0, 0, 0, 0);
+            const hoyFin = new Date();
+            hoyFin.setHours(23, 59, 59, 999);
+
+            const transferenciasHoy = await Transaction.aggregate([
+                {
+                    $match: {
+                        tipo: 'transferencia',
+                        cuentaOrigen: cuentaO._id,
+                        createdAt: { $gte: hoyInicio, $lte: hoyFin }
+                    }
+                },
+                { $group: { _id: null, total: { $sum: '$monto' } } }
+            ]);
+
+            const totalHoy = transferenciasHoy[0]?.total || 0;
+            if (totalHoy + monto > 10000) {
+                throw new Error(`Límite diario de Q10,000 excedido. Ya ha transferido Q${totalHoy} hoy.`);
             }
 
             if (cuentaO.saldo < monto) {
@@ -129,34 +172,23 @@ export const createTransaction = async (req, res) => {
             const transaction = await Transaction.create({
                 tipo,
                 monto,
-                cuentaOrigen,
-                cuentaDestino
+                cuentaOrigen: cuentaO._id,
+                cuentaDestino: cuentaD._id
             });
 
-            // 🔹 Buscar usuarios en SQL
             const usuarioOrigen = await User.findByPk(cuentaO.usuarioId);
             const usuarioDestino = await User.findByPk(cuentaD.usuarioId);
 
-            // Correo al que envía
             await sendEmail(
                 usuarioOrigen.email,
                 'Transferencia enviada',
-                emailTemplate({
-                    tipo: 'transferencia',
-                    monto: monto,
-                    saldo: cuentaO.saldo
-                })
+                emailTemplate({ tipo: 'transferencia', monto, saldo: cuentaO.saldo })
             );
 
-            // Correo al que recibe
             await sendEmail(
                 usuarioDestino.email,
                 'Transferencia Recibida',
-                emailTemplate({
-                    tipo: 'transferencia',
-                    monto: monto,
-                    saldo: cuentaD.saldo
-                })
+                emailTemplate({ tipo: 'transferencia', monto, saldo: cuentaD.saldo })
             );
 
             return res.status(201).json({
@@ -169,13 +201,13 @@ export const createTransaction = async (req, res) => {
         throw new Error('Tipo de transacción inválido');
 
     } catch (error) {
-
         return res.status(400).json({
             success: false,
             message: error.message
         });
     }
 };
+
 export const updateTransaction = async (req, res) => {
     try {
         const { id } = req.params;
@@ -189,10 +221,6 @@ export const updateTransaction = async (req, res) => {
                 message: 'Transacción no encontrada'
             });
         }
-
-        // =========================
-        // REVERTIR EFECTO ANTERIOR
-        // =========================
 
         if (transaction.tipo === 'deposito') {
             const cuenta = await BankAccount.findById(transaction.cuentaDestino);
@@ -209,17 +237,11 @@ export const updateTransaction = async (req, res) => {
         if (transaction.tipo === 'transferencia') {
             const cuentaO = await BankAccount.findById(transaction.cuentaOrigen);
             const cuentaD = await BankAccount.findById(transaction.cuentaDestino);
-
             cuentaO.saldo += transaction.monto;
             cuentaD.saldo -= transaction.monto;
-
             await cuentaO.save();
             await cuentaD.save();
         }
-
-        // =========================
-        //  APLICAR NUEVA OPERACIÓN
-        // =========================
 
         transaction.tipo = tipo || transaction.tipo;
         transaction.monto = monto || transaction.monto;
@@ -236,11 +258,7 @@ export const updateTransaction = async (req, res) => {
 
         if (transaction.tipo === 'retiro') {
             const cuenta = await BankAccount.findById(transaction.cuentaOrigen);
-
-            if (cuenta.saldo < transaction.monto) {
-                throw new Error('Saldo insuficiente');
-            }
-
+            if (cuenta.saldo < transaction.monto) throw new Error('Saldo insuficiente');
             cuenta.saldo -= transaction.monto;
             await cuenta.save();
         }
@@ -248,14 +266,9 @@ export const updateTransaction = async (req, res) => {
         if (transaction.tipo === 'transferencia') {
             const cuentaO = await BankAccount.findById(transaction.cuentaOrigen);
             const cuentaD = await BankAccount.findById(transaction.cuentaDestino);
-
-            if (cuentaO.saldo < transaction.monto) {
-                throw new Error('Saldo insuficiente');
-            }
-
+            if (cuentaO.saldo < transaction.monto) throw new Error('Saldo insuficiente');
             cuentaO.saldo -= transaction.monto;
             cuentaD.saldo += transaction.monto;
-
             await cuentaO.save();
             await cuentaD.save();
         }
@@ -275,31 +288,20 @@ export const updateTransaction = async (req, res) => {
         });
     }
 };
+
 export const getTransactionById = async (req, res) => {
     try {
         const { id } = req.params;
-
-        const transaction = await Transaction.findById(id)
-            .populate('cuentaOrigen cuentaDestino');
+        const transaction = await Transaction.findById(id).populate('cuentaOrigen cuentaDestino');
 
         if (!transaction) {
-            return res.status(404).json({
-                success: false,
-                message: 'Transacción no encontrada'
-            });
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
         }
 
-        res.status(200).json({
-            success: true,
-            data: transaction
-        });
+        res.status(200).json({ success: true, data: transaction });
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al buscar la transacción',
-            error: error.message
-        });
+        res.status(500).json({ success: false, message: 'Error al buscar la transacción', error: error.message });
     }
 };
 
@@ -308,10 +310,7 @@ export const getTransactionByTipo = async (req, res) => {
         const { tipo } = req.params;
 
         if (!tipo) {
-            return res.status(400).json({
-                success: false,
-                message: 'Debe proporcionar el tipo de transacción'
-            });
+            return res.status(400).json({ success: false, message: 'Debe proporcionar el tipo de transacción' });
         }
 
         const transaction = await Transaction.findOne({
@@ -319,50 +318,29 @@ export const getTransactionByTipo = async (req, res) => {
         }).populate('cuentaOrigen cuentaDestino');
 
         if (!transaction) {
-            return res.status(404).json({
-                success: false,
-                message: 'Transacción no encontrada'
-            });
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
         }
 
-        res.status(200).json({
-            success: true,
-            data: transaction
-        });
+        res.status(200).json({ success: true, data: transaction });
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al buscar la transacción',
-            error: error.message
-        });
+        res.status(500).json({ success: false, message: 'Error al buscar la transacción', error: error.message });
     }
 };
 
 export const deleteTransaction = async (req, res) => {
     try {
         const { id } = req.params;
-
         const deletedTransaction = await Transaction.findByIdAndDelete(id);
 
         if (!deletedTransaction) {
-            return res.status(404).json({
-                success: false,
-                message: 'Transacción no encontrada'
-            });
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'Transacción eliminada correctamente'
-        });
+        res.status(200).json({ success: true, message: 'Transacción eliminada correctamente' });
 
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: 'Error al eliminar la transacción',
-            error: error.message
-        });
+        res.status(400).json({ success: false, message: 'Error al eliminar la transacción', error: error.message });
     }
 };
 
@@ -390,9 +368,61 @@ export const getTransactions = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
+        res.status(500).json({ success: false, message: 'Error al obtener las transacciones', error: error.message });
+    }
+};
+
+export const revertirDeposito = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const transaction = await Transaction.findById(id);
+
+        if (!transaction) {
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+        }
+
+        if (transaction.tipo !== 'deposito') {
+            return res.status(400).json({ success: false, message: 'Solo se pueden revertir depósitos' });
+        }
+
+        if (transaction.estado === 'revertido') {
+            return res.status(400).json({ success: false, message: 'Este depósito ya fue revertido' });
+        }
+
+        const segundosTranscurridos = (Date.now() - new Date(transaction.createdAt).getTime()) / 1000;
+        if (segundosTranscurridos > 60) {
+            return res.status(400).json({
+                success: false,
+                message: `No se puede revertir: han pasado ${Math.floor(segundosTranscurridos)} segundos (límite: 60)`
+            });
+        }
+
+        const cuenta = await BankAccount.findById(transaction.cuentaDestino);
+        if (!cuenta) {
+            return res.status(404).json({ success: false, message: 'Cuenta destino no encontrada' });
+        }
+
+        if (cuenta.saldo < transaction.monto) {
+            return res.status(400).json({ success: false, message: 'Saldo insuficiente para revertir el depósito' });
+        }
+
+        cuenta.saldo -= transaction.monto;
+        await cuenta.save();
+
+        transaction.estado = 'revertido';
+        await transaction.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Depósito revertido correctamente',
+            data: transaction
+        });
+
+    } catch (error) {
+        return res.status(500).json({
             success: false,
-            message: 'Error al obtener las transacciones',
+            message: 'Error al revertir el depósito',
             error: error.message
         });
     }

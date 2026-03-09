@@ -5,7 +5,8 @@ import {
     updateTransaction,
     deleteTransaction,
     getTransactionById,
-    getTransactionByTipo
+    getTransactionByTipo,
+    revertirDeposito 
 } from './transactions_controller.js';
 
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
@@ -63,6 +64,13 @@ router.get(
 router.get(
     '/type/:tipo',
     getTransactionByTipo
+);
+
+/*revertir depsoito*/
+router.post(
+    '/revertir/:id',
+    validateJWT,
+    revertirDeposito
 );
 
 export default router;

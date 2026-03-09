@@ -1,3 +1,4 @@
+
 'use strict';
 
 import mongoose from 'mongoose';
@@ -26,11 +27,18 @@ const financialProductSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+
+        usuarioId: {
+            type: Number,
+            required: [true, 'El producto financiero debe estar vinculado a un cliente (usuarioId)'],
+        },
     },
     {
         timestamps: true,
     }
 );
+
+financialProductSchema.index({ usuarioId: 1 });
 
 const FinancialProduct = mongoose.model('FinancialProduct', financialProductSchema);
 

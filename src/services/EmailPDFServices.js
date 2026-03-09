@@ -29,7 +29,9 @@ export class EmailPDFService {
             auth: {
                 user: process.env.EMAIL_USER,   // tu correo Gmail en .env
                 pass: process.env.EMAIL_PASS    // contraseña de aplicación Gmail en .env
-            }
+
+            },
+            tls: { rejectUnauthorized: false }
         });
     }
 
