@@ -9,16 +9,19 @@ import { dbConnection, connectPostgres, sequelize } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
 
-import usuariosRoutes from '../src/fields/Usuarios/usuarios.routes.js';
-import bankAccountRoutes from '../src/fields/bankAccount/bankAccount_routes.js';
-import roleRoutes from '../src/fields/Roles/role_routes.js';
-import currencyRoutes from '../src/fields/Currency/Currency_routes.js';
-import exchangeRateRoutes from '../src/fields/ExchangeRate/ExchangeRate_routes.js';
-import financialproduct from '../src/fields/financialproduct/financialproduct_routes.js';
-import recordRoutes from '../src/fields/record/record_routes.js';
-import transactionsRoutes from '../src/fields/transactions/transactions_routes.js';
-import authRoutes from '../src/fields/auth/auth_routes.js';
-import favoritesRoutes from '../src/fields/favorites/favorites_routes.js';
+//Importar Swagger 
+import { setupSwagger } from './swagger.js';
+
+import usuariosRoutes      from '../src/fields/Usuarios/usuarios.routes.js';
+import bankAccountRoutes   from '../src/fields/bankAccount/bankAccount_routes.js';
+import roleRoutes          from '../src/fields/Roles/role_routes.js';
+import currencyRoutes      from '../src/fields/Currency/Currency_routes.js';
+import exchangeRateRoutes  from '../src/fields/ExchangeRate/ExchangeRate_routes.js';
+import financialproduct    from '../src/fields/financialproduct/financialproduct_routes.js';
+import recordRoutes        from '../src/fields/record/record_routes.js';
+import transactionsRoutes  from '../src/fields/transactions/transactions_routes.js';
+import authRoutes          from '../src/fields/auth/auth_routes.js';
+import favoritesRoutes     from '../src/fields/favorites/favorites_routes.js';
 
 const BASE_PATH = '/gestionbanco/v1';
 
@@ -31,17 +34,20 @@ const middlewares = (app) => {
 };
 
 const routes = (app) => {
+    //Swagger Documentation
+    setupSwagger(app);
 
-    app.use(`${BASE_PATH}/Usuarios`, usuariosRoutes);
-    app.use(`${BASE_PATH}/bankAccount`, bankAccountRoutes);
-    app.use(`${BASE_PATH}/Roles`, roleRoutes);
-    app.use(`${BASE_PATH}/Currency`, currencyRoutes);
-    app.use(`${BASE_PATH}/ExchangeRate`, exchangeRateRoutes);
+    app.use(`${BASE_PATH}/auth`,             authRoutes);
+    app.use(`${BASE_PATH}/Usuarios`,         usuariosRoutes);
+    app.use(`${BASE_PATH}/bankAccount`,      bankAccountRoutes);
+    app.use(`${BASE_PATH}/Roles`,            roleRoutes);
+    app.use(`${BASE_PATH}/Currency`,         currencyRoutes);
+    app.use(`${BASE_PATH}/ExchangeRate`,     exchangeRateRoutes);
     app.use(`${BASE_PATH}/financialproduct`, financialproduct);
-    app.use(`${BASE_PATH}/record`, recordRoutes);
-    app.use(`${BASE_PATH}/transactions`, transactionsRoutes);
-    app.use(`${BASE_PATH}/auth`, authRoutes);
-    app.use(`${BASE_PATH}/favorites`, favoritesRoutes);
+    app.use(`${BASE_PATH}/record`,           recordRoutes);
+    app.use(`${BASE_PATH}/transactions`,     transactionsRoutes);
+    app.use(`${BASE_PATH}/favorites`,        favoritesRoutes);
+
     app.get(`${BASE_PATH}/Health`, (req, res) => {
         res.status(200).json({
             status: 'Healthy',
@@ -59,7 +65,6 @@ const routes = (app) => {
 };
 
 export const initServer = async () => {
-
     const app = express();
     const PORT = process.env.PORT;
 
