@@ -66,21 +66,21 @@ export const LoginForm = ({ onForgot }) => {
                 <div className="flex-1 h-px" style={{ background: 'rgba(14,165,233,0.12)' }} />
             </div>
 
-            {/* Email */}
+            {/* Email o usuario */}
             <div className="animate-fadeInUp delay-100">
-                <label htmlFor="email" className="label-futuristic block mb-1.5">
-                    Correo Electrónico
+                <label htmlFor="emailOrUsername" className="label-futuristic block mb-1.5">
+                    Correo o Usuario
                 </label>
                 <input
-                    id="email"
-                    type="email"
-                    placeholder="correo@banco.com"
+                    id="emailOrUsername"
+                    type="text"
+                    placeholder="correo@banco.com o usuario"
                     className="input-futuristic w-full px-4 py-3 rounded-xl"
-                    {...register("email", { required: "El correo es requerido" })}
+                    {...register("emailOrUsername", { required: "El correo o usuario es requerido" })}
                 />
-                {errors.email && (
+                {errors.emailOrUsername && (
                     <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
-                        <span>⚠</span> {errors.email.message}
+                        <span>⚠</span> {errors.emailOrUsername.message}
                     </p>
                 )}
             </div>

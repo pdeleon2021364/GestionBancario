@@ -28,7 +28,8 @@ export const AvatarUser = () => {
         navigate("/", { replace: true })
     }
 
-    const initial = user?.nombre?.charAt(0)?.toUpperCase() || "A"
+    const displayName = user?.name || user?.username || "Administrador";
+    const initial = displayName.charAt(0).toUpperCase()
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -52,8 +53,8 @@ export const AvatarUser = () => {
                         boxShadow: '0 16px 40px rgba(0,0,0,0.5)'
                     }}>
                     <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(14,165,233,0.12)' }}>
-                        <p className="font-semibold text-sm" style={{ color: '#e0f2fe' }}>{user?.nombre}</p>
-                        <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>{user?.email}</p>
+                        <p className="font-semibold text-sm" style={{ color: '#e0f2fe' }}>{displayName}</p>
+                        <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>{user?.email || user?.role}</p>
                     </div>
                     <ul className="p-2">
                         <li>

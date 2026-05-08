@@ -5,7 +5,19 @@ export const login = async (data) => {
 }
 
 export const register = async (data) => {
-    return await axiosAuth.post("/auth/register", data)
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            formData.append(key, value);
+        }
+    });
+
+    return await axiosAuth.post("/auth/register", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
 }
 
 export const verifyEmail = async (token) => {
@@ -13,7 +25,7 @@ export const verifyEmail = async (token) => {
 }
 
 export const requestPasswordReset = async (data) => {
-    return await axiosAuth.post("/auth/request-reset", data)
+    return await axiosAuth.post("/auth/forgot-password", data)
 }
 
 export const resetPassword = async (data) => {

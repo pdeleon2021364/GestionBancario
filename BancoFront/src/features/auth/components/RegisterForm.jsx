@@ -10,8 +10,13 @@ export const RegisterForm = ({ onSuccess }) => {
     const password = watch("password");
 
     const onSubmit = async (data) => {
-        // Removemos confirmPassword antes de enviar al backend
-        const { confirmPassword, ...payload } = data;
+        // Removemos confirmPassword y adaptamos nombres al contrato del backend.
+        const { confirmPassword, firstName, lastName, ...rest } = data;
+        const payload = {
+            ...rest,
+            name: firstName,
+            surname: lastName,
+        };
         const res = await registerUser(payload);
         if (res.success) {
             if (res.emailVerificationRequired) {
@@ -97,6 +102,31 @@ export const RegisterForm = ({ onSuccess }) => {
                 {errors.username && (
                     <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
                         <span>⚠</span> {errors.username.message}
+                    </p>
+                )}
+            </div>
+
+            {/* Teléfono */}
+            <div className="animate-fadeInUp delay-300">
+                <label htmlFor="phone" className="label-futuristic block mb-1.5">
+                    Teléfono
+                </label>
+                <input
+                    id="phone"
+                    type="tel"
+                    placeholder="12345678"
+                    className="input-futuristic w-full px-4 py-3 rounded-xl"
+                    {...register("phone", {
+                        required: "El teléfono es requerido",
+                        pattern: {
+                            value: /^\d{8}$/,
+                            message: "Debe tener exactamente 8 dígitos"
+                        }
+                    })}
+                />
+                {errors.phone && (
+                    <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                        <span>⚠</span> {errors.phone.message}
                     </p>
                 )}
             </div>

@@ -4,7 +4,21 @@ import {
     login as loginRequest,
     register as registerRequest
 } from "../../../shared/api"
-import { showError } from "../../../shared/utils/toast";
+const ALLOWED_ROLES = ["ADMIN_ROLE", "USER_ROLE"];
+
+const normalizeUser = (user) => {
+    if (!user) return null;
+
+    return {
+        id: user.id ?? user.Id,
+        username: user.username ?? user.Username,
+        name: user.name ?? user.Name ?? user.username ?? user.Username,
+        surname: user.surname ?? user.Surname,
+        email: user.email ?? user.Email,
+        profilePicture: user.profilePicture ?? user.ProfilePicture,
+        role: user.role ?? user.Role,
+    };
+};
 
 export const useAuthStore = create(
     persist(
@@ -15,15 +29,25 @@ export const useAuthStore = create(
             expiresAt: null,
             loading: false,
             error: null,
-            isLoadingAuth: true,
+            isLoadingAuth: false,
             isAuthenticated: false,
 
             checkAuth: () => {
                 const token = get().token;
                 const role = get().user?.role;
-                const isAdmin = role === "ADMIN";
+                const expiresAt = get().expiresAt;
+                const hasAllowedRole = ALLOWED_ROLES.includes(role);
 
-                if (token && !isAdmin) {
+                if (expiresAt && Date.now() >= expiresAt) {
+                    get().logout();
+                    set({
+                        isLoadingAuth: false,
+                        error: "La sesión expiró. Inicia sesión nuevamente."
+                    });
+                    return;
+                }
+
+                if (token && !hasAllowedRole) {
                     set({
                         user: null,
                         token: null,
@@ -31,28 +55,27 @@ export const useAuthStore = create(
                         expiresAt: null,
                         isAuthenticated: false,
                         isLoadingAuth: false,
-                        error: "No tienes permisos para acceder como administrador."
+                        error: "Tu rol no tiene acceso a esta aplicación."
                     })
                     return;
                 }
 
                 set({
                     isLoadingAuth: false,
-                    isAuthenticated: Boolean(token) && isAdmin
+                    isAuthenticated: Boolean(token) && hasAllowedRole
                 })
             },
 
-            login: async ({ email, password }) => {
+            login: async ({ emailOrUsername, password }) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await loginRequest({ email, password })
-                    console.log(data)
+                    const { data } = await loginRequest({ emailOrUsername, password })
 
-                    const role = data?.user?.role;
+                    const user = normalizeUser(data.userDetails ?? data.user);
+                    const role = user?.role;
 
-                    if (role !== "ADMIN") {
-                        const message =
-                            "No tienes permisos para acceder como administrador"
+                    if (!ALLOWED_ROLES.includes(role)) {
+                        const message = "Tu rol no tiene acceso a esta aplicación."
                         set({
                             user: null,
                             token: null,
@@ -64,16 +87,18 @@ export const useAuthStore = create(
                             error: message
                         })
 
-                        showError(message);
                         return { success: false, error: message }
                     }
 
                     set({
-                        user: data.user,
-                        token: data.token,
+                        user,
+                        token: data.accessToken ?? data.token,
                         refreshToken: data.refreshToken ?? null,
-                        expiresAt: data.expiresAt ?? null,
+                        expiresAt: data.expiresIn
+                            ? Date.now() + data.expiresIn * 1000
+                            : data.expiresAt ?? null,
                         loading: false,
+                        isLoadingAuth: false,
                         isAuthenticated: true
                     })
 
@@ -83,7 +108,7 @@ export const useAuthStore = create(
                     console.error("Login error:", err);
                     const message =
                         err.response?.data?.message || "Error de autenticación";
-                    set({ error: message, loading: false })
+                    set({ error: message, loading: false, isLoadingAuth: false })
                     return { success: false, error: message }
                 }
             },
@@ -109,11 +134,25 @@ export const useAuthStore = create(
                 set({
                     user: null,
                     token: null,
+                    refreshToken: null,
                     expiresAt: null,
+                    isLoadingAuth: false,
                     isAuthenticated: false
                 })
             }
         }),
-        { name: "banco-auth-storage" }
+        {
+            name: "banco-auth-storage",
+            partialize: (state) => ({
+                user: state.user,
+                token: state.token,
+                refreshToken: state.refreshToken,
+                expiresAt: state.expiresAt,
+                isAuthenticated: state.isAuthenticated,
+            }),
+            onRehydrateStorage: () => (state) => {
+                state?.checkAuth();
+            },
+        }
     )
 )

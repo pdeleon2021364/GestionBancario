@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthPage } from "../../features/auth/pages/AuthPage.jsx";
 import { DashboardPage } from "../layouts/DashboardPage.jsx";
+import { DashboardHome } from "../layouts/DashboardHome.jsx";
 import { RoleGuard } from "./RoleGuard.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { VerifyEmailPage } from "../../features/auth/pages/VerifyEmailPage.jsx";
@@ -27,12 +28,13 @@ export const AppRoutes = () => {
                 path="/dashboard"
                 element={
                     <ProtectedRoute>
-                        <RoleGuard allowedRoles={["ADMIN"]}>
+                        <RoleGuard allowedRoles={["ADMIN_ROLE", "USER_ROLE"]}>
                             <DashboardPage />
                         </RoleGuard>
                     </ProtectedRoute>
                 }
             >
+                <Route index element={<DashboardHome />} />
                 <Route path="usuarios" element={<PlaceholderPage title="Usuarios" />} />
                 <Route path="cuentas" element={<PlaceholderPage title="Cuentas Bancarias" />} />
                 <Route path="transacciones" element={<PlaceholderPage title="Transacciones" />} />

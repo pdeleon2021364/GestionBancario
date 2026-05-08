@@ -1,6 +1,10 @@
 import { AvatarUser } from "../ui/AvatarUser";
+import { useAuthStore } from "../../../features/auth/store/authStore";
 
 export const Navbar = () => {
+    const role = useAuthStore((state) => state.user?.role);
+    const roleLabel = role === "ADMIN_ROLE" ? "ADMIN" : "USER";
+
     return (
         <nav className="navbar-futuristic sticky top-0 z-50">
             <div className="max-w-full px-6 h-16 flex items-center justify-between">
@@ -17,7 +21,7 @@ export const Navbar = () => {
                         </span>
                         <span className="ml-2 text-xs px-2 py-0.5 rounded-full font-medium"
                             style={{ background: 'rgba(14,165,233,0.15)', color: '#38bdf8', border: '1px solid rgba(14,165,233,0.25)' }}>
-                            ADMIN
+                            {roleLabel}
                         </span>
                     </div>
                 </div>

@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AuthService.Api",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build AuthService.Api",
+      "program": "${workspaceFolder}/src/AuthService.Api/bin/Debug/net8.0/AuthService.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/AuthService.Api",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  ]
+}
