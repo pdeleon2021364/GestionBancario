@@ -695,9 +695,9 @@ C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\D
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.AuthService.Api.props
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\staticwebassets.pack.json
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\scopedcss\bundle\AuthService.Api.styles.css
-C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthServ.C02AB606.Up2Date
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.dll
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\refint\AuthService.Api.dll
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.pdb
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.genruntimeconfig.cache
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\ref\AuthService.Api.dll
+C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.csproj.CopyComplete

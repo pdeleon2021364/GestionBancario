@@ -1495,18 +1495,12 @@
           "System.IdentityModel.Tokens.Jwt": "8.14.0"
         },
         "runtime": {
-          "AuthService.Application.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "AuthService.Application.dll": {}
         }
       },
       "AuthService.Domain/1.0.0": {
         "runtime": {
-          "AuthService.Domain.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "AuthService.Domain.dll": {}
         }
       },
       "AuthService.Persistence/1.0.0": {
@@ -1517,10 +1511,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4"
         },
         "runtime": {
-          "AuthService.Persistence.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "AuthService.Persistence.dll": {}
         }
       }
     }

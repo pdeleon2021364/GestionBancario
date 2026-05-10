@@ -119,6 +119,29 @@ namespace AuthService.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("verify-email")]
+        [AllowAnonymous]
+        [EnableRateLimiting("ApiPolicy")]
+        public async Task<ActionResult<EmailResponseDto>> VerifyEmail([FromQuery] string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return BadRequest(new EmailResponseDto
+                {
+                    Success = false,
+                    Message = "Token de verificación es requerido"
+                });
+            }
+
+            var result = await _authService.VerifyEmailAsync(new VerifyEmailDto { Token = token });
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
         [HttpPost("verify-email")]
         [EnableRateLimiting("ApiPolicy")]
         public async Task<ActionResult<EmailResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)

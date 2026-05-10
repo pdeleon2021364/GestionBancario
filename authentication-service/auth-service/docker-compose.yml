@@ -1,18 +1,19 @@
 version: "3.9"
 
 services:
-    postgres:
-      image: postgres:16
-      container_name: auth-service-in6bm
-      restart: always
-      environment:
-        POSTGRES_DB: KinalSports
-        POSTGRES_USER: root
-        POSTGRES_PASSWORD: admin
-      ports:
-       - "5435:5432"
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
+  postgres:
+    image: postgres:16
+    container_name: auth-service-in6bm
+    restart: always
+    environment:
+      POSTGRES_DB: KinalSports
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-gestionbanco.sql:/docker-entrypoint-initdb.d/init-gestionbanco.sql:ro
 
 volumes:
   postgres_data:

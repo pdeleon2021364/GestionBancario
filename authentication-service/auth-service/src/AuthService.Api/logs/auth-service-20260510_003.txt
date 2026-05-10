@@ -1,0 +1,712 @@
+[2026-05-10 12:31:52 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 12:31:53 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 12:31:53 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 12:31:53 ERR] Hosting failed to start {"EventId":{"Id":11,"Name":"HostedServiceStartupFaulted"},"SourceContext":"Microsoft.Extensions.Hosting.Internal.Host"}
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5156: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Solo se permite un uso de cada dirección de socket (protocolo/dirección de red/puerto)
+ ---> System.Net.Sockets.SocketException (10048): Solo se permite un uso de cada dirección de socket (protocolo/dirección de red/puerto)
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(ListenOptions[] listenOptions, AddressBindContext context, Func`2 useHttps, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+[2026-05-10 12:37:59 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 12:37:59 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 12:38:00 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 12:38:00 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 12:52:09 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 12:52:10 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 12:52:10 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 12:52:10 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 12:57:50 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 12:57:51 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 12:57:51 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 12:57:51 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:01:30 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:01:31 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:01:32 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:01:32 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:08:24 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:08:24 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:08:24 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:08:24 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:08:39 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 24.8598 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEOU5M8S7P:00000001","ConnectionId":"0HNLEOU5M8S7P"}
+[2026-05-10 13:08:43 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"09219c85-cfa3-454d-b8df-5488af50d744","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEOU5M8S7P:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEOU5M8S7P"}
+[2026-05-10 13:08:45 INF] HTTP POST /api/v1/auth/login responded 200 in 5438.3816 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEOU5M8S7P:00000002","ConnectionId":"0HNLEOU5M8S7P"}
+[2026-05-10 13:09:16 INF] User pablo99 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"7377f204-f56f-4741-85b6-e0902d7d09c5","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEOU5M8S7P:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7P"}
+[2026-05-10 13:09:19 ERR] Failed to send email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"7377f204-f56f-4741-85b6-e0902d7d09c5","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEOU5M8S7P:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7P"}
+MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d96a484fbsm4067972d50.7 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+[2026-05-10 13:09:19 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"7377f204-f56f-4741-85b6-e0902d7d09c5","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEOU5M8S7P:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7P"}
+System.InvalidOperationException: Failed to send email: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d96a484fbsm4067972d50.7 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d96a484fbsm4067972d50.7 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 137
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 13:09:19 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEOU5M8S7P:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7P"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d96a484fbsm4067972d50.7 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d96a484fbsm4067972d50.7 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 137
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method622(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:09:20 INF] HTTP POST /api/v1/auth/register responded 400 in 6421.5602 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEOU5M8S7P:00000003","ConnectionId":"0HNLEOU5M8S7P"}
+[2026-05-10 13:09:37 INF] HTTP GET /api/v1/auth/register responded 405 in 14.0205 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEOU5M8S7Q:00000001","ConnectionId":"0HNLEOU5M8S7Q"}
+[2026-05-10 13:12:16 INF] User testuser123 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"7377f204-f56f-4741-85b6-e0902d7d09c5","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEOU5M8S7S:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7S"}
+[2026-05-10 13:12:17 ERR] Failed to send email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"7377f204-f56f-4741-85b6-e0902d7d09c5","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEOU5M8S7S:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7S"}
+MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd6654cc7csm139832447b3.13 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+[2026-05-10 13:12:17 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"7377f204-f56f-4741-85b6-e0902d7d09c5","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEOU5M8S7S:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7S"}
+System.InvalidOperationException: Failed to send email: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd6654cc7csm139832447b3.13 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd6654cc7csm139832447b3.13 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 137
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 13:12:17 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEOU5M8S7S:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEOU5M8S7S"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd6654cc7csm139832447b3.13 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd6654cc7csm139832447b3.13 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 137
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method622(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:12:17 INF] HTTP POST /api/v1/auth/register responded 400 in 1356.7657 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEOU5M8S7S:00000001","ConnectionId":"0HNLEOU5M8S7S"}
+[2026-05-10 13:16:38 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:16:39 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:16:39 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:16:39 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:17:16 INF] User pablo99 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+[2026-05-10 13:17:18 ERR] Failed to send email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd66891246sm137169797b3.46 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+[2026-05-10 13:17:19 WRN] Attempting email send via SendGrid fallback {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+[2026-05-10 13:17:20 ERR] SendGrid response error: "Unauthorized" {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]} {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+[2026-05-10 13:17:20 ERR] Fallback SendGrid email send failed {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 227
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 123
+[2026-05-10 13:17:20 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+System.InvalidOperationException: Failed to send email using fallback provider: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+ ---> System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 227
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 123
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 129
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 13:17:20 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEP2UMV45N:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45N"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email using fallback provider: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+ ---> System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 227
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 123
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 129
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method377(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:17:20 INF] HTTP POST /api/v1/auth/register responded 400 in 7713.6770 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP2UMV45N:00000001","ConnectionId":"0HNLEP2UMV45N"}
+[2026-05-10 13:17:29 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"a3418482-2d9e-4d5d-9cba-a75c7a6fed4b","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEP2UMV45O"}
+[2026-05-10 13:17:30 INF] HTTP POST /api/v1/auth/login responded 200 in 2543.6945 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP2UMV45O:00000001","ConnectionId":"0HNLEP2UMV45O"}
+[2026-05-10 13:18:09 INF] User asdasd registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+[2026-05-10 13:18:10 ERR] Failed to send email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 00721157ae682-7bd66888cc7sm135579097b3.44 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 189
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 108
+[2026-05-10 13:18:10 WRN] Attempting email send via SendGrid fallback {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+[2026-05-10 13:18:10 ERR] SendGrid response error: "Unauthorized" {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]} {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+[2026-05-10 13:18:10 ERR] Fallback SendGrid email send failed {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 227
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 123
+[2026-05-10 13:18:10 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"0601651d-e9a9-40d7-a91b-cce47093d7e4","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+System.InvalidOperationException: Failed to send email using fallback provider: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+ ---> System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 227
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 123
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 129
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 13:18:10 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEP2UMV45O:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP2UMV45O"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email using fallback provider: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+ ---> System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 227
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 123
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 129
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 32
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method377(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:18:10 INF] HTTP POST /api/v1/auth/register responded 400 in 2409.8487 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP2UMV45O:00000002","ConnectionId":"0HNLEP2UMV45O"}
+[2026-05-10 13:25:18 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:25:18 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:25:19 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:25:19 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:25:39 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 32.0113 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP7LGJU7P:00000001","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:25:43 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c1c6e673-e511-486a-98f3-a618c8b476e2","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEP7LGJU7P:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:25:45 INF] HTTP POST /api/v1/auth/login responded 200 in 5677.9979 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP7LGJU7P:00000002","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:26:14 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"b1ef16e5-1ccd-4ac8-86f6-4d4b58bfd432","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP7LGJU7P:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:26:14 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEP7LGJU7P:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP7LGJU7P"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 35
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method622(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:26:14 INF] HTTP POST /api/v1/auth/register responded 400 in 980.2006 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP7LGJU7P:00000003","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:27:28 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"b1ef16e5-1ccd-4ac8-86f6-4d4b58bfd432","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP7LGJU7P:00000004","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:27:28 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEP7LGJU7P:00000004","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP7LGJU7P"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 35
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method622(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:27:28 INF] HTTP POST /api/v1/auth/register responded 400 in 213.6438 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP7LGJU7P:00000004","ConnectionId":"0HNLEP7LGJU7P"}
+[2026-05-10 13:28:06 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:28:07 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:28:08 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:28:08 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:28:18 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 35.0083 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP94S9SNO:00000001","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:28:21 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"34749ce9-e25b-403c-af15-2e6bb2d647ea","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEP94S9SNO:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:28:22 INF] HTTP POST /api/v1/auth/login responded 200 in 4007.9198 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP94S9SNO:00000002","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:28:51 INF] User asdasd registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8ea78f7a-9f49-403a-b9fc-4bebbd42d107","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP94S9SNO:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:28:51 INF] Email saved to local pickup directory: C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\emails\email_20260510192851903_cae65261-dfc0-4536-b8c4-5494c7d33558.html {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"8ea78f7a-9f49-403a-b9fc-4bebbd42d107","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP94S9SNO:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:28:51 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8ea78f7a-9f49-403a-b9fc-4bebbd42d107","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEP94S9SNO:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:28:52 INF] HTTP POST /api/v1/auth/register responded 201 in 2100.9081 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEP94S9SNO:00000003","ConnectionId":"0HNLEP94S9SNO"}
+[2026-05-10 13:35:22 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:35:23 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:35:23 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:35:23 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:35:54 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:35:55 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:35:56 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:35:56 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:36:10 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"fb6df8c6-37c0-4931-8758-88db5ec5668e","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPDGISCDK:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:36:11 INF] HTTP POST /api/v1/auth/login responded 200 in 4311.8632 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPDGISCDK:00000001","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:36:43 INF] User asdasd registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"26bc7db7-b3be-4fba-b5ec-2a5e1bfc21cb","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPDGISCDK:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:36:43 INF] Email saved to local pickup directory: C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\emails\email_20260510193643071_95f512d8-55e4-4d96-aae1-1a9d7a32ee63.html {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"26bc7db7-b3be-4fba-b5ec-2a5e1bfc21cb","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPDGISCDK:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:36:43 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"26bc7db7-b3be-4fba-b5ec-2a5e1bfc21cb","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPDGISCDK:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:36:43 INF] HTTP POST /api/v1/auth/register responded 201 in 1993.9226 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPDGISCDK:00000002","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:37:26 WRN] Failed login attempt {"EventId":{"Id":1003,"Name":"LogFailedLoginAttempt"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"fb6df8c6-37c0-4931-8758-88db5ec5668e","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPDGISCDK:00000003","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:37:26 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEPDGISCDK:00000003","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPDGISCDK"}
+System.UnauthorizedAccessException: User account is disabled
+   at AuthService.Application.Services.AuthService.LoginAsync(LoginDto loginDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 182
+   at AuthService.Api.Controllers.AuthController.Login(LoginDto loginDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 118
+   at lambda_method377(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:37:26 INF] HTTP POST /api/v1/auth/login responded 401 in 461.4028 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPDGISCDK:00000003","ConnectionId":"0HNLEPDGISCDK"}
+[2026-05-10 13:39:56 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:39:57 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:39:58 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:39:58 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:40:09 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 57.0354 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPFOM7M07:00000001","ConnectionId":"0HNLEPFOM7M07"}
+[2026-05-10 13:40:12 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"21653c4d-2db8-4ecb-af51-261bf506c53a","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPFOM7M07:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPFOM7M07"}
+[2026-05-10 13:40:13 INF] HTTP POST /api/v1/auth/login responded 200 in 4749.8734 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPFOM7M07:00000002","ConnectionId":"0HNLEPFOM7M07"}
+[2026-05-10 13:40:41 INF] User asdasd registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"1e5e5bed-54ba-4e33-b2a3-9c1969dbac0f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPFOM7M07:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPFOM7M07"}
+[2026-05-10 13:40:42 ERR] SendGrid response error: "Unauthorized" {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]} {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"1e5e5bed-54ba-4e33-b2a3-9c1969dbac0f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPFOM7M07:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPFOM7M07"}
+[2026-05-10 13:40:42 ERR] Failed to send email with provider sendgrid {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"1e5e5bed-54ba-4e33-b2a3-9c1969dbac0f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPFOM7M07:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPFOM7M07"}
+System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 262
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 133
+[2026-05-10 13:40:42 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"1e5e5bed-54ba-4e33-b2a3-9c1969dbac0f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPFOM7M07:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPFOM7M07"}
+System.InvalidOperationException: Failed to send email: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+ ---> System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 262
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 133
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 172
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 37
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 13:40:42 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEPFOM7M07:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPFOM7M07"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+ ---> System.InvalidOperationException: SendGrid error: 401 Unauthorized. {"errors":[{"message":"The provided authorization grant is invalid, expired, or revoked","field":null,"help":null}]}
+   at AuthService.Application.Services.EmailService.SendEmailWithSendGridAsync(String to, String subject, String body, String fromEmail, String fromName, String apiKey) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 262
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 133
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 172
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 37
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method644(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 13:40:42 INF] HTTP POST /api/v1/auth/register responded 400 in 3982.1691 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPFOM7M07:00000003","ConnectionId":"0HNLEPFOM7M07"}
+[2026-05-10 13:50:19 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:50:20 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:50:20 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:50:20 ERR] An exception occurred while trying to decrypt the element. {"EventId":{"Id":43,"Name":"ExceptionOccurredTryingToDecryptElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+[2026-05-10 13:50:20 ERR] An exception occurred while processing the key element '<key id="8d187f21-cf02-4e89-a136-fec07f22945b" version="1" />'. {"EventId":{"Id":24,"Name":"ExceptionOccurredWhileProcessingTheKeyElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+[2026-05-10 13:50:20 WRN] Key {8d187f21-cf02-4e89-a136-fec07f22945b} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-05-10 13:50:20 WRN] Key {8d187f21-cf02-4e89-a136-fec07f22945b} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+--- End of stack trace from previous location ---
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-05-10 13:50:20 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:52:29 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:52:30 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:52:30 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:52:49 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:52:50 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:52:50 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:52:50 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:53:47 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:53:48 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:53:48 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:53:49 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:53:49 INF] HTTP GET /health responded 200 in 317.8382 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPNDB2R0U:00000001","ConnectionId":"0HNLEPNDB2R0U"}
+[2026-05-10 13:53:51 INF] User codex20260510135349924 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c98444d7-b33e-4132-88eb-ab61513650a2","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPNDB2R0V:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPNDB2R0V"}
+[2026-05-10 13:53:51 INF] Email saved to local pickup directory: C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\emails\email_20260510195351272_1ea71c83-68d0-42b2-a693-31b442ddea85.html {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"c98444d7-b33e-4132-88eb-ab61513650a2","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPNDB2R0V:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPNDB2R0V"}
+[2026-05-10 13:53:51 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c98444d7-b33e-4132-88eb-ab61513650a2","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPNDB2R0V:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPNDB2R0V"}
+[2026-05-10 13:53:51 INF] HTTP POST /api/v1/auth/register responded 201 in 1274.5361 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPNDB2R0V:00000001","ConnectionId":"0HNLEPNDB2R0V"}
+[2026-05-10 13:55:26 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:55:27 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:55:28 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:55:28 ERR] An exception occurred while trying to decrypt the element. {"EventId":{"Id":43,"Name":"ExceptionOccurredTryingToDecryptElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+[2026-05-10 13:55:28 ERR] An exception occurred while processing the key element '<key id="6fa11321-e70f-4470-acb5-df70619f5086" version="1" />'. {"EventId":{"Id":24,"Name":"ExceptionOccurredWhileProcessingTheKeyElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+[2026-05-10 13:55:28 WRN] Key {6fa11321-e70f-4470-acb5-df70619f5086} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-05-10 13:55:28 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:58:05 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:58:06 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:58:06 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:58:06 WRN] No XML encryptor configured. Key {fb3d82ae-b5dd-4250-a9eb-37363eee1dfe} may be persisted to storage in unencrypted form. {"EventId":{"Id":35,"Name":"NoXMLEncryptorConfiguredKeyMayBePersistedToStorageInUnencryptedForm"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager"}
+[2026-05-10 13:58:06 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:58:37 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 13:58:38 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 13:58:38 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 13:58:38 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 13:58:52 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 30.8586 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPQ7FESQP:00000001","ConnectionId":"0HNLEPQ7FESQP"}
+[2026-05-10 13:58:57 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"6c5fedd2-8115-4c44-8fea-acdb8b050eb8","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPQ7FESQP:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPQ7FESQP"}
+[2026-05-10 13:59:00 INF] HTTP POST /api/v1/auth/login responded 200 in 7804.7571 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPQ7FESQP:00000002","ConnectionId":"0HNLEPQ7FESQP"}
+[2026-05-10 13:59:58 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 14:00:00 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 14:00:01 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 14:00:01 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 14:00:29 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 31.5752 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPR4JGHGN:00000001","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:00:33 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"b9ca99a0-c149-4950-8882-0013494d41ba","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPR4JGHGN:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:00:34 INF] HTTP POST /api/v1/auth/login responded 200 in 4159.5550 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPR4JGHGN:00000002","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:00:55 INF] User asdasd registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"9e1910cf-039c-49d3-a0e4-08e7cac3fb6f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPR4JGHGN:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:00:55 INF] Email saved to local pickup directory: C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\emails\email_20260510200055578_a01cd6f8-19af-4830-9c2a-fdd648767524.html {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"9e1910cf-039c-49d3-a0e4-08e7cac3fb6f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPR4JGHGN:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:00:55 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"9e1910cf-039c-49d3-a0e4-08e7cac3fb6f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPR4JGHGN:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:00:56 INF] HTTP POST /api/v1/auth/register responded 201 in 2777.2795 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPR4JGHGN:00000003","ConnectionId":"0HNLEPR4JGHGN"}
+[2026-05-10 14:04:13 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 14:04:14 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 14:04:15 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 14:04:15 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 14:04:16 INF] HTTP GET /health responded 200 in 422.2543 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPT81OFF8:00000001","ConnectionId":"0HNLEPT81OFF8"}
+[2026-05-10 14:04:17 INF] HTTP GET /health responded 200 in 18.7457 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPT81OFF9:00000001","ConnectionId":"0HNLEPT81OFF9"}
+[2026-05-10 14:04:20 INF] User smtp20260510140417618 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"1eceb91e-c069-4308-8891-362258dfd8e9","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPT81OFFA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPT81OFFA"}
+[2026-05-10 14:04:20 ERR] Failed to send email with provider smtp {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"1eceb91e-c069-4308-8891-362258dfd8e9","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPT81OFFA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPT81OFFA"}
+System.Net.Sockets.SocketException (10013): Intento de acceso a un socket no permitido por sus permisos de acceso.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.Tasks.TaskToAsyncResult.End(IAsyncResult asyncResult)
+   at MailKit.Net.SocketUtils.SocketConnectState.OnEndConnect(IAsyncResult ar)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 267
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 150
+[2026-05-10 14:04:20 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"1eceb91e-c069-4308-8891-362258dfd8e9","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPT81OFFA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPT81OFFA"}
+System.InvalidOperationException: Failed to send email: Intento de acceso a un socket no permitido por sus permisos de acceso.
+ ---> System.Net.Sockets.SocketException (10013): Intento de acceso a un socket no permitido por sus permisos de acceso.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.Tasks.TaskToAsyncResult.End(IAsyncResult asyncResult)
+   at MailKit.Net.SocketUtils.SocketConnectState.OnEndConnect(IAsyncResult ar)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 267
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 150
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 179
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 45
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 14:04:20 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEPT81OFFA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPT81OFFA"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email: Intento de acceso a un socket no permitido por sus permisos de acceso.
+ ---> System.Net.Sockets.SocketException (10013): Intento de acceso a un socket no permitido por sus permisos de acceso.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.Tasks.TaskToAsyncResult.End(IAsyncResult asyncResult)
+   at MailKit.Net.SocketUtils.SocketConnectState.OnEndConnect(IAsyncResult ar)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 267
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 150
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 179
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 45
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method23(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 14:04:20 INF] HTTP POST /api/v1/auth/register responded 400 in 2876.4304 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPT81OFFA:00000001","ConnectionId":"0HNLEPT81OFFA"}
+[2026-05-10 14:04:48 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 14:04:50 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 14:04:50 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 14:04:50 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 14:04:52 INF] HTTP GET /health responded 200 in 316.2236 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPTIQMSFK:00000001","ConnectionId":"0HNLEPTIQMSFK"}
+[2026-05-10 14:04:55 INF] User smtp20260510140452625 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"d4b8dfa4-248a-4c57-997a-627d8544f3db","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPTIQMSFL:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPTIQMSFL"}
+[2026-05-10 14:04:56 ERR] Failed to send email with provider smtp {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"d4b8dfa4-248a-4c57-997a-627d8544f3db","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPTIQMSFL:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPTIQMSFL"}
+MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d969fb3b3sm4267872d50.1 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 286
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 150
+[2026-05-10 14:04:56 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"d4b8dfa4-248a-4c57-997a-627d8544f3db","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPTIQMSFL:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPTIQMSFL"}
+System.InvalidOperationException: Failed to send email: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d969fb3b3sm4267872d50.1 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d969fb3b3sm4267872d50.1 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 286
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 150
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 179
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 45
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+[2026-05-10 14:04:56 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLEPTIQMSFL:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPTIQMSFL"}
+System.InvalidOperationException: El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.
+ ---> System.InvalidOperationException: Failed to send email: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d969fb3b3sm4267872d50.1 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.4.5 Daily user sending limit exceeded. For more information on Gmail
+5.4.5 sending limits go to
+5.4.5  https://support.google.com/a/answer/166852 956f58d0204a3-65d969fb3b3sm4267872d50.1 - gsmtp
+   at MailKit.Net.Smtp.SmtpClient.ParseDataResponse(SmtpResponse response)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at MailKit.Net.Smtp.SmtpClient.SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IList`1 recipients, CancellationToken cancellationToken, ITransferProgress progress)
+   at AuthService.Application.Services.EmailService.SendEmailWithSmtpAsync(String to, String subject, String body, IConfigurationSection smtpSettings, String fromEmail, String fromName) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 286
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 150
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 179
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 45
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 137
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 143
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 108
+   at lambda_method23(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-10 14:04:56 INF] HTTP POST /api/v1/auth/register responded 400 in 4232.5840 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPTIQMSFL:00000001","ConnectionId":"0HNLEPTIQMSFL"}
+[2026-05-10 14:05:48 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 14:05:49 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 14:05:49 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 14:05:50 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 14:05:50 INF] HTTP GET /health responded 200 in 97.3314 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPU47247H:00000001","ConnectionId":"0HNLEPU47247H"}
+[2026-05-10 14:05:52 INF] User smtp20260510140550633 registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"304b0a22-b9f5-4adb-8805-962f260be57d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPU47247I:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPU47247I"}
+[2026-05-10 14:05:55 INF] Email sent successfully via SMTP {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"304b0a22-b9f5-4adb-8805-962f260be57d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPU47247I:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPU47247I"}
+[2026-05-10 14:05:55 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"304b0a22-b9f5-4adb-8805-962f260be57d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPU47247I:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPU47247I"}
+[2026-05-10 14:05:55 INF] HTTP POST /api/v1/auth/register responded 201 in 4894.7432 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPU47247I:00000001","ConnectionId":"0HNLEPU47247I"}
+[2026-05-10 14:08:22 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-10 14:08:23 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-10 14:08:24 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-10 14:08:24 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-10 14:08:42 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"f30e7b56-3ab3-4993-b725-c7b5bf318794","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPVM948F6:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPVM948F6"}
+[2026-05-10 14:08:44 INF] HTTP POST /api/v1/auth/login responded 200 in 5599.6552 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPVM948F6:00000001","ConnectionId":"0HNLEPVM948F6"}
+[2026-05-10 14:09:07 INF] User asdasd registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"db3c1508-2149-4160-ab42-d33fe7aca1cb","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPVM948F6:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPVM948F6"}
+[2026-05-10 14:09:10 INF] Email sent successfully via SMTP {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"db3c1508-2149-4160-ab42-d33fe7aca1cb","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPVM948F6:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPVM948F6"}
+[2026-05-10 14:09:10 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"db3c1508-2149-4160-ab42-d33fe7aca1cb","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLEPVM948F6:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLEPVM948F6"}
+[2026-05-10 14:09:10 INF] HTTP POST /api/v1/auth/register responded 201 in 5322.1285 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPVM948F6:00000002","ConnectionId":"0HNLEPVM948F6"}
+[2026-05-10 14:09:22 INF] HTTP OPTIONS /api/v1/auth/verify-email responded 204 in 5.9578 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPVM948F7:00000001","ConnectionId":"0HNLEPVM948F7"}
+[2026-05-10 14:09:24 INF] Email sent successfully via SMTP {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"96650437-ce71-4e93-b95f-b63caf672ee4","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNLEPVM948F7:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNLEPVM948F7"}
+[2026-05-10 14:09:24 INF] Email verified successfully for user asdasd {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"96650437-ce71-4e93-b95f-b63caf672ee4","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNLEPVM948F7:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNLEPVM948F7"}
+[2026-05-10 14:09:24 INF] HTTP POST /api/v1/auth/verify-email responded 200 in 1986.4428 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPVM948F7:00000002","ConnectionId":"0HNLEPVM948F7"}
+[2026-05-10 14:09:47 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 0.4522 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPVM948F7:00000003","ConnectionId":"0HNLEPVM948F7"}
+[2026-05-10 14:09:47 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"f30e7b56-3ab3-4993-b725-c7b5bf318794","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLEPVM948F7:00000004","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLEPVM948F7"}
+[2026-05-10 14:09:47 INF] HTTP POST /api/v1/auth/login responded 200 in 359.3268 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLEPVM948F7:00000004","ConnectionId":"0HNLEPVM948F7"}

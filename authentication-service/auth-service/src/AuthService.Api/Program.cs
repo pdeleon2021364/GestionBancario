@@ -37,7 +37,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddRateLimitingPolicies();
 
 // Add security services
-builder.Services.AddSecurityPolicies(builder.Configuration);
+builder.Services.AddSecurityPolicies(builder.Configuration, builder.Environment);
 builder.Services.AddSecurityOptions();
 
 var app = builder.Build();

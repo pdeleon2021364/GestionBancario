@@ -132,21 +132,17 @@ public class AuthService(
 
         logger.LogUserRegistered(createdUser.Username);
 
-        // Enviar email de verificación en background
-        _ = Task.Run(async () =>
+        try
         {
-            try
-            {
-                await emailService.SendEmailVerificationAsync(createdUser.Email, createdUser.Username, emailVerificationToken);
-                logger.LogInformation("Verification email sent");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to send verification email");
-            }
-        });
+            await emailService.SendEmailVerificationAsync(createdUser.Email, createdUser.Username, emailVerificationToken);
+            logger.LogInformation("Verification email sent");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send verification email");
+            throw new InvalidOperationException("El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.", ex);
+        }
 
-        // Crear respuesta sin JWT - solo confirmación de registro
         return new RegisterResponseDto
         {
             Success = true,

@@ -1,0 +1,9 @@
+{
+  "name": "gestion-bancario",
+  "version": "1.0.0",
+  "description": "Proyecto de gestión bancaria con microservicios",
+  "scripts": {
+    "install:services": "node ./scripts/install-services.js",
+    "dev": "node ./scripts/run-services.js"
+  }
+}
