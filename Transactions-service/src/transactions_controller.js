@@ -4,22 +4,20 @@ import axios from 'axios';
 import Transaction from './transactions_model.js';
 import BankAccount from '../bankAccount/bankAccount_model.js';
 
-// Service clients
 const notificationServiceClient = {
     sendEmail: async (to, subject, tipo, monto, saldo) => {
-        try {
-            const response = await axios.post('http://localhost:3010/notification/v1/notify/email', {
-                to,
-                subject,
-                tipo,
-                monto,
-                saldo
-            });
-            return response.data;
-        } catch (error) {
-            console.error('Error calling Notification Service:', error.message);
-            throw error;
+        if (!to) {
+            throw new Error('No email address provided to Notification Service');
         }
+
+        const response = await axios.post('http://localhost:3010/notification/v1/notify/email', {
+            to,
+            subject,
+            tipo,
+            monto,
+            saldo
+        });
+        return response.data;
     }
 };
 
@@ -29,69 +27,80 @@ const recordServiceClient = {
             const response = await axios.post('http://localhost:3009/record/v1/record', recordData);
             return response.data;
         } catch (error) {
-            console.error('Error calling Record Service:', error.message);
-            throw error;
+            console.warn('Record Service unavailable:', error.message);
+            return null;
         }
     }
 };
 
+const getAccountEmail = (account) => {
+    return account?.usuarioEmail || account?.email || account?.correo || null;
+};
+
+const sendTransactionNotification = async (email, subject, tipo, monto, saldo) => {
+    if (!email) {
+        console.warn(`Skipping email notification because account email is not configured for ${subject}`);
+        return null;
+    }
+    try {
+        return await notificationServiceClient.sendEmail(email, subject, tipo, monto, saldo);
+    } catch (error) {
+        console.warn('Notification Service error:', error.message);
+        return null;
+    }
+};
+
+const createRecordIfAvailable = async (recordData) => {
+    return await recordServiceClient.createRecord(recordData);
+};
+
 export const createTransaction = async (req, res) => {
-    
     try {
         const { tipo, monto, cuentaOrigen, cuentaDestino } = req.body;
 
-        if (!tipo || !monto) {
+        if (!tipo || monto === undefined) {
             throw new Error('Tipo y monto son obligatorios');
         }
 
-        if (monto <= 0) {
+        if (Number(monto) <= 0) {
             throw new Error('El monto debe ser mayor que 0');
         }
 
-        // =========================
-        // 🔹 DEPÓSITO
-        // =========================
         if (tipo === 'deposito') {
+            if (!cuentaDestino) {
+                throw new Error('Debe proporcionar cuentaDestino para depósito');
+            }
 
             const cuenta = await BankAccount.findById(cuentaDestino);
             if (!cuenta) throw new Error('Cuenta destino no encontrada');
+            if (cuenta.estado !== 'activa') throw new Error('Cuenta destino no está activa');
 
-            cuenta.saldo += monto;
+            cuenta.saldo += Number(monto);
             await cuenta.save();
 
             const transaction = await Transaction.create({
                 tipo,
-                monto,
+                monto: Number(monto),
                 cuentaDestino
             });
 
-            // Get user info from the account to send email
-            const usuarioId = cuenta.usuarioId;
-            // For now, we'll pass the usuarioId to the notification service
-            // which can then get user details from Auth Service or User Service
-            // Alternatively, we could get user info from BankAccount service if it had that endpoint
-            
-            await notificationServiceClient.sendEmail(
-                // We'll need to get the user email from somewhere
-                // For now, let's assume we can get it from the account or JWT
-                // In a real implementation, we'd get user info from Auth Service
-                'user@example.com', // Placeholder - should come from user data
+            await sendTransactionNotification(
+                getAccountEmail(cuenta),
                 'Depósito realizado',
                 tipo,
-                monto,
+                Number(monto),
                 cuenta.saldo
             );
 
-            // Create record in Record Service
-            await recordServiceClient.createRecord({
+            await createRecordIfAvailable({
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
                 descripcion: `Depósito de ${monto}`,
-                usuarioId: cuenta.usuarioId.toString(), // Assuming usuarioId is stored as ObjectId
+                usuarioId: cuenta.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto,
+                    monto: Number(monto),
                     cuentaDestino: cuentaDestino.toString(),
                     saldo: cuenta.saldo
                 }
@@ -104,45 +113,45 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-        // =========================
-        // 🔹 RETIRO
-        // =========================
         if (tipo === 'retiro') {
+            if (!cuentaOrigen) {
+                throw new Error('Debe proporcionar cuentaOrigen para retiro');
+            }
 
             const cuenta = await BankAccount.findById(cuentaOrigen);
             if (!cuenta) throw new Error('Cuenta origen no encontrada');
+            if (cuenta.estado !== 'activa') throw new Error('Cuenta origen no está activa');
 
-            if (cuenta.saldo < monto) {
+            if (cuenta.saldo < Number(monto)) {
                 throw new Error('Saldo insuficiente');
             }
 
-            cuenta.saldo -= monto;
+            cuenta.saldo -= Number(monto);
             await cuenta.save();
 
             const transaction = await Transaction.create({
                 tipo,
-                monto,
+                monto: Number(monto),
                 cuentaOrigen
             });
 
-            await notificationServiceClient.sendEmail(
-                'user@example.com', // Placeholder
+            await sendTransactionNotification(
+                getAccountEmail(cuenta),
                 'Retiro realizado',
                 tipo,
-                monto,
+                Number(monto),
                 cuenta.saldo
             );
 
-            // Create record in Record Service
-            await recordServiceClient.createRecord({
+            await createRecordIfAvailable({
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
                 descripcion: `Retiro de ${monto}`,
-                usuarioId: cuenta.usuarioId.toString(),
+                usuarioId: cuenta.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto,
+                    monto: Number(monto),
                     cuentaOrigen: cuentaOrigen.toString(),
                     saldo: cuenta.saldo
                 }
@@ -155,13 +164,9 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-        // =========================
-        // 🔹 TRANSFERENCIA
-        // =========================
         if (tipo === 'transferencia') {
-
             if (!cuentaOrigen || !cuentaDestino) {
-                throw new Error('Debe proporcionar cuentaOrigen y cuentaDestino');
+                throw new Error('Debe proporcionar cuentaOrigen y cuentaDestino para transferencia');
             }
 
             if (cuentaOrigen === cuentaDestino) {
@@ -171,69 +176,69 @@ export const createTransaction = async (req, res) => {
             const cuentaO = await BankAccount.findById(cuentaOrigen);
             const cuentaD = await BankAccount.findById(cuentaDestino);
 
-            if (!cuentaO || !cuentaD) {
-                throw new Error('Una de las cuentas no existe');
+            if (!cuentaO) throw new Error('Cuenta origen no encontrada');
+            if (!cuentaD) throw new Error('Cuenta destino no encontrada');
+            if (cuentaO.estado !== 'activa' || cuentaD.estado !== 'activa') {
+                throw new Error('Ambas cuentas deben estar activas para realizar la transferencia');
             }
 
-            if (cuentaO.saldo < monto) {
+            if (cuentaO.saldo < Number(monto)) {
                 throw new Error('Saldo insuficiente');
             }
 
-            cuentaO.saldo -= monto;
-            cuentaD.saldo += monto;
+            cuentaO.saldo -= Number(monto);
+            cuentaD.saldo += Number(monto);
 
             await cuentaO.save();
             await cuentaD.save();
 
             const transaction = await Transaction.create({
                 tipo,
-                monto,
+                monto: Number(monto),
                 cuentaOrigen,
                 cuentaDestino
             });
 
-            // Notifications
-            await notificationServiceClient.sendEmail(
-                'user@example.com', // Placeholder for origen user
+            await sendTransactionNotification(
+                getAccountEmail(cuentaO),
                 'Transferencia enviada',
                 tipo,
-                monto,
+                Number(monto),
                 cuentaO.saldo
             );
 
-            await notificationServiceClient.sendEmail(
-                'user@example.com', // Placeholder for destino user
-                'Transferencia Recibida',
+            await sendTransactionNotification(
+                getAccountEmail(cuentaD),
+                'Transferencia recibida',
                 tipo,
-                monto,
+                Number(monto),
                 cuentaD.saldo
             );
 
-            // Create records in Record Service
-            await recordServiceClient.createRecord({
+            await createRecordIfAvailable({
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
                 descripcion: `Transferencia enviada de ${monto}`,
-                usuarioId: cuentaO.usuarioId.toString(),
+                usuarioId: cuentaO.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto,
+                    monto: Number(monto),
                     cuentaOrigen: cuentaOrigen.toString(),
                     cuentaDestino: cuentaDestino.toString(),
                     saldoOrigen: cuentaO.saldo
                 }
             });
 
-            await recordServiceClient.createRecord({
+            await createRecordIfAvailable({
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
                 descripcion: `Transferencia recibida de ${monto}`,
-                usuarioId: cuentaD.usuarioId.toString(),
+                usuarioId: cuentaD.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto,
+                    monto: Number(monto),
                     cuentaOrigen: cuentaOrigen.toString(),
                     cuentaDestino: cuentaDestino.toString(),
                     saldoDestino: cuentaD.saldo
@@ -248,7 +253,6 @@ export const createTransaction = async (req, res) => {
         }
 
         throw new Error('Tipo de transacción inválido');
-
     } catch (error) {
         return res.status(400).json({
             success: false,

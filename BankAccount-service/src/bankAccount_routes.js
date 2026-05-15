@@ -38,6 +38,10 @@ const router = Router();
  *         usuarioId:
  *           type: integer
  *           example: 1
+ *         usuarioEmail:
+ *           type: string
+ *           format: email
+ *           example: usuario@ejemplo.com
  *         estado:
  *           type: string
  *           enum: [activa, inactiva]

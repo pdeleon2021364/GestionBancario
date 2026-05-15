@@ -6,6 +6,7 @@ import { RoleGuard } from "./RoleGuard.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { VerifyEmailPage } from "../../features/auth/pages/VerifyEmailPage.jsx";
 import { UnauthorizedPage } from "../../features/auth/pages/UnauthorizedPage.jsx";
+import { UsersPage } from "../../features/admin/pages/UsersPage.jsx";
 
 // Placeholder pages — reemplazar con los módulos reales de GestionBanco
 const PlaceholderPage = ({ title }) => (
@@ -35,7 +36,14 @@ export const AppRoutes = () => {
                 }
             >
                 <Route index element={<DashboardHome />} />
-                <Route path="usuarios" element={<PlaceholderPage title="Usuarios" />} />
+                <Route
+                    path="usuarios"
+                    element={
+                        <RoleGuard allowedRoles={["ADMIN_ROLE"]}>
+                            <UsersPage />
+                        </RoleGuard>
+                    }
+                />
                 <Route path="cuentas" element={<PlaceholderPage title="Cuentas Bancarias" />} />
                 <Route path="transacciones" element={<PlaceholderPage title="Transacciones" />} />
                 <Route path="productos" element={<PlaceholderPage title="Productos Financieros" />} />

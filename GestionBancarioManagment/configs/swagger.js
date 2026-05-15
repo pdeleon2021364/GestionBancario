@@ -14,7 +14,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 3000}`,
+        url: `http://localhost:${process.env.PORT || 3006}`,
         description: 'Servidor de desarrollo local'
       }
     ],
@@ -77,7 +77,7 @@ export const setupSwagger = (app) => {
     res.send(swaggerSpec);
   });
 
-  console.log(`📘 Swagger UI disponible en → http://localhost:${process.env.PORT || 3000}/api-docs`);
+  console.log(`📘 Swagger UI disponible en → http://localhost:${process.env.PORT || 3006}/api-docs`);
 };
 
 export { swaggerSpec };

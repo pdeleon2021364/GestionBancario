@@ -77,3 +77,7 @@ C:\GestionBancario\authentication-service\auth-service\src\AuthService.Persisten
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.genruntimeconfig.cache
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\ref\AuthService.Persistence.dll
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.csproj.CopyComplete
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Persistence.deps.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Persistence.runtimeconfig.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Persistence.dll
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Persistence.pdb

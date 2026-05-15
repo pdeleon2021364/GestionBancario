@@ -11,10 +11,50 @@ import { helmetConfiguration } from './helmet-configuration.js';
 
 // Importar Swagger 
 import { setupSwagger } from './swagger.js';
+import Currency from '../src/Currency_model.js';
 
 import currencyRoutes from '../src/currency_routes.js';
 
 const BASE_PATH = '/currency/v1';
+
+const defaultCurrencies = [
+  { nombre: 'Quetzal', codigo: 'GTQ', simbolo: 'Q' },
+  { nombre: 'Dólar estadounidense', codigo: 'USD', simbolo: '$' },
+  { nombre: 'Euro', codigo: 'EUR', simbolo: '€' },
+  { nombre: 'Libra esterlina', codigo: 'GBP', simbolo: '£' },
+  { nombre: 'Yen japonés', codigo: 'JPY', simbolo: '¥' },
+  { nombre: 'Dólar canadiense', codigo: 'CAD', simbolo: 'CA$' },
+  { nombre: 'Dólar australiano', codigo: 'AUD', simbolo: 'AU$' },
+  { nombre: 'Franco suizo', codigo: 'CHF', simbolo: 'CHF' },
+  { nombre: 'Yuan chino', codigo: 'CNY', simbolo: '¥' },
+  { nombre: 'Peso mexicano', codigo: 'MXN', simbolo: '$' },
+  { nombre: 'Real brasileño', codigo: 'BRL', simbolo: 'R$' },
+  { nombre: 'Peso argentino', codigo: 'ARS', simbolo: '$' },
+  { nombre: 'Peso colombiano', codigo: 'COP', simbolo: '$' },
+  { nombre: 'Sol peruano', codigo: 'PEN', simbolo: 'S/' },
+  { nombre: 'Dólar de Singapur', codigo: 'SGD', simbolo: 'S$' },
+  { nombre: 'Dólar neozelandés', codigo: 'NZD', simbolo: 'NZ$' },
+  { nombre: 'Rupia india', codigo: 'INR', simbolo: '₹' },
+  { nombre: 'Won surcoreano', codigo: 'KRW', simbolo: '₩' },
+  { nombre: 'Corona sueca', codigo: 'SEK', simbolo: 'kr' },
+  { nombre: 'Corona noruega', codigo: 'NOK', simbolo: 'kr' }
+];
+
+const seedDefaultCurrencies = async () => {
+  try {
+    for (const currency of defaultCurrencies) {
+      await Currency.findOneAndUpdate(
+        { codigo: currency.codigo },
+        currency,
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+    }
+
+    console.log('Currency Service: Default currencies seeded or already present');
+  } catch (error) {
+    console.error('Currency Service: Error seeding default currencies:', error.message);
+  }
+};
 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false, limit: '10mb' }));
@@ -54,6 +94,7 @@ export const initServer = async () => {
 
     try {
         await dbConnection();
+        await seedDefaultCurrencies();
         middlewares(app);
         routes(app);
 

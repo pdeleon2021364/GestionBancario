@@ -32,6 +32,14 @@ const bankAccountSchema = new mongoose.Schema(
             required: true,
             ref: 'Usuario'
         },
+        usuarioEmail: {
+            type: String,
+            required: [true, 'El correo del usuario es requerido'],
+            lowercase: true,
+            trim: true,
+            match: [/.+@.+\..+/, 'El correo electrónico no es válido'],
+            maxLength: [100, 'El correo no puede exceder 100 caracteres']
+        },
         estado: {
             type: String,
             required: true,

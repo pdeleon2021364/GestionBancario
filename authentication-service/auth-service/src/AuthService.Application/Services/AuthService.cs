@@ -67,7 +67,7 @@ public class AuthService(
         }
         else
         {
-            profilePicturePath = _cloudinaryService.GetDefaultAvatarUrl();
+            profilePicturePath = string.Empty;
         }
 
         // Crear nuevo usuario y entidades relacionadas
@@ -431,5 +431,88 @@ public class AuthService(
     {
         var users = await userRepository.GetUsersAsync();
         return users.Select(MapToUserResponseDto);
+    }
+
+    public async Task<UserResponseDto> UpdateUserAsync(string userId, UpdateUserDto updateUserDto)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            throw new ArgumentException("Invalid userId", nameof(userId));
+        }
+
+        var user = await userRepository.GetByIdAsync(userId);
+        var normalizedEmail = updateUserDto.Email.Trim().ToLowerInvariant();
+        var normalizedUsername = updateUserDto.Username.Trim();
+        var normalizedRole = updateUserDto.Role.Trim().ToUpperInvariant();
+
+        if (!RoleConstants.AllowedRoles.Contains(normalizedRole))
+        {
+            throw new InvalidOperationException($"Role not allowed. Use {RoleConstants.ADMIN_ROLE} or {RoleConstants.USER_ROLE}");
+        }
+
+        var userWithEmail = await userRepository.GetByEmailAsync(normalizedEmail);
+        if (userWithEmail != null && userWithEmail.Id != user.Id)
+        {
+            throw new BusinessException(ErrorCodes.EMAIL_ALREADY_EXISTS, "Email already exists");
+        }
+
+        var userWithUsername = await userRepository.GetByUsernameAsync(normalizedUsername);
+        if (userWithUsername != null && userWithUsername.Id != user.Id)
+        {
+            throw new BusinessException(ErrorCodes.USERNAME_ALREADY_EXISTS, "Username already exists");
+        }
+
+        var currentRole = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE;
+        if (currentRole == RoleConstants.ADMIN_ROLE && normalizedRole != RoleConstants.ADMIN_ROLE)
+        {
+            var adminCount = await roleRepository.CountUsersInRoleAsync(RoleConstants.ADMIN_ROLE);
+            if (adminCount <= 1)
+            {
+                throw new InvalidOperationException("Cannot remove the last administrator");
+            }
+        }
+
+        user.Name = updateUserDto.Name.Trim();
+        user.Surname = updateUserDto.Surname.Trim();
+        user.Username = normalizedUsername;
+        user.Email = normalizedEmail;
+        user.Status = updateUserDto.Status;
+
+        if (user.UserProfile != null)
+        {
+            user.UserProfile.Phone = updateUserDto.Phone.Trim();
+        }
+
+        await userRepository.UpdateAsync(user);
+
+        if (currentRole != normalizedRole)
+        {
+            var role = await roleRepository.GetByNameAsync(normalizedRole)
+                       ?? throw new InvalidOperationException($"Role {normalizedRole} not found");
+            await userRepository.UpdateUserRoleAsync(user.Id, role.Id);
+        }
+
+        return MapToUserResponseDto(await userRepository.GetByIdAsync(user.Id));
+    }
+
+    public async Task DeleteUserAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            throw new ArgumentException("Invalid userId", nameof(userId));
+        }
+
+        var user = await userRepository.GetByIdAsync(userId);
+        var isAdmin = user.UserRoles.Any(r => r.Role.Name == RoleConstants.ADMIN_ROLE);
+        if (isAdmin)
+        {
+            var adminCount = await roleRepository.CountUsersInRoleAsync(RoleConstants.ADMIN_ROLE);
+            if (adminCount <= 1)
+            {
+                throw new InvalidOperationException("Cannot remove the last administrator");
+            }
+        }
+
+        await userRepository.DeleteAsync(userId);
     }
 }

@@ -45,3 +45,6 @@ C:\GestionBancario\authentication-service\auth-service\src\AuthService.Domain\ob
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Domain.deps.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Domain.dll
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Domain.pdb

@@ -701,3 +701,14 @@ C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\D
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.genruntimeconfig.cache
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\ref\AuthService.Api.dll
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.csproj.CopyComplete
+C:\GestionBancario\.build\auth\Debug\net8.0\appsettings.Development.json
+C:\GestionBancario\.build\auth\Debug\net8.0\appsettings.json
+C:\GestionBancario\.build\auth\Debug\net8.0\bin\Debug\net8.0\appsettings.Development.json
+C:\GestionBancario\.build\auth\Debug\net8.0\bin\Debug\net8.0\appsettings.json
+C:\GestionBancario\.build\auth\Debug\net8.0\bin\Debug\net8.0\AuthService.Api.deps.json
+C:\GestionBancario\.build\auth\Debug\net8.0\bin\Debug\net8.0\AuthService.Api.runtimeconfig.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.exe
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.deps.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.runtimeconfig.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.dll
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.pdb

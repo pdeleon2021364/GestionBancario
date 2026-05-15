@@ -201,7 +201,7 @@ namespace AuthService.Api.Controllers
 
         [HttpGet("users")]
         [Authorize]
-        [EnableRateLimiting("AuthPolicy")]
+        [EnableRateLimiting("ApiPolicy")]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetAllUsers()
         {
             if (!await CurrentUserIsAdmin())
@@ -211,6 +211,53 @@ namespace AuthService.Api.Controllers
 
             var users = await _authService.GetAllUsersAsync();
             return Ok(users);
+        }
+
+        [HttpGet("users/{userId}")]
+        [Authorize]
+        [EnableRateLimiting("ApiPolicy")]
+        public async Task<ActionResult<UserResponseDto>> GetUserById(string userId)
+        {
+            if (!await CurrentUserIsAdmin())
+            {
+                return StatusCode(403, new { success = false, message = "Forbidden" });
+            }
+
+            var user = await _authService.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound(new { success = false, message = "Usuario no encontrado" });
+            }
+
+            return Ok(user);
+        }
+
+        [HttpPut("users/{userId}")]
+        [Authorize]
+        [EnableRateLimiting("ApiPolicy")]
+        public async Task<ActionResult<UserResponseDto>> UpdateUser(string userId, [FromBody] UpdateUserDto updateUserDto)
+        {
+            if (!await CurrentUserIsAdmin())
+            {
+                return StatusCode(403, new { success = false, message = "Forbidden" });
+            }
+
+            var user = await _authService.UpdateUserAsync(userId, updateUserDto);
+            return Ok(user);
+        }
+
+        [HttpDelete("users/{userId}")]
+        [Authorize]
+        [EnableRateLimiting("ApiPolicy")]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            if (!await CurrentUserIsAdmin())
+            {
+                return StatusCode(403, new { success = false, message = "Forbidden" });
+            }
+
+            await _authService.DeleteUserAsync(userId);
+            return Ok(new { success = true, message = "Usuario eliminado exitosamente" });
         }
     }
 }

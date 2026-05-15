@@ -1,33 +1,64 @@
 import { axiosAdmin } from "./api";
 
-// Usuarios
-export const getUsuarios = async () => {
-    return axiosAdmin.get("/Usuarios")
-}
+const unwrap = (response) => response.data?.data ?? response.data ?? [];
 
-export const createUsuario = async (data) => {
-    return await axiosAdmin.post("/Usuarios", data)
-}
+const crud = (base) => ({
+    list: async (params = {}) => unwrap(await axiosAdmin.get(base, { params: { limit: 100, ...params } })),
+    create: async (data) => unwrap(await axiosAdmin.post(`${base}/create`, data)),
+    update: async (id, data) => unwrap(await axiosAdmin.put(`${base}/update/${id}`, data)),
+    remove: async (id) => unwrap(await axiosAdmin.delete(`${base}/delete/${id}`)),
+    get: async (id) => unwrap(await axiosAdmin.get(`${base}/${id}`)),
+});
 
-export const updateUsuario = async (id, data) => {
-    return await axiosAdmin.put(`/Usuarios/${id}`, data)
-}
+export const usuariosApi = {
+    list: async () => unwrap(await axiosAdmin.get("/Usuarios")),
+    create: async (data) => unwrap(await axiosAdmin.post("/Usuarios/create", data)),
+    update: async (id, data) => unwrap(await axiosAdmin.put(`/Usuarios/${id}`, data)),
+    remove: async (id) => unwrap(await axiosAdmin.delete(`/Usuarios/${id}`)),
+};
 
-export const deleteUsuario = async (id) => {
-    return await axiosAdmin.delete(`/Usuarios/${id}`)
-}
+export const bankAccountsApi = {
+    ...crud("/bankAccount"),
+    search: async (accountNumber) => unwrap(await axiosAdmin.get(`/bankAccount/search/${accountNumber}`)),
+    sendAllPdf: async (email) => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/all/${email}`)),
+    sendPdf: async (id, email) => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/${id}/${email}`)),
+};
 
-// Cuentas bancarias
-export const getBankAccounts = async () => {
-    return axiosAdmin.get("/bankAccount")
-}
+export const currenciesApi = {
+    ...crud("/Currency"),
+    byCode: async (code) => unwrap(await axiosAdmin.get(`/Currency/code/${code}`)),
+};
 
-// Transacciones
-export const getTransactions = async () => {
-    return axiosAdmin.get("/transactions")
-}
+export const exchangeRatesApi = {
+    ...crud("/ExchangeRate"),
+    convert: async (data) => unwrap(await axiosAdmin.post("/ExchangeRate/convert", data)),
+};
 
-// Productos financieros
-export const getFinancialProducts = async () => {
-    return axiosAdmin.get("/financialproduct")
-}
+export const financialProductsApi = {
+    ...crud("/financialproduct"),
+    byName: async (name) => unwrap(await axiosAdmin.get(`/financialproduct/name/${name}`)),
+};
+
+export const transactionsApi = {
+    ...crud("/transactions"),
+    byType: async (tipo) => unwrap(await axiosAdmin.get(`/transactions/type/${tipo}`)),
+};
+
+export const favoritesApi = {
+    ...crud("/favorites"),
+    byAlias: async (alias) => unwrap(await axiosAdmin.get(`/favorites/alias/${alias}`)),
+    transfer: async (data) => unwrap(await axiosAdmin.post("/favorites/transfer", data)),
+};
+
+export const recordsApi = {
+    ...crud("/record"),
+    byAccount: async (cuentaId) => unwrap(await axiosAdmin.get(`/record/account/${cuentaId}`)),
+};
+
+export const getUsuarios = usuariosApi.list;
+export const createUsuario = usuariosApi.create;
+export const updateUsuario = usuariosApi.update;
+export const deleteUsuario = usuariosApi.remove;
+export const getBankAccounts = bankAccountsApi.list;
+export const getTransactions = transactionsApi.list;
+export const getFinancialProducts = financialProductsApi.list;

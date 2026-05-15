@@ -61,3 +61,6 @@ C:\GestionBancario\authentication-service\auth-service\src\AuthService.Applicati
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.pdb
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\ref\AuthService.Application.dll
 C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.csproj.CopyComplete
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Application.deps.json
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Application.dll
+C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Application.pdb

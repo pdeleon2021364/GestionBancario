@@ -6,7 +6,12 @@ import {
   forgotPasswordHelper,
   resetPasswordHelper,
 } from '../../helpers/auth-operations.js';
-import { getUserProfileHelper } from '../../helpers/profile-operations.js';
+import {
+  getUserProfileHelper,
+  updateUserProfileHelper,
+  updateUserProfilePictureHelper,
+  deleteUserProfilePictureHelper,
+} from '../../helpers/profile-operations.js';
 import { asyncHandler } from '../../middlewares/server-genericError-handler.js';
 
 export const register = asyncHandler(async (req, res) => {
@@ -200,6 +205,54 @@ export const getProfileById = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: true,
     message: 'Perfil obtenido exitosamente',
+    data: user,
+  });
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+  const { name, surname, username, email, phone } = req.body;
+
+  if (!name && !surname && !username && !email && !phone) {
+    return res.status(400).json({
+      success: false,
+      message: 'Debes enviar al menos un campo para actualizar',
+    });
+  }
+
+  const user = await updateUserProfileHelper(userId, {
+    name,
+    surname,
+    username,
+    email,
+    phone,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Perfil actualizado correctamente',
+    data: user,
+  });
+});
+
+export const updateProfileAvatar = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+  const user = await updateUserProfilePictureHelper(userId, req.file);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Foto de perfil actualizada correctamente',
+    data: user,
+  });
+});
+
+export const deleteProfileAvatar = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+  const user = await deleteUserProfilePictureHelper(userId);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Foto de perfil eliminada correctamente',
     data: user,
   });
 });

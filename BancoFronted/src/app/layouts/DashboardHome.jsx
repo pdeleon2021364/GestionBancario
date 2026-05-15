@@ -107,6 +107,26 @@ export const DashboardHome = () => {
                             metric="Portafolio"
                             accent="amber"
                         />
+                        <ModuleCard
+                            to="/dashboard/divisas"
+                            title="Divisas"
+                            description="Administra monedas disponibles para operaciones y conversiones."
+                            metric="Monedas"
+                            accent="blue"
+                        />
+                        <ModuleCard
+                            to="/dashboard/tipos-cambio"
+                            title="Tipos de cambio"
+                            description="Controla pares, tasas, spreads y conversiones favoritas."
+                            metric="ExchangeRate"
+                            accent="green"
+                        />
+                        <ModuleCard
+                            to="/dashboard/historial"
+                            title="Historial operativo"
+                            description="Consulta registros de auditoria y trazabilidad del sistema."
+                            metric="Record"
+                        />
                     </div>
                 </article>
 

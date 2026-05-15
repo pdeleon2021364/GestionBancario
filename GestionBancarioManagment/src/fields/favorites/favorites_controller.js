@@ -6,6 +6,26 @@ import mongoose from 'mongoose';
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+const normalizeUserId = (userId) => {
+    if (userId === undefined || userId === null) {
+        throw new Error('Usuario no autenticado');
+    }
+    if (typeof userId === 'string' && /^\\d+$/.test(userId)) {
+        return Number(userId);
+    }
+    return userId;
+};
+
+const buildUserFilter = (userId) => {
+    const normalizedUserId = normalizeUserId(userId);
+    return {
+        $or: [
+            { user: normalizedUserId },
+            { user: String(normalizedUserId) }
+        ]
+    };
+};
+
 export const createFavorite = async (req, res) => {
     try {
 
@@ -34,9 +54,11 @@ export const createFavorite = async (req, res) => {
             });
         }
 
+        const userFilter = buildUserFilter(req.user.id);
+
         // Evitar alias duplicado por usuario
         const aliasExists = await Favorite.findOne({
-            user: req.user.id,
+            ...userFilter,
             alias
         });
 
@@ -48,7 +70,7 @@ export const createFavorite = async (req, res) => {
         }
 
         const favorite = await Favorite.create({
-            user: req.user.id,
+            user: normalizeUserId(req.user.id),
             alias,
             bankAccount
         });
@@ -74,21 +96,26 @@ export const getFavorites = async (req, res) => {
     try {
 
         const { page = 1, limit = 10 } = req.query;
+        const pageNumber = Math.max(1, parseInt(page, 10) || 1);
+        const limitNumber = Math.max(1, parseInt(limit, 10) || 10);
+        const userFilter = buildUserFilter(req.user.id);
 
-        const favorites = await Favorite.find({ user: req.user.id })
+        const favorites = await Favorite.find(userFilter)
             .populate('bankAccount', 'numeroCuenta tipoCuenta saldo estado')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .skip((pageNumber - 1) * limitNumber)
+            .limit(limitNumber);
 
-        const total = await Favorite.countDocuments({ user: req.user.id });
+        const total = await Favorite.countDocuments(userFilter);
 
         res.status(200).json({
             success: true,
             data: favorites,
             pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(total / limit),
+                currentPage: pageNumber,
+                totalPages: Math.ceil(total / limitNumber),
                 totalRecords: total,
-                limit
+                limit: limitNumber
             }
         });
 
@@ -110,7 +137,7 @@ export const updateFavorite = async (req, res) => {
         const { id } = req.params;
 
         const favorite = await Favorite.findOneAndUpdate(
-            { _id: id, user: req.user.id },
+            { _id: id, ...buildUserFilter(req.user.id) },
             req.body,
             { new: true, runValidators: true }
         );
@@ -144,7 +171,7 @@ export const getFavoriteById = async (req, res) => {
 
         const favorite = await Favorite.findOne({
             _id: id,
-            user: req.user.id
+            ...buildUserFilter(req.user.id)
         });
 
         if (!favorite) {
@@ -181,7 +208,7 @@ export const getFavoriteByAlias = async (req, res) => {
         }
 
         const favorite = await Favorite.findOne({
-            user: req.user.id,
+            ...buildUserFilter(req.user.id),
             alias: { $regex: alias, $options: 'i' }
         });
 
@@ -216,7 +243,7 @@ export const deleteFavorite = async (req, res) => {
 
         const favorite = await Favorite.findOneAndDelete({
             _id: id,
-            user: req.user.id
+            ...buildUserFilter(req.user.id)
         });
 
         if (!favorite) {
@@ -262,7 +289,7 @@ export const transferFromFavorite = async (req, res) => {
 
         const favorite = await Favorite.findOne({
             _id: favoriteId,
-            user: req.user.id
+            ...buildUserFilter(req.user.id)
         }).populate('bankAccount');
 
         if (!favorite) {

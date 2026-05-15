@@ -155,8 +155,8 @@ const router = Router();
  *         description: No encontrada
  */
 
-router.post('/transactions/v1/transactions', createTransaction);
-router.get('/transactions/v1/transactions', getTransactions);
+router.post('/transactions/v1/transactions', validateJWT, createTransaction);
+router.get('/transactions/v1/transactions', validateJWT, getTransactions);
 router.put('/transactions/v1/transactions/:id', validateJWT, requireRole('ADMIN_ROLE'), updateTransaction);
 router.delete('/transactions/v1/transactions/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteTransaction);
 router.get('/transactions/v1/transactions/type/:tipo', validateJWT, getTransactionByTipo);

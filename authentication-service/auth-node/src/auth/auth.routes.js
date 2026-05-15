@@ -266,6 +266,92 @@ router.get('/profile', validateJWT, authController.getProfile);
 
 /**
  * @swagger
+ * /api/v1/auth/profile:
+ *   put:
+ *     tags: [Profile]
+ *     summary: Actualiza los datos del perfil del usuario autenticado
+ *     description: Modifica nombre, apellido, username, email y teléfono
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               surname:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Perfil actualizado correctamente
+ *       400:
+ *         description: Datos inválidos
+ */
+router.put('/profile', validateJWT, authController.updateProfile);
+
+/**
+ * @swagger
+ * /api/v1/auth/profile/avatar:
+ *   post:
+ *     tags: [Profile]
+ *     summary: Sube o actualiza la foto de perfil del usuario autenticado
+ *     description: Permite subir una imagen de perfil en formato multipart/form-data
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profilePicture:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Foto de perfil actualizada correctamente
+ *       400:
+ *         description: Error en la imagen
+ */
+router.post(
+  '/profile/avatar',
+  validateJWT,
+  upload.single('profilePicture'),
+  handleUploadError,
+  authController.updateProfileAvatar
+);
+
+/**
+ * @swagger
+ * /api/v1/auth/profile/avatar:
+ *   delete:
+ *     tags: [Profile]
+ *     summary: Elimina la foto de perfil del usuario autenticado
+ *     description: Reemplaza la foto actual por el avatar por defecto
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Foto de perfil eliminada correctamente
+ *       401:
+ *         description: Token inválido
+ */
+router.delete('/profile/avatar', validateJWT, authController.deleteProfileAvatar);
+
+/**
+ * @swagger
  * /api/v1/auth/profile/by-id:
  *   post:
  *     tags: [Profile]

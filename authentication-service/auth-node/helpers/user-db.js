@@ -8,6 +8,7 @@ import { UserRole, Role } from '../src/auth/role.model.js';
 import { USER_ROLE } from './role-constants.js';
 import { hashPassword } from '../utils/password-utils.js';
 import { Op } from 'sequelize';
+import { deleteImage, getDefaultAvatarPath } from './cloudinary-service.js';
 
 /**
  * Helper para buscar un usuario por email o username
@@ -367,4 +368,115 @@ export const updateUserPassword = async (userId, hashedPassword) => {
     console.error('Error actualizando contraseña:', error);
     throw new Error('Error al actualizar contraseña');
   }
+};
+
+export const updateUserProfileData = async (userId, profileData) => {
+  const transaction = await User.sequelize.transaction();
+
+  try {
+    const user = await findUserById(userId);
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    const payload = {};
+    if (profileData.name) payload.Name = profileData.name;
+    if (profileData.surname) payload.Surname = profileData.surname;
+    if (profileData.username) payload.Username = profileData.username.toLowerCase();
+    if (profileData.email) payload.Email = profileData.email.toLowerCase();
+
+    if (payload.Email && payload.Email !== user.Email) {
+      const existingEmail = await User.findOne({
+        where: {
+          Email: payload.Email,
+          Id: { [Op.ne]: userId },
+        },
+      });
+      if (existingEmail) {
+        throw new Error('El correo ya está en uso');
+      }
+    }
+
+    if (payload.Username && payload.Username !== user.Username) {
+      const existingUsername = await User.findOne({
+        where: {
+          Username: payload.Username,
+          Id: { [Op.ne]: userId },
+        },
+      });
+      if (existingUsername) {
+        throw new Error('El nombre de usuario ya está en uso');
+      }
+    }
+
+    if (Object.keys(payload).length > 0) {
+      await User.update(payload, {
+        where: { Id: userId },
+        transaction,
+      });
+    }
+
+    if (profileData.phone) {
+      await UserProfile.update(
+        { Phone: profileData.phone },
+        { where: { UserId: userId }, transaction }
+      );
+    }
+
+    await transaction.commit();
+    return await findUserById(userId);
+  } catch (error) {
+    await transaction.rollback();
+    console.error('Error actualizando perfil:', error);
+    throw new Error(error.message || 'Error al actualizar perfil');
+  }
+};
+
+export const updateUserProfilePicture = async (userId, profilePicture) => {
+  const user = await findUserById(userId);
+  if (!user) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  const previousPicture = user.UserProfile?.ProfilePicture;
+  await UserProfile.update(
+    { ProfilePicture: profilePicture },
+    {
+      where: { UserId: userId },
+    }
+  );
+
+  const defaultAvatar = getDefaultAvatarPath();
+  if (
+    previousPicture &&
+    previousPicture !== defaultAvatar &&
+    previousPicture !== profilePicture
+  ) {
+    await deleteImage(previousPicture);
+  }
+
+  return await findUserById(userId);
+};
+
+export const resetUserProfilePicture = async (userId) => {
+  const user = await findUserById(userId);
+  if (!user) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  const previousPicture = user.UserProfile?.ProfilePicture;
+  const defaultAvatar = getDefaultAvatarPath();
+
+  await UserProfile.update(
+    { ProfilePicture: defaultAvatar },
+    {
+      where: { UserId: userId },
+    }
+  );
+
+  if (previousPicture && previousPicture !== defaultAvatar) {
+    await deleteImage(previousPicture);
+  }
+
+  return await findUserById(userId);
 };

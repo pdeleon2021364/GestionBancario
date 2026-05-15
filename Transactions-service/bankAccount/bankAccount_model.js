@@ -32,6 +32,12 @@ const bankAccountSchema = new mongoose.Schema(
             required: true,
             ref: 'Usuario'
         },
+        usuarioEmail: {
+            type: String,
+            trim: true,
+            lowercase: true,
+            default: null
+        },
         estado: {
             type: String,
             required: true,

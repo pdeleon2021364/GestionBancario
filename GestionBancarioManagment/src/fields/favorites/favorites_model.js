@@ -5,8 +5,9 @@ import mongoose from 'mongoose';
 const favoriteSchema = new mongoose.Schema(
 {
     user: {
-        type: Number,
-        required: true
+        type: mongoose.Schema.Types.Mixed,
+        required: true,
+        index: true
     },
 
     alias: {

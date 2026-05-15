@@ -17,9 +17,22 @@ const BANK_ACCOUNT_FIELDS = [
     { label: 'Actualizado en',   key: 'updatedAt' },
 ];
 
+const validateEmail = (email) => {
+    return typeof email === 'string' && email.trim().length > 0 && /.+@.+\..+/.test(email);
+};
+
 export const createField = async (req, res) => {
     try {
         const fieldData = req.body;
+
+        if (!fieldData.usuarioEmail || !validateEmail(fieldData.usuarioEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El correo de usuario es obligatorio y debe ser válido'
+            });
+        }
+
+        fieldData.usuarioEmail = fieldData.usuarioEmail.toLowerCase().trim();
 
         if (req.file) {
             fieldData.photo = req.file.path;
@@ -110,6 +123,17 @@ export const updateField = async (req, res) => {
     try {
         const { id } = req.params;
         const data = req.body;
+
+        if (data.usuarioEmail && !validateEmail(data.usuarioEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El correo de usuario debe ser válido'
+            });
+        }
+
+        if (data.usuarioEmail) {
+            data.usuarioEmail = data.usuarioEmail.toLowerCase().trim();
+        }
 
         if (req.file) {
             data.photo = req.file.path;

@@ -66,7 +66,7 @@ const routes = (app) => {
 
 export const initServer = async () => {
     const app = express();
-    const PORT = process.env.PORT;
+    const PORT = process.env.PORT || 3006;
 
     app.set('trust proxy', 1);
 
