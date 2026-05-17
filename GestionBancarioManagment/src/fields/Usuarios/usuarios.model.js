@@ -21,6 +21,10 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('ADMIN_ROLE', 'USER_ROLE'),
     defaultValue: 'USER_ROLE',
   },
+  profilePicture: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   emailVerified: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

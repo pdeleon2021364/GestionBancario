@@ -132,6 +132,7 @@ public class AuthService(
 
         logger.LogUserRegistered(createdUser.Username);
 
+        var emailSent = true;
         try
         {
             await emailService.SendEmailVerificationAsync(createdUser.Email, createdUser.Username, emailVerificationToken);
@@ -139,15 +140,17 @@ public class AuthService(
         }
         catch (Exception ex)
         {
+            emailSent = false;
             logger.LogError(ex, "Failed to send verification email");
-            throw new InvalidOperationException("El usuario fue creado, pero no se pudo enviar el correo de verificación. Revisa la configuración SMTP.", ex);
         }
 
         return new RegisterResponseDto
         {
             Success = true,
             User = MapToUserResponseDto(createdUser),
-            Message = "Usuario registrado exitosamente. Por favor, verifica tu email para activar la cuenta.",
+            Message = emailSent
+                ? "Usuario registrado exitosamente. Por favor, verifica tu email para activar la cuenta."
+                : "Usuario registrado exitosamente, pero no se pudo enviar el correo de verificación. Revisa la configuración de correo o reenvía el email de verificación.",
             EmailVerificationRequired = true
         };
     }
@@ -433,6 +436,39 @@ public class AuthService(
         return users.Select(MapToUserResponseDto);
     }
 
+    public async Task<UserResponseDto> UpdateProfileAsync(string userId, UpdateProfileDto updateProfileDto)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            throw new ArgumentException("Invalid userId", nameof(userId));
+        }
+
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException("User not found");
+        }
+
+        var normalizedEmail = updateProfileDto.Email.Trim().ToLowerInvariant();
+        var userWithEmail = await userRepository.GetByEmailAsync(normalizedEmail);
+        if (userWithEmail != null && userWithEmail.Id != user.Id)
+        {
+            throw new BusinessException(ErrorCodes.EMAIL_ALREADY_EXISTS, "Email already exists");
+        }
+
+        user.Name = updateProfileDto.Name.Trim();
+        user.Surname = updateProfileDto.Surname.Trim();
+        user.Email = normalizedEmail;
+
+        if (user.UserProfile != null)
+        {
+            user.UserProfile.Phone = updateProfileDto.Phone.Trim();
+        }
+
+        await userRepository.UpdateAsync(user);
+        return MapToUserResponseDto(await userRepository.GetByIdAsync(user.Id));
+    }
+
     public async Task<UserResponseDto> UpdateUserAsync(string userId, UpdateUserDto updateUserDto)
     {
         if (string.IsNullOrWhiteSpace(userId))
@@ -493,6 +529,83 @@ public class AuthService(
         }
 
         return MapToUserResponseDto(await userRepository.GetByIdAsync(user.Id));
+    }
+
+    public async Task<UserResponseDto> UpdateProfilePictureAsync(string userId, IFileData file)
+    {
+        if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null) throw new InvalidOperationException("User not found");
+
+        if (file == null || file.Size == 0)
+        {
+            throw new InvalidOperationException("No file provided");
+        }
+
+        var (isValid, errorMessage) = FileValidator.ValidateImage(file);
+        if (!isValid)
+        {
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        var fileName = FileValidator.GenerateSecureFileName(file.FileName);
+        string uploadedPath;
+        try
+        {
+            uploadedPath = await _cloudinaryService.UploadImageAsync(file, fileName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to upload profile image for user {UserId}", userId);
+            throw new InvalidOperationException("Failed to upload profile image");
+        }
+
+        if (user.UserProfile == null)
+        {
+            user.UserProfile = new Domain.Entities.UserProfile { Id = UuidGenerator.GenerateUserId(), UserId = userId, ProfilePicture = uploadedPath, Phone = string.Empty };
+        }
+        else
+        {
+            // Optionally delete previous non-default image
+            var previous = user.UserProfile.ProfilePicture;
+            if (!string.IsNullOrWhiteSpace(previous) && !previous.Contains("default-avatar_ewzxwx", StringComparison.OrdinalIgnoreCase))
+            {
+                try { await _cloudinaryService.DeleteImageAsync(previous); } catch { /* ignore */ }
+            }
+            user.UserProfile.ProfilePicture = uploadedPath;
+        }
+
+        await userRepository.UpdateAsync(user);
+
+        return MapToUserResponseDto(await userRepository.GetByIdAsync(userId));
+    }
+
+    public async Task<UserResponseDto> DeleteProfilePictureAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null) throw new InvalidOperationException("User not found");
+
+        var current = user.UserProfile?.ProfilePicture ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(current) && !current.Contains("default-avatar_ewzxwx", StringComparison.OrdinalIgnoreCase))
+        {
+            try { await _cloudinaryService.DeleteImageAsync(current); } catch { /* ignore */ }
+        }
+
+        if (user.UserProfile == null)
+        {
+            user.UserProfile = new Domain.Entities.UserProfile { Id = UuidGenerator.GenerateUserId(), UserId = userId, ProfilePicture = string.Empty, Phone = string.Empty };
+        }
+        else
+        {
+            user.UserProfile.ProfilePicture = string.Empty;
+        }
+
+        await userRepository.UpdateAsync(user);
+
+        return MapToUserResponseDto(await userRepository.GetByIdAsync(userId));
     }
 
     public async Task DeleteUserAsync(string userId)

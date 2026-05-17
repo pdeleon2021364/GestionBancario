@@ -13,6 +13,11 @@ public interface IAuthService
     Task<EmailResponseDto> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
     Task<UserResponseDto?> GetUserByIdAsync(string userId);
     Task<IEnumerable<UserResponseDto>> GetAllUsersAsync();
+    Task<UserResponseDto> UpdateProfileAsync(string userId, UpdateProfileDto updateProfileDto);
     Task<UserResponseDto> UpdateUserAsync(string userId, UpdateUserDto updateUserDto);
     Task DeleteUserAsync(string userId);
+
+    // Profile picture management
+    Task<UserResponseDto> UpdateProfilePictureAsync(string userId, IFileData file);
+    Task<UserResponseDto> DeleteProfilePictureAsync(string userId);
 }

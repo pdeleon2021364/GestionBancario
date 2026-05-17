@@ -70,6 +70,40 @@ namespace AuthService.Api.Controllers
             });
         }
 
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto updateProfileDto)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
+
+            var updated = await _authService.UpdateProfileAsync(userIdClaim, updateProfileDto);
+            return Ok(new { success = true, message = "Perfil actualizado", data = updated });
+        }
+
+        [HttpPost("profile/avatar")]
+        [Authorize]
+        [RequestSizeLimit(10 * 1024 * 1024)]
+        public async Task<IActionResult> UploadProfileAvatar([FromForm(Name = "profilePicture")] IFileData profilePicture)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
+
+            var updated = await _authService.UpdateProfilePictureAsync(userIdClaim, profilePicture);
+            return Ok(new { success = true, message = "Avatar actualizado", data = updated });
+        }
+
+        [HttpDelete("profile/avatar")]
+        [Authorize]
+        public async Task<IActionResult> DeleteProfileAvatar()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
+
+            var updated = await _authService.DeleteProfilePictureAsync(userIdClaim);
+            return Ok(new { success = true, message = "Avatar eliminado", data = updated });
+        }
+
         [HttpPost("profile/by-id")]
         [EnableRateLimiting("ApiPolicy")]
         public async Task<ActionResult<object>> GetProfileById([FromBody] GetProfileByIdDto request)

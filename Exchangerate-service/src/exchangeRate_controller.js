@@ -98,7 +98,7 @@ export const updateExchangeRate = async (req, res) => {
         }
 
         const updatedRate = await ExchangeRate.findByIdAndUpdate(id, req.body, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true
         });
 

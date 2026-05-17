@@ -6,6 +6,27 @@ import {
 } from "../../../shared/api"
 const ALLOWED_ROLES = ["ADMIN_ROLE", "USER_ROLE"];
 
+const ERROR_MESSAGES = {
+    "Email already exists": "Ese correo ya está registrado.",
+    "Username already exists": "Ese nombre de usuario ya está en uso.",
+};
+
+const extractErrorMessage = (err, fallback) => {
+    const data = err.response?.data;
+
+    if (typeof data === "string") return ERROR_MESSAGES[data] || data;
+
+    const rawMessage = data?.message || data?.detail || data?.error;
+    if (rawMessage) return ERROR_MESSAGES[rawMessage] || rawMessage;
+
+    if (data?.errors) {
+        const messages = Object.values(data.errors).flat().filter(Boolean);
+        if (messages.length > 0) return messages.join(" ");
+    }
+
+    return fallback;
+};
+
 const normalizeUser = (user) => {
     if (!user) return null;
 
@@ -106,8 +127,7 @@ export const useAuthStore = create(
 
                 } catch (err) {
                     console.error("Login error:", err);
-                    const message =
-                        err.response?.data?.message || "Error de autenticación";
+                    const message = extractErrorMessage(err, "Error de autenticación");
                     set({ error: message, loading: false, isLoadingAuth: false })
                     return { success: false, error: message }
                 }
@@ -124,7 +144,7 @@ export const useAuthStore = create(
                         data,
                     }
                 } catch (err) {
-                    const message = err.response?.data?.message || "Error al registrarse";
+                    const message = extractErrorMessage(err, "Error al registrarse");
                     set({ error: message, loading: false });
                     return { success: false, error: message };
                 }

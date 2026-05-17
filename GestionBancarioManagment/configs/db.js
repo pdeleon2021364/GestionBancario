@@ -10,24 +10,32 @@ dotenv.config();
    🔹 PostgreSQL - Sequelize
 =========================== */
 
+const dialect = process.env.DB_DIALECT || 'postgres';
+const sequelizeOptions = {
+  dialect,
+  logging: false,
+};
+
+if (dialect === 'postgres') {
+  sequelizeOptions.host = process.env.DB_HOST;
+  sequelizeOptions.port = process.env.DB_PORT;
+} else if (dialect === 'sqlite') {
+  sequelizeOptions.storage = process.env.DB_STORAGE || './database.sqlite';
+}
+
 export const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres",
-    logging: false,
-  }
+  process.env.DB_NAME || 'gestionbanco',
+  process.env.DB_USER || 'admin',
+  process.env.DB_PASS || 'admin123',
+  sequelizeOptions
 );
 
 export const connectPostgres = async () => {
   try {
     await sequelize.authenticate();
-    console.log("PostgreSQL | conectado correctamente");
+    console.log(`Sequelize (${dialect}) | conectado correctamente`);
   } catch (error) {
-    console.error("PostgreSQL | error de conexión:", error);
+    console.error(`Sequelize (${dialect}) | error de conexión:`, error);
   }
 };
 
@@ -36,6 +44,11 @@ export const connectPostgres = async () => {
 =========================== */
 
 export const dbConnection = async () => {
+  if (!process.env.URI_MONGO) {
+    console.log('MongoDB | URI_MONGO no configurada, se omite la conexión.');
+    return;
+  }
+
   try {
     mongoose.connection.on("connected", () => {
       console.log("MongoDB | conectado correctamente");

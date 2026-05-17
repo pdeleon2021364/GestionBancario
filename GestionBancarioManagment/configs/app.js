@@ -21,6 +21,7 @@ import financialproduct    from '../src/fields/financialproduct/financialproduct
 import recordRoutes        from '../src/fields/record/record_routes.js';
 import transactionsRoutes  from '../src/fields/transactions/transactions_routes.js';
 import authRoutes          from '../src/fields/auth/auth_routes.js';
+import usersRoutes         from '../src/routes/users.routes.js';
 import favoritesRoutes     from '../src/fields/favorites/favorites_routes.js';
 
 const BASE_PATH = '/gestionbanco/v1';
@@ -37,6 +38,7 @@ const routes = (app) => {
     //Swagger Documentation
     setupSwagger(app);
 
+    app.use(`${BASE_PATH}/auth`,             usersRoutes);
     app.use(`${BASE_PATH}/auth`,             authRoutes);
     app.use(`${BASE_PATH}/Usuarios`,         usuariosRoutes);
     app.use(`${BASE_PATH}/bankAccount`,      bankAccountRoutes);
@@ -64,24 +66,30 @@ const routes = (app) => {
     });
 };
 
-export const initServer = async () => {
+export const createApp = async () => {
     const app = express();
     const PORT = process.env.PORT || 3006;
 
     app.set('trust proxy', 1);
 
+    await dbConnection();
+    await connectPostgres();
+    await sequelize.sync({ alter: true });
+    middlewares(app);
+    routes(app);
+
+    return app;
+};
+
+export const initServer = async () => {
     try {
-        await dbConnection();
-        await connectPostgres();
-        await sequelize.sync({ alter: true });
-        middlewares(app);
-        routes(app);
+        const app = await createApp();
+        const PORT = process.env.PORT || 3006;
 
         app.listen(PORT, () => {
             console.log(`gestionbanco Server running on port ${PORT}`);
             console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/Health`);
         });
-
     } catch (error) {
         console.error(`Error starting Server: ${error.message}`);
         process.exit(1);

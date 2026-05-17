@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { VerifyEmailPage } from "../../features/auth/pages/VerifyEmailPage.jsx";
 import { UnauthorizedPage } from "../../features/auth/pages/UnauthorizedPage.jsx";
 import { UsersPage } from "../layouts/UsersPage.jsx";
+import { ProfilePage } from "../layouts/ProfilePage.jsx";
 import { showError, showSuccess } from "../../shared/utils/toast.js";
 import {
     bankAccountsApi,
@@ -501,6 +502,7 @@ export const AppRoutes = () => {
                 }
             >
                 <Route index element={<DashboardHome />} />
+                <Route path="perfil" element={<ProfilePage />} />
                 <Route path="usuarios" element={<AdminOnly><UsersPage /></AdminOnly>} />
                 <Route path="cuentas" element={<AdminOnly><ModuleCrudPage config={entityConfigs.cuentas} /></AdminOnly>} />
                 <Route path="transacciones" element={<AdminOnly><ModuleCrudPage config={entityConfigs.transacciones} /></AdminOnly>} />

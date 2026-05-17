@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import {
   login,
-  register,
   verifyEmail,
   requestPasswordReset,
   resetPassword,
-  listUsers, resendVerification
+  listUsers,
+  resendVerification
 } from './auth_controller.js';
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
@@ -204,7 +204,6 @@ const router = Router();
  *         description: Lista de usuarios
  */
 
-router.post('/register', register);
 router.post('/login', login);
 router.post('/verify-email', verifyEmail);
 router.get('/verify-email', verifyEmail);

@@ -3,7 +3,7 @@ import { useAuthStore } from "../store/authStore";
 import toast from "react-hot-toast";
 
 export const RegisterForm = ({ onSuccess }) => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
     const registerUser = useAuthStore(state => state.register);
     const loading = useAuthStore(state => state.loading);
 
@@ -12,10 +12,15 @@ export const RegisterForm = ({ onSuccess }) => {
     const onSubmit = async (data) => {
         // Removemos confirmPassword y adaptamos nombres al contrato del backend.
         const { confirmPassword, firstName, lastName, ...rest } = data;
+        if (loading) return;
+
         const payload = {
             ...rest,
-            name: firstName,
-            surname: lastName,
+            name: firstName.trim(),
+            surname: lastName.trim(),
+            username: rest.username.trim(),
+            email: rest.email.trim().toLowerCase(),
+            phone: rest.phone.trim(),
         };
         const res = await registerUser(payload);
         if (res.success) {
@@ -46,7 +51,8 @@ export const RegisterForm = ({ onSuccess }) => {
                         className="input-futuristic w-full px-4 py-3 rounded-xl"
                         {...register("firstName", {
                             required: "El nombre es requerido",
-                            minLength: { value: 2, message: "Mínimo 2 caracteres" }
+                            minLength: { value: 2, message: "Mínimo 2 caracteres" },
+                            maxLength: { value: 25, message: "Máximo 25 caracteres" }
                         })}
                     />
                     {errors.firstName && (
@@ -66,7 +72,8 @@ export const RegisterForm = ({ onSuccess }) => {
                         className="input-futuristic w-full px-4 py-3 rounded-xl"
                         {...register("lastName", {
                             required: "El apellido es requerido",
-                            minLength: { value: 2, message: "Mínimo 2 caracteres" }
+                            minLength: { value: 2, message: "Mínimo 2 caracteres" },
+                            maxLength: { value: 25, message: "Máximo 25 caracteres" }
                         })}
                     />
                     {errors.lastName && (
@@ -168,7 +175,11 @@ export const RegisterForm = ({ onSuccess }) => {
                     className="input-futuristic w-full px-4 py-3 rounded-xl"
                     {...register("password", {
                         required: "La contraseña es obligatoria",
-                        minLength: { value: 8, message: "Mínimo 8 caracteres" }
+                        minLength: { value: 8, message: "Mínimo 8 caracteres" },
+                        pattern: {
+                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
+                            message: "Debe incluir mayúscula, minúscula, número y símbolo"
+                        }
                     })}
                 />
                 {errors.password && (
@@ -205,9 +216,9 @@ export const RegisterForm = ({ onSuccess }) => {
                 <button
                     type="submit"
                     className="btn-primary w-full py-3 px-4 rounded-xl text-sm"
-                    disabled={loading}
+                    disabled={loading || isSubmitting}
                 >
-                    {loading ? "Creando cuenta..." : "Crear Cuenta →"}
+                    {loading || isSubmitting ? "Creando cuenta..." : "Crear Cuenta →"}
                 </button>
             </div>
 

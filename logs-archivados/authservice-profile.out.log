@@ -1,0 +1,92 @@
+[19:19:15 INF] Checking database connection...
+[19:19:15 INF] Database ready. Running seed data...
+[19:19:15 INF] Database initialization completed successfully
+[19:19:15 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health
+[19:19:28 INF] HTTP GET /health responded 200 in 180.0695 ms
+[19:19:48 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 6.5310 ms
+[DEBUG] Verifying password for hash: $argon2id$v=19$m=102400,t=2,p=8$KabdHwrG6bL83AA96r...
+[DEBUG] Using Argon2 standard format verification
+[DEBUG] Verification result: True
+[19:19:51 INF] User login succeeded
+[19:19:53 INF] HTTP POST /api/v1/auth/login responded 200 in 5005.6143 ms
+[19:20:08 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 0.2340 ms
+[DEBUG] Verifying password for hash: $argon2id$v=19$m=102400,t=2,p=8$KabdHwrG6bL83AA96r...
+[DEBUG] Using Argon2 standard format verification
+[DEBUG] Verification result: True
+[19:20:09 INF] User login succeeded
+[19:20:09 INF] HTTP POST /api/v1/auth/login responded 200 in 1274.5278 ms
+[19:20:12 INF] HTTP OPTIONS /api/v1/auth/profile responded 204 in 0.5999 ms
+[19:20:12 INF] HTTP OPTIONS /api/v1/auth/profile responded 204 in 0.2903 ms
+[19:20:12 INF] HTTP GET /api/v1/auth/profile responded 200 in 132.4008 ms
+[19:20:12 INF] HTTP GET /api/v1/auth/profile responded 200 in 16.3991 ms
+[19:20:31 WRN] Registration rejected: email already exists
+[19:20:31 ERR] An unhandled exception occurred
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 35
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 142
+   at lambda_method630(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[19:20:31 INF] HTTP POST /api/v1/auth/register responded 400 in 372.6843 ms
+[19:20:39 WRN] Registration rejected: username already exists
+[19:20:39 ERR] An unhandled exception occurred
+AuthService.Application.Exceptions.BusinessException: Username already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 42
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 142
+   at lambda_method630(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[19:20:39 INF] HTTP POST /api/v1/auth/register responded 400 in 78.0204 ms
+[19:20:47 INF] User pablito90 registered successfully
+[19:20:49 INF] Email sent successfully via SMTP
+[19:20:49 INF] Verification email sent
+[19:20:49 INF] HTTP POST /api/v1/auth/register responded 201 in 3146.6648 ms
+[19:24:31 INF] HTTP GET /health responded 200 in 2.7663 ms
+[19:24:36 INF] User codex20260516192436540 registered successfully
+[19:24:38 INF] Email sent successfully via SMTP
+[19:24:38 INF] Verification email sent
+[19:24:38 INF] HTTP POST /api/v1/auth/register responded 201 in 1651.7977 ms
+[19:26:08 WRN] Registration rejected: email already exists
+[19:26:08 ERR] An unhandled exception occurred
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 35
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 142
+   at lambda_method630(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[19:26:08 INF] HTTP POST /api/v1/auth/register responded 400 in 8.9634 ms
+[19:27:08 INF] HTTP GET /health responded 200 in 0.3407 ms
+[19:27:18 INF] HTTP GET /api/v1/health responded 200 in 4.5785 ms

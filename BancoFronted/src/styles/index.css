@@ -1221,6 +1221,35 @@
   object-fit: cover;
 }
 
+.profile-avatar-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.profile-avatar-preview {
+  width: 112px;
+  height: 112px;
+  flex: 0 0 112px;
+  border-radius: 50%;
+  border: 3px solid rgba(125, 211, 252, 0.75);
+  box-shadow:
+    0 0 0 6px rgba(14, 165, 233, 0.10),
+    0 18px 42px rgba(0, 0, 0, 0.34);
+  font-size: 2.25rem;
+}
+
+.profile-avatar-preview img {
+  display: block;
+  border-radius: 50%;
+}
+
+.profile-avatar-copy {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
 .user-badge,
 .role-badge {
   display: inline-flex;

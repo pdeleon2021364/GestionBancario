@@ -10,6 +10,8 @@ export const ForgotPasswordForm = ({ onSwitch }) => {
     try {
       await requestPasswordReset({ email: data.email });
       showSuccess("Correo de recuperación enviado. Revisa tu bandeja.");
+      // Redirect to login view after a short delay so user sees the success message
+      setTimeout(() => onSwitch?.(), 1800);
     } catch (err) {
       const message = err.response?.data?.message || "Error al enviar el correo";
       showError(message);

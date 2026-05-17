@@ -65,6 +65,28 @@ export const getUserById = async (id) => {
     return unwrapData(data)
 }
 
+export const getProfile = async () => {
+    const { data } = await axiosAuth.get(`/auth/profile`)
+    return unwrapData(data)
+}
+
+export const updateMyProfile = async (data) => {
+    const { data: response } = await axiosAuth.put(`/auth/profile`, data)
+    return unwrapData(response)
+}
+
+export const uploadProfileAvatar = async (file) => {
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+    const { data } = await axiosAuth.post(`/auth/profile/avatar`, formData, { timeout: 30000 })
+    return unwrapData(data)
+}
+
+export const deleteProfileAvatar = async () => {
+    const { data } = await axiosAuth.delete(`/auth/profile/avatar`)
+    return unwrapData(data)
+}
+
 export const updateUser = async (id, data) => {
     const response = await axiosAuth.put(`/auth/users/${id}`, data)
     const updated = unwrapData(response.data);

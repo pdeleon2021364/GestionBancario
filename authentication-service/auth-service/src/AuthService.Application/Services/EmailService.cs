@@ -11,6 +11,7 @@ using AuthService.Application.Interfaces;
 
 namespace AuthService.Application.Services;
 
+#pragma warning disable CS0162
 public class EmailService(IConfiguration configuration, ILogger<EmailService> logger) : IEmailService
 {
     private static readonly string[] PlaceholderValues =
@@ -23,14 +24,41 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
 
     public async Task SendEmailVerificationAsync(string email, string username, string token)
     {
-        var subject = "Verifica tu correo electrónico - Kinal Sports";
+        var bankSubject = "Verifica tu correo electronico - Banco Gestion";
+        var bankFrontendVerificationUrl = $"{configuration["AppSettings:FrontendUrl"]}/verify-email?token={token}";
+        var bankBackendVerificationUrl = configuration["AppSettings:BackendUrl"] ?? "http://localhost:5156";
+        bankBackendVerificationUrl = $"{bankBackendVerificationUrl.TrimEnd('/')}/api/v1/auth/verify-email?token={token}";
+
+        var bankBody = BuildBankEmailTemplate(
+            "Verifica tu correo electronico",
+            $"Hola {username}, confirma tu acceso a Banco Gestion.",
+            "Para proteger tu cuenta y activar tus servicios bancarios digitales, necesitamos validar que este correo te pertenece.",
+            "Verificar mi cuenta",
+            bankFrontendVerificationUrl,
+            $@"
+                <tr>
+                    <td style='padding: 18px 24px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;'>
+                        <p style='margin: 0 0 8px; color: #334155; font-size: 14px; line-height: 1.6;'>
+                            Este enlace expira en <strong>24 horas</strong>. Si el boton no abre correctamente, copia esta direccion en tu navegador:
+                        </p>
+                        <a href='{bankFrontendVerificationUrl}' style='color: #0f766e; font-size: 13px; word-break: break-all; text-decoration: none;'>{bankFrontendVerificationUrl}</a>
+                        <p style='margin: 14px 0 0; color: #64748b; font-size: 13px; line-height: 1.6;'>
+                            Enlace alterno del servidor: <a href='{bankBackendVerificationUrl}' style='color: #0f766e; text-decoration: none;'>verificar desde backend</a>
+                        </p>
+                    </td>
+                </tr>",
+            "Si no creaste esta cuenta, puedes ignorar este mensaje con tranquilidad.");
+
+        await SendEmailAsync(email, bankSubject, bankBody);
+        return;
+        var subject = "Verifica tu correo electronico - Banco Gestion";
         var frontendVerificationUrl = $"{configuration["AppSettings:FrontendUrl"]}/verify-email?token={token}";
         var backendVerificationUrl = configuration["AppSettings:BackendUrl"] ?? "http://localhost:5156";
         backendVerificationUrl = $"{backendVerificationUrl.TrimEnd('/')}/api/v1/auth/verify-email?token={token}";
 
         var body = $@"
-            <h2>¡Bienvenido a BanksCool, {username}!</h2>
-            <p>Por favor, verifica tu correo electrónico para tu cuenta de Kinal Sports haciendo clic en el siguiente enlace:</p>
+            <h2>Bienvenido a Banco Gestion, {username}</h2>
+            <p>Por favor, verifica tu correo electronico para activar tu cuenta bancaria digital haciendo clic en el siguiente enlace:</p>
             <a href='{frontendVerificationUrl}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
                 Verificar correo
             </a>
@@ -47,13 +75,35 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
 
     public async Task SendPasswordResetAsync(string email, string username, string token)
     {
-        var subject = "Restablece tu contraseña - Kinal Sports";
+        var bankSubject = "Restablece tu contrasena - Banco Gestion";
+        var bankResetUrl = $"{configuration["AppSettings:FrontendUrl"]}/reset-password?token={token}";
+
+        var bankBody = BuildBankEmailTemplate(
+            "Restablece tu contrasena",
+            $"Hola {username}, recibimos una solicitud de recuperacion.",
+            "Usa este enlace seguro para crear una nueva contrasena de acceso a tu banca digital.",
+            "Restablecer contrasena",
+            bankResetUrl,
+            $@"
+                <tr>
+                    <td style='padding: 18px 24px; background: #fff7ed; border-radius: 12px; border: 1px solid #fed7aa;'>
+                        <p style='margin: 0 0 8px; color: #7c2d12; font-size: 14px; line-height: 1.6;'>
+                            Por seguridad, este enlace expira en <strong>1 hora</strong>. Si no solicitaste este cambio, no realices ninguna accion.
+                        </p>
+                        <a href='{bankResetUrl}' style='color: #0f766e; font-size: 13px; word-break: break-all; text-decoration: none;'>{bankResetUrl}</a>
+                    </td>
+                </tr>",
+            "Tu contrasena actual seguira activa hasta que completes el proceso.");
+
+        await SendEmailAsync(email, bankSubject, bankBody);
+        return;
+        var subject = "Restablece tu contrasena - Banco Gestion";
         var resetUrl = $"{configuration["AppSettings:FrontendUrl"]}/reset-password?token={token}";
 
         var body = $@"
-            <h2>Solicitud de restablecimiento de contraseña - Kinal Sports</h2>
+            <h2>Solicitud de restablecimiento de contrasena - Banco Gestion</h2>
             <p>Hola {username},</p>
-            <p>Este mensaje es de Kinal Sports.</p>
+            <p>Este mensaje es de Banco Gestion.</p>
             <p>Solicitaste restablecer tu contraseña. Haz clic en el siguiente enlace para restablecerla:</p>
             <a href='{resetUrl}' style='background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
                 Restablecer contraseña
@@ -69,10 +119,31 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
 
     public async Task SendWelcomeEmailAsync(string email, string username)
     {
-        var subject = "¡Bienvenido a Kinal Sports!";
+        var bankSubject = "Tu cuenta de Banco Gestion esta activa";
+        var bankFrontendUrl = configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
+
+        var bankBody = BuildBankEmailTemplate(
+            "Cuenta verificada correctamente",
+            $"Bienvenido, {username}.",
+            "Tu cuenta fue activada con exito. Ya puedes ingresar a la plataforma y gestionar tus operaciones bancarias digitales.",
+            "Ir a mi banca digital",
+            bankFrontendUrl,
+            @"
+                <tr>
+                    <td style='padding: 18px 24px; background: #f0fdfa; border-radius: 12px; border: 1px solid #99f6e4;'>
+                        <p style='margin: 0; color: #134e4a; font-size: 14px; line-height: 1.6;'>
+                            Te recomendamos mantener tus datos actualizados y no compartir tus credenciales de acceso.
+                        </p>
+                    </td>
+                </tr>",
+            "Gracias por confiar en Banco Gestion.");
+
+        await SendEmailAsync(email, bankSubject, bankBody);
+        return;
+        var subject = "Bienvenido a Banco Gestion";
 
         var body = $@"
-            <h2>¡Bienvenido a Kinal Sports, {username}!</h2>
+            <h2>Bienvenido a Banco Gestion, {username}</h2>
             <p>Tu cuenta ha sido verificada y activada exitosamente.</p>
             <p>Ahora puedes disfrutar de todas las funciones de nuestra plataforma.</p>
             <p>Si tienes alguna pregunta, no dudes en contactar a nuestro equipo de soporte.</p>
@@ -80,6 +151,73 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         ";
 
         await SendEmailAsync(email, subject, body);
+    }
+
+    private static string BuildBankEmailTemplate(
+        string title,
+        string greeting,
+        string message,
+        string buttonText,
+        string buttonUrl,
+        string detailsRows,
+        string footerNote)
+    {
+        return $@"
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>{title}</title>
+</head>
+<body style='margin: 0; padding: 0; background: #eef2f7; font-family: Arial, Helvetica, sans-serif; color: #0f172a;'>
+    <table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='background: #eef2f7; padding: 32px 16px;'>
+        <tr>
+            <td align='center'>
+                <table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='max-width: 640px; background: #ffffff; border-radius: 18px; overflow: hidden; border: 1px solid #dbe4ee; box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12);'>
+                    <tr>
+                        <td style='background: #0f2742; padding: 28px 32px;'>
+                            <table role='presentation' width='100%' cellspacing='0' cellpadding='0'>
+                                <tr>
+                                    <td>
+                                        <p style='margin: 0; color: #94a3b8; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;'>Banco Gestion</p>
+                                        <h1 style='margin: 10px 0 0; color: #ffffff; font-size: 26px; line-height: 1.25; font-weight: 800;'>{title}</h1>
+                                    </td>
+                                    <td align='right' style='vertical-align: top;'>
+                                        <div style='display: inline-block; padding: 10px 12px; border-radius: 999px; background: rgba(20, 184, 166, 0.14); color: #99f6e4; font-size: 12px; font-weight: 700;'>Banca digital</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='padding: 34px 32px 28px;'>
+                            <p style='margin: 0 0 12px; color: #0f172a; font-size: 18px; line-height: 1.5; font-weight: 700;'>{greeting}</p>
+                            <p style='margin: 0; color: #475569; font-size: 15px; line-height: 1.7;'>{message}</p>
+                            <table role='presentation' cellspacing='0' cellpadding='0' style='margin: 28px 0;'>
+                                <tr>
+                                    <td style='border-radius: 10px; background: #0f766e;'>
+                                        <a href='{buttonUrl}' style='display: inline-block; padding: 14px 22px; color: #ffffff; font-size: 14px; font-weight: 800; text-decoration: none; border-radius: 10px;'>{buttonText}</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table role='presentation' width='100%' cellspacing='0' cellpadding='0'>
+                                {detailsRows}
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='padding: 22px 32px; background: #f8fafc; border-top: 1px solid #e2e8f0;'>
+                            <p style='margin: 0 0 8px; color: #334155; font-size: 13px; line-height: 1.6;'>{footerNote}</p>
+                            <p style='margin: 0; color: #64748b; font-size: 12px; line-height: 1.6;'>Este es un mensaje automatico de seguridad. Nunca compartas tus claves, codigos o datos sensibles por correo.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>";
     }
 
     private async Task SendEmailAsync(string to, string subject, string body)
