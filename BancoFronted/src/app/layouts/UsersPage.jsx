@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { deleteUser, getAllUsers, getCachedUsers, updateUser } from "../../shared/api/auth";
+import { bankAccountsApi } from "../../shared/api/admin";
 import { showError, showSuccess } from "../../shared/utils/toast";
 import { useAuthStore } from "../../features/auth/store/authStore";
 
@@ -87,6 +88,12 @@ export const UsersPage = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [editingUser, setEditingUser] = useState(null);
     const [form, setForm] = useState(emptyForm);
+
+    // ── Estado para crear cuentas bancarias al usuario ──
+    const emptyAccount = { nombre: "", tipoCuenta: "ahorro", saldo: 0, estado: "activa" };
+    const [accountTargetUser, setAccountTargetUser] = useState(null);
+    const [accountForms, setAccountForms] = useState([{ ...emptyAccount }]);
+    const [savingAccounts, setSavingAccounts] = useState(false);
 
     const loadUsers = async ({ force = false } = {}) => {
         try {
@@ -187,6 +194,62 @@ export const UsersPage = () => {
         }
     };
 
+    // ── Handlers para crear cuentas bancarias ──
+    const openAccountModal = (user) => {
+        setAccountTargetUser(user);
+        setAccountForms([{ ...emptyAccount }]);
+    };
+
+    const closeAccountModal = () => {
+        setAccountTargetUser(null);
+        setAccountForms([{ ...emptyAccount }]);
+    };
+
+    const addAccountRow = () => {
+        setAccountForms((current) => [...current, { ...emptyAccount }]);
+    };
+
+    const removeAccountRow = (index) => {
+        setAccountForms((current) => current.filter((_, i) => i !== index));
+    };
+
+    const handleAccountChange = (index, field, value) => {
+        setAccountForms((current) =>
+            current.map((acc, i) => i === index ? { ...acc, [field]: value } : acc)
+        );
+    };
+
+    const handleCreateAccounts = async (event) => {
+        event.preventDefault();
+        if (!accountTargetUser) return;
+
+        const invalidRow = accountForms.find((a) => !a.nombre.trim());
+        if (invalidRow) {
+            showError("Cada cuenta debe tener un nombre.");
+            return;
+        }
+
+        try {
+            setSavingAccounts(true);
+            await bankAccountsApi.createForUser({
+                usuarioId: accountTargetUser.id,
+                usuarioEmail: accountTargetUser.email,
+                accounts: accountForms.map((a) => ({
+                    nombre: a.nombre.trim(),
+                    tipoCuenta: a.tipoCuenta,
+                    saldo: Number(a.saldo ?? 0),
+                    estado: a.estado,
+                })),
+            });
+            showSuccess(`${accountForms.length} cuenta(s) creada(s) para ${accountTargetUser.username}`);
+            closeAccountModal();
+        } catch (error) {
+            showError(getErrorMessage(error, "No se pudieron crear las cuentas"));
+        } finally {
+            setSavingAccounts(false);
+        }
+    };
+
     return (
         <section className="users-admin-page animate-fadeInUp">
             <div className="users-admin-header">
@@ -259,6 +322,9 @@ export const UsersPage = () => {
                                         <div className="user-actions">
                                             <button type="button" onClick={() => openProfile(user)}>Ver</button>
                                             <button type="button" onClick={() => openEditor(user)}>Editar</button>
+                                            <button type="button" className="btn-primary" onClick={() => openAccountModal(user)} title="Crear cuenta(s) bancaria(s) para este usuario">
+                                                + Cuenta
+                                            </button>
                                             <button
                                                 type="button"
                                                 className="danger"
@@ -322,6 +388,114 @@ export const UsersPage = () => {
                         <button type="submit" className="btn-primary save-user" disabled={saving}>
                             {saving ? "Guardando..." : "Guardar cambios"}
                         </button>
+                    </form>
+                </div>
+            )}
+
+            {/* ── Modal: Crear cuentas bancarias para un usuario ── */}
+            {accountTargetUser && (
+                <div className="modal-backdrop" role="dialog" aria-modal="true">
+                    <form className="user-modal edit-modal" onSubmit={handleCreateAccounts} style={{ maxWidth: "640px", width: "95%" }}>
+                        <button type="button" className="modal-close" onClick={closeAccountModal}>Cerrar</button>
+                        <p className="dash-label">Administracion bancaria</p>
+                        <h2>Crear cuenta(s) para <strong>@{accountTargetUser.username}</strong></h2>
+                        <p style={{ fontSize: "0.82rem", opacity: 0.7, marginBottom: "1rem" }}>
+                            {accountTargetUser.email} &middot; Puedes agregar varias cuentas a la vez.
+                        </p>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                            {accountForms.map((acc, idx) => (
+                                <div key={idx} style={{
+                                    border: "1px solid rgba(56,189,248,0.2)",
+                                    borderRadius: "0.5rem",
+                                    padding: "0.75rem",
+                                }}>
+                                    <p style={{ fontSize: "0.75rem", opacity: 0.6, marginBottom: "0.5rem" }}>
+                                        Cuenta #{idx + 1}
+                                    </p>
+                                    <div className="edit-grid">
+                                        <label>
+                                            Nombre de la cuenta
+                                            <input
+                                                className="input-futuristic"
+                                                value={acc.nombre}
+                                                onChange={(e) => handleAccountChange(idx, "nombre", e.target.value)}
+                                                placeholder="Ej: Cuenta Principal"
+                                                required
+                                                maxLength={100}
+                                            />
+                                        </label>
+                                        <label>
+                                            Tipo
+                                            <select
+                                                className="input-futuristic"
+                                                value={acc.tipoCuenta}
+                                                onChange={(e) => handleAccountChange(idx, "tipoCuenta", e.target.value)}
+                                            >
+                                                <option value="ahorro">Ahorro</option>
+                                                <option value="corriente">Corriente</option>
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Saldo inicial (Q)
+                                            <input
+                                                className="input-futuristic"
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={acc.saldo}
+                                                onChange={(e) => handleAccountChange(idx, "saldo", e.target.value)}
+                                                placeholder="0.00"
+                                            />
+                                        </label>
+                                        <label>
+                                            Estado
+                                            <select
+                                                className="input-futuristic"
+                                                value={acc.estado}
+                                                onChange={(e) => handleAccountChange(idx, "estado", e.target.value)}
+                                            >
+                                                <option value="activa">Activa</option>
+                                                <option value="inactiva">Inactiva</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    {accountForms.length > 1 && (
+                                        <button
+                                            type="button"
+                                            className="danger"
+                                            onClick={() => removeAccountRow(idx)}
+                                            style={{ marginTop: "0.5rem", fontSize: "0.78rem" }}
+                                        >
+                                            Eliminar esta cuenta
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{ display: "flex", gap: "0.75rem", marginTop: "1rem", flexWrap: "wrap" }}>
+                            <button
+                                type="button"
+                                onClick={addAccountRow}
+                                style={{
+                                    background: "transparent",
+                                    border: "1px dashed rgba(56,189,248,0.5)",
+                                    color: "var(--cyan-glow, #38bdf8)",
+                                    borderRadius: "0.4rem",
+                                    padding: "0.45rem 1rem",
+                                    cursor: "pointer",
+                                    fontSize: "0.85rem",
+                                }}
+                            >
+                                + Agregar otra cuenta
+                            </button>
+                            <button type="submit" className="btn-primary save-user" disabled={savingAccounts} style={{ marginTop: 0 }}>
+                                {savingAccounts
+                                    ? "Creando..."
+                                    : `Crear ${accountForms.length} cuenta${accountForms.length > 1 ? "s" : ""}`}
+                            </button>
+                        </div>
                     </form>
                 </div>
             )}

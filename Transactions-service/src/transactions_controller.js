@@ -122,6 +122,14 @@ export const createTransaction = async (req, res) => {
             if (!cuenta) throw new Error('Cuenta origen no encontrada');
             if (cuenta.estado !== 'activa') throw new Error('Cuenta origen no está activa');
 
+            // Validar que la cuenta de origen pertenece al usuario autenticado (no aplica para admin)
+            if (req.user?.role !== 'ADMIN_ROLE') {
+                const ownerCheck = String(cuenta.usuarioId) === String(req.user?.id);
+                if (!ownerCheck) {
+                    throw new Error('No tienes permiso para operar con esa cuenta de origen');
+                }
+            }
+
             if (cuenta.saldo < Number(monto)) {
                 throw new Error('Saldo insuficiente');
             }
@@ -180,6 +188,14 @@ export const createTransaction = async (req, res) => {
             if (!cuentaD) throw new Error('Cuenta destino no encontrada');
             if (cuentaO.estado !== 'activa' || cuentaD.estado !== 'activa') {
                 throw new Error('Ambas cuentas deben estar activas para realizar la transferencia');
+            }
+
+            // Validar que la cuenta de origen pertenece al usuario autenticado (no aplica para admin)
+            if (req.user?.role !== 'ADMIN_ROLE') {
+                const ownerCheck = String(cuentaO.usuarioId) === String(req.user?.id);
+                if (!ownerCheck) {
+                    throw new Error('No tienes permiso para transferir desde esa cuenta de origen');
+                }
             }
 
             if (cuentaO.saldo < Number(monto)) {

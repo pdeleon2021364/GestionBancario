@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
     createField,
+    createFieldsForUser,
     getFields,
     updateField,
     deleteField,
@@ -197,8 +198,9 @@ const router = Router();
  *         description: Cuenta no encontrada
  */
 
-router.post('/create', validateJWT, createField);
-router.get('/', getFields);
+router.post('/create', validateJWT, requireRole('ADMIN_ROLE'), createField);
+router.post('/create/batch', validateJWT, requireRole('ADMIN_ROLE'), createFieldsForUser);
+router.get('/', validateJWT, getFields);
 router.put('/update/:id', validateJWT, updateField);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteField);
 router.get('/search/:accountNumber', getAccountByAccountNumber);

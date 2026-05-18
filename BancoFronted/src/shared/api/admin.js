@@ -19,9 +19,11 @@ export const usuariosApi = {
 
 export const bankAccountsApi = {
     ...crud("/bankAccount"),
-    search:     async (accountNumber) => unwrap(await axiosAdmin.get(`/bankAccount/search/${accountNumber}`)),
-    sendAllPdf: async (email)         => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/all/${email}`)),
-    sendPdf:    async (id, email)     => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/${id}/${email}`)),
+    search:             async (accountNumber) => unwrap(await axiosAdmin.get(`/bankAccount/search/${accountNumber}`)),
+    sendAllPdf:         async (email)         => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/all/${email}`)),
+    sendPdf:            async (id, email)     => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/${id}/${email}`)),
+    // Admin: crear una o varias cuentas para un usuario específico
+    createForUser:      async (data)          => unwrap(await axiosAdmin.post("/bankAccount/create/batch", data)),
 };
 
 export const currenciesApi = {

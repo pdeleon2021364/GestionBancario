@@ -164,6 +164,15 @@ export const UserTransaccionesPage = () => {
 
     const activeAccounts = useMemo(() => accounts.filter((a) => a.estado === "activa"), [accounts]);
 
+    // Cuentas de ORIGEN: solo las que pertenecen al usuario autenticado
+    const ownActiveAccounts = useMemo(() =>
+        activeAccounts.filter((a) => {
+            const accUserId = a.usuarioId ?? a.UsuarioId;
+            return accUserId && String(accUserId) === String(user?.id);
+        }),
+        [activeAccounts, user]
+    );
+
     // ── Render ────────────────────────────────────────────────────────────────
     return (
         <section className="entity-page entity-blue animate-fadeInUp">
@@ -328,7 +337,7 @@ export const UserTransaccionesPage = () => {
                                     Cuenta de origen
                                     <select name="cuentaOrigen" value={form.cuentaOrigen} onChange={handleChange} required>
                                         <option value="">Seleccionar cuenta…</option>
-                                        {activeAccounts.map((acc) => (
+                                        {ownActiveAccounts.map((acc) => (
                                             <option key={getId(acc)} value={getId(acc)}>
                                                 {acc.numeroCuenta} — {acc.nombre} ({money(acc.saldo)})
                                             </option>
@@ -360,7 +369,7 @@ export const UserTransaccionesPage = () => {
                                             .filter((acc) => getId(acc) !== form.cuentaOrigen)
                                             .map((acc) => (
                                                 <option key={getId(acc)} value={getId(acc)}>
-                                                    {acc.numeroCuenta} — {acc.nombre} ({money(acc.saldo)})
+                                                    {acc.numeroCuenta} — {acc.nombre}
                                                 </option>
                                             ))}
                                     </select>

@@ -1,7 +1,7 @@
 'use strict';
 
 import Field from './bankAccount_model.js';
-import { EmailPDFService } from '../helpers/EmailPDFServices.js';
+import { EmailPDFService } from '../../services/EmailPDFServices.js';
 
 // Campos que se mostrarán en el PDF de BankAccount
 const BANK_ACCOUNT_FIELDS = [
@@ -17,22 +17,9 @@ const BANK_ACCOUNT_FIELDS = [
     { label: 'Actualizado en',   key: 'updatedAt' },
 ];
 
-const validateEmail = (email) => {
-    return typeof email === 'string' && email.trim().length > 0 && /.+@.+\..+/.test(email);
-};
-
 export const createField = async (req, res) => {
     try {
         const fieldData = req.body;
-
-        if (!fieldData.usuarioEmail || !validateEmail(fieldData.usuarioEmail)) {
-            return res.status(400).json({
-                success: false,
-                message: 'El correo de usuario es obligatorio y debe ser válido'
-            });
-        }
-
-        fieldData.usuarioEmail = fieldData.usuarioEmail.toLowerCase().trim();
 
         if (req.file) {
             fieldData.photo = req.file.path;
@@ -124,17 +111,6 @@ export const updateField = async (req, res) => {
         const { id } = req.params;
         const data = req.body;
 
-        if (data.usuarioEmail && !validateEmail(data.usuarioEmail)) {
-            return res.status(400).json({
-                success: false,
-                message: 'El correo de usuario debe ser válido'
-            });
-        }
-
-        if (data.usuarioEmail) {
-            data.usuarioEmail = data.usuarioEmail.toLowerCase().trim();
-        }
-
         if (req.file) {
             data.photo = req.file.path;
         }
@@ -171,7 +147,10 @@ export const getFields = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-        const filter = req.user?.role === 'ADMIN_ROLE' ? {} : { usuarioId: String(req.user?.id) };
+        // Si el usuario no es ADMIN, solo ve sus propias cuentas
+        const filter = req.user?.role === 'ADMIN_ROLE'
+            ? {}
+            : { usuarioId: String(req.user?.id) };
 
         const fields = await Field.find(filter)
             .limit(parseInt(limit))

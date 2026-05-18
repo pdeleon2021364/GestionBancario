@@ -8,8 +8,8 @@ import {
     sendAllBankAccountsPDF,
     sendBankAccountPDFById
 } from './bankAccount_controller.js';
-import { validateJWT } from '../middlewares/validate_jwt.js';
-import { requireRole } from '../middlewares/validate_role.js';
+import { validateJWT } from '../../../middlewares/validate_jwt.js';
+import { requireRole } from '../../../middlewares/validate_role.js';
 
 const router = Router();
 
@@ -38,10 +38,6 @@ const router = Router();
  *         usuarioId:
  *           type: integer
  *           example: 1
- *         usuarioEmail:
- *           type: string
- *           format: email
- *           example: usuario@ejemplo.com
  *         estado:
  *           type: string
  *           enum: [activa, inactiva]

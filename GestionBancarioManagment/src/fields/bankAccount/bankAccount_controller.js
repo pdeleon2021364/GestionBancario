@@ -147,12 +147,17 @@ export const getFields = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-        const fields = await Field.find()
+        // Si el usuario no es ADMIN, solo ve sus propias cuentas
+        const filter = req.user?.role === 'ADMIN_ROLE'
+            ? {}
+            : { usuarioId: String(req.user?.id) };
+
+        const fields = await Field.find(filter)
             .limit(parseInt(limit))
             .skip((page - 1) * limit)
             .sort({ createdAt: -1 });
 
-        const total = await Field.countDocuments();
+        const total = await Field.countDocuments(filter);
 
         res.status(200).json({
             success: true,
@@ -169,6 +174,57 @@ export const getFields = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al obtener los campos',
+            error: error.message
+        });
+    }
+};
+
+
+/**
+ * Crear múltiples cuentas bancarias para un usuario específico (solo ADMIN).
+ * POST /bankAccount/create/batch
+ * Body: { accounts: [{ nombre, tipoCuenta, saldo, estado }], usuarioId, usuarioEmail }
+ */
+export const createFieldsForUser = async (req, res) => {
+    try {
+        const { accounts, usuarioId, usuarioEmail } = req.body;
+
+        if (!usuarioId) {
+            return res.status(400).json({ success: false, message: 'usuarioId es obligatorio' });
+        }
+        if (!usuarioEmail || !/.+@.+\..+/.test(usuarioEmail)) {
+            return res.status(400).json({ success: false, message: 'usuarioEmail válido es obligatorio' });
+        }
+        if (!Array.isArray(accounts) || accounts.length === 0) {
+            return res.status(400).json({ success: false, message: 'Se requiere al menos una cuenta en "accounts"' });
+        }
+
+        const created = [];
+        for (const acc of accounts) {
+            const numeroCuenta = acc.numeroCuenta || `ACC-${Date.now()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+            const field = new Field({
+                nombre: acc.nombre,
+                numeroCuenta,
+                tipoCuenta: acc.tipoCuenta || 'ahorro',
+                saldo: Number(acc.saldo ?? 0),
+                estado: acc.estado || 'activa',
+                usuarioId,
+                usuarioEmail: usuarioEmail.toLowerCase().trim(),
+            });
+            await field.save();
+            created.push(field);
+        }
+
+        res.status(201).json({
+            success: true,
+            message: `${created.length} cuenta(s) creada(s) exitosamente para el usuario`,
+            data: created
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al crear las cuentas bancarias',
             error: error.message
         });
     }
