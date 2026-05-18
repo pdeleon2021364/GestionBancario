@@ -171,12 +171,14 @@ export const getFields = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-        const fields = await Field.find()
+        const filter = req.user?.role === 'ADMIN_ROLE' ? {} : { usuarioId: String(req.user?.id) };
+
+        const fields = await Field.find(filter)
             .limit(parseInt(limit))
             .skip((page - 1) * limit)
             .sort({ createdAt: -1 });
 
-        const total = await Field.countDocuments();
+        const total = await Field.countDocuments(filter);
 
         res.status(200).json({
             success: true,

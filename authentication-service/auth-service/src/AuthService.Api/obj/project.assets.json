@@ -7577,7 +7577,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gioca\\.nuget\\packages\\": {}
+    "C:\\Users\\milto\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -7585,11 +7585,11 @@
       "projectUniqueName": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
       "projectName": "AuthService.Api",
       "projectPath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
-      "packagesPath": "C:\\Users\\gioca\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\milto\\.nuget\\packages\\",
       "outputPath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gioca\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\milto\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -7674,7 +7674,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.119/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

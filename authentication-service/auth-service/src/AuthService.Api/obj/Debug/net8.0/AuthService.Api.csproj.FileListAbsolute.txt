@@ -712,3 +712,4 @@ C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.deps.json
 C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.runtimeconfig.json
 C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.dll
 C:\GestionBancario\.build\auth\Debug\net8.0\AuthService.Api.pdb
+C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\bin\Debug\net8.0\System.Formats.Asn1.dll

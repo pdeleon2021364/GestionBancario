@@ -202,7 +202,7 @@ const router = Router();
  */
 
 router.post('/create', validateJWT, createField);
-router.get('/', getFields);
+router.get('/', validateJWT, getFields);
 router.put('/update/:id', validateJWT, updateField);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteField);
 router.get('/search/:accountNumber', getAccountByAccountNumber);

@@ -10,6 +10,10 @@ import { UnauthorizedPage } from "../../features/auth/pages/UnauthorizedPage.jsx
 import { UsersPage } from "../layouts/UsersPage.jsx";
 import { ProfilePage } from "../layouts/ProfilePage.jsx";
 import { showError, showSuccess } from "../../shared/utils/toast.js";
+import { useAuthStore } from "../../features/auth/store/authStore.js";
+import { UserDivisasPage } from "../../features/user/pages/UserDivisasPage.jsx";
+import { UserTiposCambioPage } from "../../features/user/pages/UserTiposCambioPage.jsx";
+import { UserHistorialPage } from "../../features/user/pages/UserHistorialPage.jsx";
 import {
     bankAccountsApi,
     currenciesApi,
@@ -483,6 +487,10 @@ const ModuleCrudPage = ({ config }) => {
 };
 
 const AdminOnly = ({ children }) => <RoleGuard allowedRoles={["ADMIN_ROLE"]}>{children}</RoleGuard>;
+const RoleSwitch = ({ admin, user }) => {
+    const role = useAuthStore((state) => state.user?.role);
+    return role === "ADMIN_ROLE" ? admin : user;
+};
 
 export const AppRoutes = () => {
     return (
@@ -507,9 +515,9 @@ export const AppRoutes = () => {
                 <Route path="cuentas" element={<AdminOnly><ModuleCrudPage config={entityConfigs.cuentas} /></AdminOnly>} />
                 <Route path="transacciones" element={<AdminOnly><ModuleCrudPage config={entityConfigs.transacciones} /></AdminOnly>} />
                 <Route path="productos" element={<AdminOnly><ModuleCrudPage config={entityConfigs.productos} /></AdminOnly>} />
-                <Route path="divisas" element={<AdminOnly><ModuleCrudPage config={entityConfigs.divisas} /></AdminOnly>} />
-                <Route path="tipos-cambio" element={<AdminOnly><ModuleCrudPage config={entityConfigs.tiposCambio} /></AdminOnly>} />
-                <Route path="historial" element={<AdminOnly><ModuleCrudPage config={entityConfigs.historial} /></AdminOnly>} />
+                <Route path="divisas" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.divisas} />} user={<UserDivisasPage />} />} />
+                <Route path="tipos-cambio" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.tiposCambio} />} user={<UserTiposCambioPage />} />} />
+                <Route path="historial" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.historial} />} user={<UserHistorialPage />} />} />
             </Route>
         </Routes>
     );

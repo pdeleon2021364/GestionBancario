@@ -483,13 +483,25 @@ export const getTransactions = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
 
-        const transactions = await Transaction.find()
+        let filter = {};
+        if (req.user?.role !== 'ADMIN_ROLE') {
+            const userAccounts = await BankAccount.find({ usuarioId: String(req.user?.id) }).select('_id');
+            const accountIds = userAccounts.map(a => a._id);
+            filter = {
+                $or: [
+                    { cuentaOrigen: { $in: accountIds } },
+                    { cuentaDestino: { $in: accountIds } }
+                ]
+            };
+        }
+
+        const transactions = await Transaction.find(filter)
             .populate('cuentaOrigen cuentaDestino')
             .limit(parseInt(limit))
             .skip((page - 1) * limit)
             .sort({ createdAt: -1 });
 
-        const total = await Transaction.countDocuments();
+        const total = await Transaction.countDocuments(filter);
 
         res.status(200).json({
             success: true,
