@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { transactionsApi, bankAccountsApi } from "../../../shared/api/admin.js";
+import { transactionsApi, bankAccountsApi, favoritesApi } from "../../../shared/api/admin.js";
 import { showError, showSuccess } from "../../../shared/utils/toast.js";
 import { useAuthStore } from "../../auth/store/authStore.js";
 
@@ -52,8 +52,10 @@ export const UserTransaccionesPage = () => {
 
     const [transactions, setTransactions] = useState([]);
     const [accounts, setAccounts] = useState([]);
+    const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [favoriteSaving, setFavoriteSaving] = useState(false);
     const [error, setError] = useState(null);
     const [query, setQuery] = useState("");
     const [filterTipo, setFilterTipo] = useState("todos");
@@ -63,16 +65,21 @@ export const UserTransaccionesPage = () => {
     const [form, setForm] = useState(EMPTY_FORM);
     const [formError, setFormError] = useState(null);
 
+    const [favoriteForm, setFavoriteForm] = useState({ alias: "", bankAccount: "" });
+    const [favoriteError, setFavoriteError] = useState(null);
+
     const load = async () => {
         try {
             setLoading(true);
             setError(null);
-            const [txData, accData] = await Promise.all([
+            const [txData, accData, favData] = await Promise.all([
                 transactionsApi.list().catch(() => []),
                 bankAccountsApi.list().catch(() => []),
+                favoritesApi.list().catch(() => []),
             ]);
             setTransactions(Array.isArray(txData) ? txData : []);
             setAccounts(Array.isArray(accData) ? accData : []);
+            setFavorites(Array.isArray(favData) ? favData : []);
         } catch {
             setError("No se pudieron cargar las transacciones. Intenta de nuevo.");
             showError("No se pudieron cargar las transacciones.");
@@ -164,6 +171,43 @@ export const UserTransaccionesPage = () => {
 
     const activeAccounts = useMemo(() => accounts.filter((a) => a.estado === "activa"), [accounts]);
 
+    const orderedFavorites = useMemo(
+        () => [...favorites].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
+        [favorites]
+    );
+
+    const handleFavoriteChange = (e) => {
+        const { name, value } = e.target;
+        setFavoriteForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleAddFavorite = async (e) => {
+        e.preventDefault();
+        setFavoriteError(null);
+
+        if (!favoriteForm.alias.trim() || !favoriteForm.bankAccount) {
+            setFavoriteError("Alias y cuenta son obligatorios.");
+            return;
+        }
+
+        setFavoriteSaving(true);
+        try {
+            await favoritesApi.create({
+                alias: favoriteForm.alias.trim(),
+                bankAccount: favoriteForm.bankAccount,
+            });
+            showSuccess("Favorito agregado correctamente.");
+            setFavoriteForm({ alias: "", bankAccount: "" });
+            await load();
+        } catch (err) {
+            const msg = err?.response?.data?.message || err?.response?.data?.error || "No se pudo agregar el favorito.";
+            setFavoriteError(msg);
+            showError(msg);
+        } finally {
+            setFavoriteSaving(false);
+        }
+    };
+
     // Cuentas de ORIGEN: solo las que pertenecen al usuario autenticado
     const ownActiveAccounts = useMemo(() =>
         activeAccounts.filter((a) => {
@@ -208,11 +252,6 @@ export const UserTransaccionesPage = () => {
                     <strong>{retiros.length}</strong>
                     <span>realizados</span>
                 </article>
-                <article className="entity-metric">
-                    <small>Transferencias</small>
-                    <strong>{transferencias.length}</strong>
-                    <span>efectuadas</span>
-                </article>
             </div>
 
             {/* Toolbar */}
@@ -246,6 +285,100 @@ export const UserTransaccionesPage = () => {
                     + Nueva transacción
                 </button>
             </div>
+
+            {/* Favoritos */}
+            <article className="entity-table-panel" style={{ marginTop: "1.5rem" }}>
+                <div className="entity-panel-heading">
+                    <div>
+                        <p className="dash-label">Favoritos</p>
+                        <h2>Mis cuentas favoritas</h2>
+                    </div>
+                </div>
+
+                <div className="entity-toolbar" style={{ flexWrap: "wrap", gap: "1rem" }}>
+                    <div style={{ minWidth: "220px", flex: "1 1 250px" }}>
+                        <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                            Alias
+                            <input
+                                name="alias"
+                                value={favoriteForm.alias}
+                                onChange={handleFavoriteChange}
+                                placeholder="Ej: Cuenta mamá"
+                                style={{ width: "100%" }}
+                            />
+                        </label>
+                    </div>
+                    <div style={{ minWidth: "220px", flex: "1 1 250px" }}>
+                        <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                            Cuenta bancaria
+                            <select
+                                name="bankAccount"
+                                value={favoriteForm.bankAccount}
+                                onChange={handleFavoriteChange}
+                                style={{ width: "100%" }}
+                            >
+                                <option value="">Seleccionar cuenta…</option>
+                                {activeAccounts.map((acc) => (
+                                    <option key={getId(acc)} value={getId(acc)}>
+                                        {acc.numeroCuenta} — {acc.nombre} ({money(acc.saldo)})
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "flex-end" }}>
+                        <button
+                            type="button"
+                            className="btn-primary"
+                            onClick={handleAddFavorite}
+                            disabled={favoriteSaving}
+                        >
+                            {favoriteSaving ? "Guardando…" : "+ Añadir favorito"}
+                        </button>
+                    </div>
+                </div>
+                {favoriteError && (
+                    <p style={{ color: "#f87171", padding: "0 1rem 1rem" }}>{favoriteError}</p>
+                )}
+
+                <div className="entity-table-wrap">
+                    <table className="entity-table">
+                        <thead>
+                            <tr>
+                                <th>Alias</th>
+                                <th>Cuenta</th>
+                                <th>Tipo</th>
+                                <th>Saldo</th>
+                                <th>Estado</th>
+                                <th>Creado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orderedFavorites.length === 0 ? (
+                                <tr><td colSpan={6}>No tienes favoritos guardados.</td></tr>
+                            ) : (
+                                orderedFavorites.map((fav) => {
+                                    const account = fav.bankAccount || {};
+                                    return (
+                                        <tr key={getId(fav)}>
+                                            <td>{fav.alias}</td>
+                                            <td style={{ fontFamily: "monospace", fontSize: "0.82rem" }}>
+                                                {account.numeroCuenta ?? "—"}
+                                            </td>
+                                            <td>{account.tipoCuenta ?? "—"}</td>
+                                            <td style={{ fontWeight: 700, color: "var(--cyan-glow)" }}>
+                                                {money(account.saldo)}
+                                            </td>
+                                            <td><EstadoChip estado={account.estado} /></td>
+                                            <td>{dateText(fav.createdAt)}</td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
 
             {/* Tabla */}
             <article className="entity-table-panel">
@@ -298,7 +431,6 @@ export const UserTransaccionesPage = () => {
                 </div>
             </article>
 
-            {/* Modal nueva transacción */}
             {open && (
                 <div className="modal-backdrop" role="dialog" aria-modal="true">
                     <form className="user-modal edit-modal" onSubmit={handleSave}>

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2lbLcj880cU=",
+  "dgSpecHash": "6sGf0vxmUWA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\pcc\\desktop\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+  "projectFilePath": "C:\\Users\\Informatica\\desktop\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
