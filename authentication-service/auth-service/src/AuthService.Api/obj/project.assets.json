@@ -7577,7 +7577,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\milto\\.nuget\\packages\\": {}
+    "C:\\Users\\joaqu\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -7585,11 +7585,11 @@
       "projectUniqueName": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
       "projectName": "AuthService.Api",
       "projectPath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
-      "packagesPath": "C:\\Users\\milto\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\joaqu\\.nuget\\packages\\",
       "outputPath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\milto\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\joaqu\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

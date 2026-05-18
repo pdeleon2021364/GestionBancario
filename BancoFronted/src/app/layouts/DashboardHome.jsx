@@ -154,8 +154,9 @@ export const DashboardHome = () => {
                         <p className="dash-label">GestionBanco — Portal de Usuario</p>
                         <h1>Bienvenido, {displayName}.</h1>
                         <p>
-                            Consulta divisas disponibles, tipos de cambio y convierte montos con
-                            nuestra calculadora. Revisa tu historial de operaciones en cualquier momento.
+                            Consulta divisas, tipos de cambio, tus cuentas bancarias y productos
+                            financieros disponibles. Convierte montos con nuestra calculadora y
+                            revisa tu historial de operaciones en cualquier momento.
                         </p>
                         <div className="intro-actions">
                             <Link to="/dashboard/tipos-cambio" className="intro-primary">
@@ -214,6 +215,20 @@ export const DashboardHome = () => {
                                 description="Revisa tasas de conversión disponibles."
                                 metric="ExchangeRate"
                                 accent="green"
+                            />
+                            <ModuleCard
+                                to="/dashboard/cuentas"
+                                title="Mis cuentas"
+                                description="Consulta el saldo y estado de tus cuentas bancarias."
+                                metric="BankAccount"
+                                accent="blue"
+                            />
+                            <ModuleCard
+                                to="/dashboard/productos"
+                                title="Productos financieros"
+                                description="Explora el portafolio de productos bancarios disponibles."
+                                metric="Portafolio"
+                                accent="amber"
                             />
                             <ModuleCard
                                 to="/dashboard/historial"

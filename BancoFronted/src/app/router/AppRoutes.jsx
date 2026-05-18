@@ -14,6 +14,8 @@ import { useAuthStore } from "../../features/auth/store/authStore.js";
 import { UserDivisasPage } from "../../features/user/pages/UserDivisasPage.jsx";
 import { UserTiposCambioPage } from "../../features/user/pages/UserTiposCambioPage.jsx";
 import { UserHistorialPage } from "../../features/user/pages/UserHistorialPage.jsx";
+import { UserCuentasPage } from "../../features/user/pages/UserCuentasPage.jsx";
+import { UserProductosPage } from "../../features/user/pages/UserProductosPage.jsx";
 import {
     bankAccountsApi,
     currenciesApi,
@@ -512,9 +514,9 @@ export const AppRoutes = () => {
                 <Route index element={<DashboardHome />} />
                 <Route path="perfil" element={<ProfilePage />} />
                 <Route path="usuarios" element={<AdminOnly><UsersPage /></AdminOnly>} />
-                <Route path="cuentas" element={<AdminOnly><ModuleCrudPage config={entityConfigs.cuentas} /></AdminOnly>} />
+                <Route path="cuentas" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.cuentas} />} user={<UserCuentasPage />} />} />
                 <Route path="transacciones" element={<AdminOnly><ModuleCrudPage config={entityConfigs.transacciones} /></AdminOnly>} />
-                <Route path="productos" element={<AdminOnly><ModuleCrudPage config={entityConfigs.productos} /></AdminOnly>} />
+                <Route path="productos" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.productos} />} user={<UserProductosPage />} />} />
                 <Route path="divisas" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.divisas} />} user={<UserDivisasPage />} />} />
                 <Route path="tipos-cambio" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.tiposCambio} />} user={<UserTiposCambioPage />} />} />
                 <Route path="historial" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.historial} />} user={<UserHistorialPage />} />} />

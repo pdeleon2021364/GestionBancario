@@ -28,7 +28,7 @@ const fieldSchema = new mongoose.Schema(
             min: [0, 'El saldo no puede ser negativo']
         },
         usuarioId: {
-            type: Number,
+            type: mongoose.Schema.Types.Mixed,
             required: true
         },
         estado: {

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "o00qODaCtv5MBNc4g1C2fjJlGzLQ/zWsKAupxSnyPQKeCqVzs1ZgvOBZD3/JaeMuLEMBftmfMsFDu+QNwrydVw==",
+  "dgSpecHash": "PDeUPMqictoVaR9siq9uQY9rRptf3law/HuGSot5PGaa112IiUSsJREpuFx/xJx6b6l78sDqd4ffnpVmra9z1A==",
   "success": true,
   "projectFilePath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [],

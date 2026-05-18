@@ -1,0 +1,62 @@
+[2026-05-17 22:49:59 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-17 22:50:00 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-17 22:50:00 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-17 22:50:00 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-17 22:53:03 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 89.4665 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9EV:00000001","ConnectionId":"0HNLKJ5BBB9EV"}
+[2026-05-17 22:53:11 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c9915fc6-e723-4fb9-991e-219db31cdf14","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLKJ5BBB9EV:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLKJ5BBB9EV"}
+[2026-05-17 22:53:12 INF] HTTP POST /api/v1/auth/login responded 200 in 9118.0675 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9EV:00000002","ConnectionId":"0HNLKJ5BBB9EV"}
+[2026-05-17 22:53:44 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8e4c6922-1a4a-4671-a193-9b11f21b8c99","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLKJ5BBB9F0:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLKJ5BBB9F0"}
+[2026-05-17 22:53:44 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLKJ5BBB9F0:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLKJ5BBB9F0"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 35
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 142
+   at lambda_method657(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-17 22:53:44 INF] HTTP POST /api/v1/auth/register responded 400 in 1059.7719 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F0:00000001","ConnectionId":"0HNLKJ5BBB9F0"}
+[2026-05-17 22:53:57 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8e4c6922-1a4a-4671-a193-9b11f21b8c99","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLKJ5BBB9F0:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLKJ5BBB9F0"}
+[2026-05-17 22:53:57 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLKJ5BBB9F0:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLKJ5BBB9F0"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 35
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 142
+   at lambda_method657(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\GestionBancario\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-17 22:53:57 INF] HTTP POST /api/v1/auth/register responded 400 in 115.7863 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F0:00000002","ConnectionId":"0HNLKJ5BBB9F0"}
+[2026-05-17 22:54:14 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c9915fc6-e723-4fb9-991e-219db31cdf14","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLKJ5BBB9F0:00000003","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLKJ5BBB9F0"}
+[2026-05-17 22:54:15 INF] HTTP POST /api/v1/auth/login responded 200 in 2040.4616 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F0:00000003","ConnectionId":"0HNLKJ5BBB9F0"}
+[2026-05-17 23:09:53 INF] HTTP OPTIONS /api/v1/auth/refresh responded 204 in 25.0883 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F1:00000001","ConnectionId":"0HNLKJ5BBB9F1"}
+[2026-05-17 23:09:53 INF] HTTP POST /api/v1/auth/refresh responded 200 in 663.4809 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F1:00000002","ConnectionId":"0HNLKJ5BBB9F1"}
+[2026-05-17 23:27:08 INF] HTTP OPTIONS /api/v1/auth/refresh responded 204 in 13.4284 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F2:00000001","ConnectionId":"0HNLKJ5BBB9F2"}
+[2026-05-17 23:27:09 INF] HTTP POST /api/v1/auth/refresh responded 200 in 222.5107 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKJ5BBB9F2:00000002","ConnectionId":"0HNLKJ5BBB9F2"}
+[2026-05-17 23:44:17 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-05-17 23:44:18 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-05-17 23:44:18 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-05-17 23:44:18 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-05-17 23:46:24 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 75.3229 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKK35HD00B:00000001","ConnectionId":"0HNLKK35HD00B"}
+[2026-05-17 23:46:31 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"cedf676e-83e5-4207-8cb8-cb05f0a64eab","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLKK35HD00B:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLKK35HD00B"}
+[2026-05-17 23:46:33 INF] HTTP POST /api/v1/auth/login responded 200 in 8984.2331 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKK35HD00B:00000002","ConnectionId":"0HNLKK35HD00B"}
+[2026-05-17 23:46:43 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"cedf676e-83e5-4207-8cb8-cb05f0a64eab","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLKK35HD00C:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLKK35HD00C"}
+[2026-05-17 23:46:43 INF] HTTP POST /api/v1/auth/login responded 200 in 1291.7255 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKK35HD00C:00000001","ConnectionId":"0HNLKK35HD00C"}

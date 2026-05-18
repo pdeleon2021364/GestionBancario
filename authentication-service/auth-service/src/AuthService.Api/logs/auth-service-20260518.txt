@@ -1,0 +1,2 @@
+[2026-05-18 00:03:31 INF] HTTP OPTIONS /api/v1/auth/refresh responded 204 in 43.3740 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKK35HD00D:00000001","ConnectionId":"0HNLKK35HD00D"}
+[2026-05-18 00:03:32 INF] HTTP POST /api/v1/auth/refresh responded 200 in 869.3512 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLKK35HD00D:00000002","ConnectionId":"0HNLKK35HD00D"}
