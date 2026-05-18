@@ -159,10 +159,10 @@ export const DashboardHome = () => {
                             revisa tu historial de operaciones en cualquier momento.
                         </p>
                         <div className="intro-actions">
-                            <Link to="/dashboard/tipos-cambio" className="intro-primary">
+                            <Link to="/user/tipos-cambio" className="intro-primary">
                                 Ver tipos de cambio
                             </Link>
-                            <Link to="/dashboard/historial" className="intro-secondary">
+                            <Link to="/user/historial" className="intro-secondary">
                                 Mi historial
                             </Link>
                         </div>
@@ -203,42 +203,42 @@ export const DashboardHome = () => {
                         </div>
                         <div className="intro-modules">
                             <ModuleCard
-                                to="/dashboard/divisas"
-                                title="Divisas"
-                                description="Consulta el catálogo de monedas registradas en el sistema."
-                                metric="Monedas"
+                                to="/user/transacciones"
+                                title="Transacciones"
+                                description="Realiza depósitos, retiros y transferencias entre tus cuentas."
+                                metric="Movimientos"
+                                accent="blue"
+                            />
+                            <ModuleCard
+                                to="/user/historial"
+                                title="Mi historial"
+                                description="Consultá tus registros, transacciones y el estado de tus cuentas."
+                                metric="Record"
                                 accent="cyan"
                             />
                             <ModuleCard
-                                to="/dashboard/tipos-cambio"
+                                to="/user/tipos-cambio"
                                 title="Tipos de cambio"
                                 description="Revisa tasas de conversión disponibles."
                                 metric="ExchangeRate"
                                 accent="green"
                             />
                             <ModuleCard
-                                to="/dashboard/cuentas"
+                                to="/user/divisas"
+                                title="Divisas"
+                                description="Consulta el catálogo de monedas registradas en el sistema."
+                                metric="Monedas"
+                                accent="cyan"
+                            />
+                            <ModuleCard
+                                to="/user/cuentas"
                                 title="Mis cuentas"
                                 description="Consulta el saldo y estado de tus cuentas bancarias."
                                 metric="BankAccount"
-                                accent="blue"
+                                accent="green"
                             />
                             <ModuleCard
-                                to="/dashboard/productos"
-                                title="Productos financieros"
-                                description="Explora el portafolio de productos bancarios disponibles."
-                                metric="Portafolio"
-                                accent="amber"
-                            />
-                            <ModuleCard
-                                to="/dashboard/historial"
-                                title="Mi historial"
-                                description="Consultá tus registros, transacciones y el estado de tus cuentas."
-                                metric="Record"
-                                accent="blue"
-                            />
-                            <ModuleCard
-                                to="/dashboard/perfil"
+                                to="/user/perfil"
                                 title="Mi perfil"
                                 description="Revisá y actualizá tu información personal y foto de perfil."
                                 metric="Perfil"

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthPage } from "../../features/auth/pages/AuthPage.jsx";
 import { DashboardPage } from "../layouts/DashboardPage.jsx";
 import { DashboardHome } from "../layouts/DashboardHome.jsx";
@@ -11,11 +11,14 @@ import { UsersPage } from "../layouts/UsersPage.jsx";
 import { ProfilePage } from "../layouts/ProfilePage.jsx";
 import { showError, showSuccess } from "../../shared/utils/toast.js";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
-import { UserDivisasPage } from "../../features/user/pages/UserDivisasPage.jsx";
-import { UserTiposCambioPage } from "../../features/user/pages/UserTiposCambioPage.jsx";
-import { UserHistorialPage } from "../../features/user/pages/UserHistorialPage.jsx";
-import { UserCuentasPage } from "../../features/user/pages/UserCuentasPage.jsx";
-import { UserProductosPage } from "../../features/user/pages/UserProductosPage.jsx";
+
+// User pages
+import { UserDivisasPage }       from "../../features/user/pages/UserDivisasPage.jsx";
+import { UserTiposCambioPage }   from "../../features/user/pages/UserTiposCambioPage.jsx";
+import { UserHistorialPage }     from "../../features/user/pages/UserHistorialPage.jsx";
+import { UserCuentasPage }       from "../../features/user/pages/UserCuentasPage.jsx";
+import { UserTransaccionesPage } from "../../features/user/pages/UserTransaccionesPage.jsx";
+
 import {
     bankAccountsApi,
     currenciesApi,
@@ -26,30 +29,28 @@ import {
     transactionsApi,
 } from "../../shared/api/admin.js";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers compartidos (solo usados por el CRUD admin)
+// ─────────────────────────────────────────────────────────────────────────────
 const auditKey = "gestionbanco-admin-audit";
-
 const getId = (item) => item?._id ?? item?.id;
 const unwrapRef = (value, fallback = "Sin referencia") => {
     if (!value) return fallback;
     if (typeof value === "object") return value.nombre ?? value.numeroCuenta ?? value.codigo ?? value._id ?? fallback;
     return value;
 };
-const money = (value) => `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
+const money    = (value) => `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
 const dateText = (value) => value ? new Intl.DateTimeFormat("es-GT", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)) : "Sin fecha";
 
-const readAudit = () => {
-    try {
-        return JSON.parse(localStorage.getItem(auditKey) || "[]");
-    } catch {
-        return [];
-    }
-};
-
+const readAudit  = () => { try { return JSON.parse(localStorage.getItem(auditKey) || "[]"); } catch { return []; } };
 const writeAudit = (entry) => {
     const next = [{ id: crypto.randomUUID(), at: new Date().toISOString(), ...entry }, ...readAudit()].slice(0, 120);
     localStorage.setItem(auditKey, JSON.stringify(next));
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Configuración de entidades ADMIN
+// ─────────────────────────────────────────────────────────────────────────────
 const entityConfigs = {
     cuentas: {
         label: "bankAccount",
@@ -58,19 +59,19 @@ const entityConfigs = {
         accent: "green",
         api: bankAccountsApi,
         fields: [
-            { name: "nombre", label: "Nombre", required: true },
+            { name: "nombre",       label: "Nombre",           required: true },
             { name: "numeroCuenta", label: "Numero de cuenta", required: true },
-            { name: "tipoCuenta", label: "Tipo", type: "select", options: ["ahorro", "corriente"], required: true },
-            { name: "saldo", label: "Saldo", type: "number", required: true },
-            { name: "usuarioId", label: "Usuario ID", type: "number", required: true },
-            { name: "estado", label: "Estado", type: "select", options: ["activa", "inactiva"], required: true },
+            { name: "tipoCuenta",   label: "Tipo",             type: "select", options: ["ahorro", "corriente"], required: true },
+            { name: "saldo",        label: "Saldo",            type: "number", required: true },
+            { name: "usuarioId",    label: "Usuario ID",       type: "number", required: true },
+            { name: "estado",       label: "Estado",           type: "select", options: ["activa", "inactiva"], required: true },
         ],
         columns: [
-            { label: "Cuenta", value: (x) => x.numeroCuenta },
-            { label: "Nombre", value: (x) => x.nombre },
-            { label: "Tipo", value: (x) => x.tipoCuenta },
-            { label: "Saldo", value: (x) => money(x.saldo) },
-            { label: "Estado", value: (x) => x.estado, chip: true },
+            { label: "Cuenta",  value: (x) => x.numeroCuenta },
+            { label: "Nombre",  value: (x) => x.nombre },
+            { label: "Tipo",    value: (x) => x.tipoCuenta },
+            { label: "Saldo",   value: (x) => money(x.saldo) },
+            { label: "Estado",  value: (x) => x.estado, chip: true },
         ],
         empty: { nombre: "", numeroCuenta: "", tipoCuenta: "ahorro", saldo: 0, usuarioId: 1, estado: "activa" },
     },
@@ -82,17 +83,17 @@ const entityConfigs = {
         api: transactionsApi,
         related: ["accounts", "favorites"],
         fields: [
-            { name: "tipo", label: "Tipo", type: "select", options: ["deposito", "retiro", "transferencia"], required: true },
-            { name: "monto", label: "Monto", type: "number", required: true },
-            { name: "cuentaOrigen", label: "Cuenta origen", type: "account" },
-            { name: "cuentaDestino", label: "Cuenta destino", type: "account" },
+            { name: "tipo",          label: "Tipo",          type: "select", options: ["deposito", "retiro", "transferencia"], required: true },
+            { name: "monto",         label: "Monto",         type: "number", required: true },
+            { name: "cuentaOrigen",  label: "Cuenta origen", type: "account" },
+            { name: "cuentaDestino", label: "Cuenta destino",type: "account" },
         ],
         columns: [
-            { label: "Tipo", value: (x) => x.tipo, chip: true },
-            { label: "Monto", value: (x) => money(x.monto) },
-            { label: "Origen", value: (x) => unwrapRef(x.cuentaOrigen) },
+            { label: "Tipo",    value: (x) => x.tipo, chip: true },
+            { label: "Monto",   value: (x) => money(x.monto) },
+            { label: "Origen",  value: (x) => unwrapRef(x.cuentaOrigen) },
             { label: "Destino", value: (x) => unwrapRef(x.cuentaDestino) },
-            { label: "Estado", value: (x) => x.estado ?? "completado", chip: true },
+            { label: "Estado",  value: (x) => x.estado ?? "completado", chip: true },
         ],
         empty: { tipo: "deposito", monto: 0, cuentaOrigen: "", cuentaDestino: "" },
     },
@@ -103,18 +104,18 @@ const entityConfigs = {
         accent: "amber",
         api: financialProductsApi,
         fields: [
-            { name: "nombre", label: "Nombre", required: true },
-            { name: "descripcion", label: "Descripcion", required: true },
-            { name: "tasaInteres", label: "Tasa interes", type: "number", required: true },
+            { name: "nombre",       label: "Nombre",        required: true },
+            { name: "descripcion",  label: "Descripcion",   required: true },
+            { name: "tasaInteres",  label: "Tasa interes",  type: "number", required: true },
             { name: "tipoProducto", label: "Tipo producto", required: true },
-            { name: "activo", label: "Activo", type: "checkbox" },
+            { name: "activo",       label: "Activo",        type: "checkbox" },
         ],
         columns: [
-            { label: "Producto", value: (x) => x.nombre },
-            { label: "Tipo", value: (x) => x.tipoProducto },
-            { label: "Tasa", value: (x) => `${x.tasaInteres}%` },
+            { label: "Producto",    value: (x) => x.nombre },
+            { label: "Tipo",        value: (x) => x.tipoProducto },
+            { label: "Tasa",        value: (x) => `${x.tasaInteres}%` },
             { label: "Descripcion", value: (x) => x.descripcion },
-            { label: "Estado", value: (x) => x.activo ? "Activo" : "Inactivo", chip: true },
+            { label: "Estado",      value: (x) => x.activo ? "Activo" : "Inactivo", chip: true },
         ],
         empty: { nombre: "", descripcion: "", tasaInteres: 0, tipoProducto: "", activo: true },
     },
@@ -125,15 +126,15 @@ const entityConfigs = {
         accent: "cyan",
         api: currenciesApi,
         fields: [
-            { name: "nombre", label: "Nombre", required: true },
-            { name: "codigo", label: "Codigo", required: true },
+            { name: "nombre",  label: "Nombre",  required: true },
+            { name: "codigo",  label: "Codigo",  required: true },
             { name: "simbolo", label: "Simbolo", required: true },
         ],
         columns: [
-            { label: "Nombre", value: (x) => x.nombre },
-            { label: "Codigo", value: (x) => x.codigo, chip: true },
+            { label: "Nombre",  value: (x) => x.nombre },
+            { label: "Codigo",  value: (x) => x.codigo, chip: true },
             { label: "Simbolo", value: (x) => x.simbolo },
-            { label: "Creado", value: (x) => dateText(x.createdAt) },
+            { label: "Creado",  value: (x) => dateText(x.createdAt) },
         ],
         empty: { nombre: "", codigo: "", simbolo: "" },
     },
@@ -145,16 +146,16 @@ const entityConfigs = {
         api: exchangeRatesApi,
         related: ["currencies", "favorites"],
         fields: [
-            { name: "nameDestiny", label: "Nombre", required: true },
-            { name: "divisaBase", label: "Divisa base", type: "currency", required: true },
-            { name: "divisaDestino", label: "Divisa destino", type: "currency", required: true },
-            { name: "tasa", label: "Tasa", type: "number", required: true },
+            { name: "nameDestiny",   label: "Nombre",        required: true },
+            { name: "divisaBase",    label: "Divisa base",   type: "currency", required: true },
+            { name: "divisaDestino", label: "Divisa destino",type: "currency", required: true },
+            { name: "tasa",          label: "Tasa",          type: "number",   required: true },
         ],
         columns: [
-            { label: "Nombre", value: (x) => x.nameDestiny },
-            { label: "Base", value: (x) => unwrapRef(x.divisaBase) },
-            { label: "Destino", value: (x) => unwrapRef(x.divisaDestino) },
-            { label: "Tasa", value: (x) => x.tasa },
+            { label: "Nombre",      value: (x) => x.nameDestiny },
+            { label: "Base",        value: (x) => unwrapRef(x.divisaBase) },
+            { label: "Destino",     value: (x) => unwrapRef(x.divisaDestino) },
+            { label: "Tasa",        value: (x) => x.tasa },
             { label: "Actualizado", value: (x) => dateText(x.updatedAt) },
         ],
         empty: { nameDestiny: "", divisaBase: "", divisaDestino: "", tasa: 1 },
@@ -167,18 +168,21 @@ const entityConfigs = {
         api: recordsApi,
         related: ["accounts", "transactions"],
         fields: [
-            { name: "cuentaId", label: "Cuenta", type: "account", required: true },
+            { name: "cuentaId",           label: "Cuenta",      type: "account",      required: true },
             { name: "listaTransacciones", label: "Transaccion", type: "transaction" },
         ],
         columns: [
-            { label: "Cuenta", value: (x) => unwrapRef(x.cuentaId) },
-            { label: "Transaccion", value: (x) => unwrapRef(x.listaTransacciones) },
-            { label: "Actualizacion", value: (x) => dateText(x.fechaActualizacion ?? x.updatedAt) },
+            { label: "Cuenta",       value: (x) => unwrapRef(x.cuentaId) },
+            { label: "Transaccion",  value: (x) => unwrapRef(x.listaTransacciones) },
+            { label: "Actualizacion",value: (x) => dateText(x.fechaActualizacion ?? x.updatedAt) },
         ],
         empty: { cuentaId: "", listaTransacciones: "" },
     },
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Componentes internos del CRUD admin
+// ─────────────────────────────────────────────────────────────────────────────
 const StatusChip = ({ value }) => {
     const status = String(value).toLowerCase();
     const tone = status.includes("activa") || status.includes("activo") || status.includes("aprobada") || status.includes("completado") || status.includes("deposito")
@@ -197,43 +201,32 @@ const FieldInput = ({ field, value, onChange, related }) => {
         required: field.required,
         onChange: (event) => onChange(field.name, field.type === "checkbox" ? event.target.checked : event.target.value),
     };
-
-    if (field.type === "select") {
-        return <select {...baseProps}>{field.options.map((option) => <option key={option} value={option}>{option}</option>)}</select>;
-    }
-    if (field.type === "account") {
-        return <select {...baseProps}><option value="">Seleccionar cuenta</option>{related.accounts.map((x) => <option key={getId(x)} value={getId(x)}>{x.numeroCuenta} - {x.nombre}</option>)}</select>;
-    }
-    if (field.type === "currency") {
-        return <select {...baseProps}><option value="">Seleccionar divisa</option>{related.currencies.map((x) => <option key={getId(x)} value={getId(x)}>{x.codigo} - {x.nombre}</option>)}</select>;
-    }
-    if (field.type === "transaction") {
-        return <select {...baseProps}><option value="">Seleccionar transaccion</option>{related.transactions.map((x) => <option key={getId(x)} value={getId(x)}>{x.tipo} - {money(x.monto)}</option>)}</select>;
-    }
+    if (field.type === "select")      return <select {...baseProps}>{field.options.map((o) => <option key={o} value={o}>{o}</option>)}</select>;
+    if (field.type === "account")     return <select {...baseProps}><option value="">Seleccionar cuenta</option>{related.accounts.map((x) => <option key={getId(x)} value={getId(x)}>{x.numeroCuenta} - {x.nombre}</option>)}</select>;
+    if (field.type === "currency")    return <select {...baseProps}><option value="">Seleccionar divisa</option>{related.currencies.map((x) => <option key={getId(x)} value={getId(x)}>{x.codigo} - {x.nombre}</option>)}</select>;
+    if (field.type === "transaction") return <select {...baseProps}><option value="">Seleccionar transaccion</option>{related.transactions.map((x) => <option key={getId(x)} value={getId(x)}>{x.tipo} - {money(x.monto)}</option>)}</select>;
     return <input {...baseProps} type={field.type || "text"} step={field.type === "number" ? "0.01" : undefined} />;
 };
 
 const ModuleCrudPage = ({ config }) => {
-    const [items, setItems] = useState([]);
+    const [items, setItems]     = useState([]);
     const [related, setRelated] = useState({ accounts: [], currencies: [], transactions: [], favorites: [] });
-    const [form, setForm] = useState(config.empty);
+    const [form, setForm]       = useState(config.empty);
     const [editing, setEditing] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen]       = useState(false);
     const [loading, setLoading] = useState(true);
-    const [query, setQuery] = useState("");
-    const [audit, setAudit] = useState(readAudit);
-    const [convertForm, setConvertForm] = useState({ divisaBaseId: "", divisaDestinoId: "", monto: 1 });
+    const [query, setQuery]     = useState("");
+    const [audit, setAudit]     = useState(readAudit);
+    const [convertForm, setConvertForm]   = useState({ divisaBaseId: "", divisaDestinoId: "", monto: 1 });
     const [convertResult, setConvertResult] = useState(null);
     const [favoriteForm, setFavoriteForm] = useState({ alias: "", bankAccount: "" });
 
     const loadRelated = async () => {
         const next = { accounts: [], currencies: [], transactions: [], favorites: [] };
-        if (config.related?.includes("accounts")) next.accounts = await bankAccountsApi.list();
-        if (config.related?.includes("currencies")) next.currencies = await currenciesApi.list();
+        if (config.related?.includes("accounts"))     next.accounts     = await bankAccountsApi.list();
+        if (config.related?.includes("currencies"))   next.currencies   = await currenciesApi.list();
         if (config.related?.includes("transactions")) next.transactions = await transactionsApi.list();
-        if (config.related?.includes("favorites")) {
-            try { next.favorites = await favoritesApi.list(); } catch { next.favorites = []; }
-        }
+        if (config.related?.includes("favorites"))    { try { next.favorites = await favoritesApi.list(); } catch { next.favorites = []; } }
         setRelated(next);
     };
 
@@ -258,17 +251,13 @@ const ModuleCrudPage = ({ config }) => {
     }, [items, query]);
 
     const metrics = [
-        { label: "Registros", value: items.length, trend: "total" },
-        { label: "Activos", value: items.filter((x) => x.estado === "activa" || x.activo === true).length, trend: "operativos" },
-        { label: "Actualizados", value: items.filter((x) => x.updatedAt).length, trend: "con auditoria" },
-        { label: "Modulo", value: "CRUD", trend: "admin" },
+        { label: "Registros",    value: items.length,                                                              trend: "total" },
+        { label: "Activos",      value: items.filter((x) => x.estado === "activa" || x.activo === true).length,   trend: "operativos" },
+        { label: "Actualizados", value: items.filter((x) => x.updatedAt).length,                                  trend: "con auditoria" },
+        { label: "Modulo",       value: "CRUD",                                                                    trend: "admin" },
     ];
 
-    const resetForm = () => {
-        setEditing(null);
-        setForm(config.empty);
-        setOpen(true);
-    };
+    const resetForm = () => { setEditing(null); setForm(config.empty); setOpen(true); };
 
     const editItem = (item) => {
         const next = {};
@@ -276,9 +265,7 @@ const ModuleCrudPage = ({ config }) => {
             const value = item[field.name];
             next[field.name] = typeof value === "object" && value !== null ? getId(value) : value ?? config.empty[field.name] ?? "";
         });
-        setEditing(item);
-        setForm(next);
-        setOpen(true);
+        setEditing(item); setForm(next); setOpen(true);
     };
 
     const save = async (event) => {
@@ -335,10 +322,7 @@ const ModuleCrudPage = ({ config }) => {
 
     const auditByEntity = useMemo(() => {
         const groups = {};
-        audit.forEach((entry) => {
-            groups[entry.entity] = groups[entry.entity] || [];
-            groups[entry.entity].push(entry);
-        });
+        audit.forEach((entry) => { groups[entry.entity] = groups[entry.entity] || []; groups[entry.entity].push(entry); });
         return groups;
     }, [audit]);
 
@@ -383,7 +367,7 @@ const ModuleCrudPage = ({ config }) => {
                     </div>
                     <div className="entity-table-wrap">
                         <table className="entity-table">
-                            <thead><tr>{config.columns.map((column) => <th key={column.label}>{column.label}</th>)}<th>Acciones</th></tr></thead>
+                            <thead><tr>{config.columns.map((col) => <th key={col.label}>{col.label}</th>)}<th>Acciones</th></tr></thead>
                             <tbody>
                                 {loading ? (
                                     <tr><td colSpan={config.columns.length + 1}>Cargando...</td></tr>
@@ -391,9 +375,9 @@ const ModuleCrudPage = ({ config }) => {
                                     <tr><td colSpan={config.columns.length + 1}>Sin registros</td></tr>
                                 ) : filtered.map((item) => (
                                     <tr key={getId(item)}>
-                                        {config.columns.map((column) => {
-                                            const value = column.value(item);
-                                            return <td key={column.label}>{column.chip ? <StatusChip value={value} /> : value}</td>;
+                                        {config.columns.map((col) => {
+                                            const val = col.value(item);
+                                            return <td key={col.label}>{col.chip ? <StatusChip value={val} /> : val}</td>;
                                         })}
                                         <td>
                                             <div className="entity-actions">
@@ -429,7 +413,7 @@ const ModuleCrudPage = ({ config }) => {
                                 <input value={favoriteForm.alias} onChange={(e) => setFavoriteForm((x) => ({ ...x, alias: e.target.value }))} placeholder="Alias" required />
                                 <select value={favoriteForm.bankAccount} onChange={(e) => setFavoriteForm((x) => ({ ...x, bankAccount: e.target.value }))} required>
                                     <option value="">Cuenta favorita</option>
-                                    {related.accounts.map((account) => <option key={getId(account)} value={getId(account)}>{account.numeroCuenta}</option>)}
+                                    {related.accounts.map((acc) => <option key={getId(acc)} value={getId(acc)}>{acc.numeroCuenta}</option>)}
                                 </select>
                                 <button type="submit">Guardar favorito</button>
                             </form>
@@ -442,11 +426,11 @@ const ModuleCrudPage = ({ config }) => {
                             <input type="number" step="0.01" value={convertForm.monto} onChange={(e) => setConvertForm((x) => ({ ...x, monto: e.target.value }))} />
                             <select value={convertForm.divisaBaseId} onChange={(e) => setConvertForm((x) => ({ ...x, divisaBaseId: e.target.value }))} required>
                                 <option value="">Base</option>
-                                {related.currencies.map((currency) => <option key={getId(currency)} value={getId(currency)}>{currency.codigo}</option>)}
+                                {related.currencies.map((c) => <option key={getId(c)} value={getId(c)}>{c.codigo}</option>)}
                             </select>
                             <select value={convertForm.divisaDestinoId} onChange={(e) => setConvertForm((x) => ({ ...x, divisaDestinoId: e.target.value }))} required>
                                 <option value="">Destino</option>
-                                {related.currencies.map((currency) => <option key={getId(currency)} value={getId(currency)}>{currency.codigo}</option>)}
+                                {related.currencies.map((c) => <option key={getId(c)} value={getId(c)}>{c.codigo}</option>)}
                             </select>
                             <button type="submit">Convertir</button>
                             {convertResult && <span className="entity-result">{JSON.stringify(convertResult)}</span>}
@@ -476,7 +460,7 @@ const ModuleCrudPage = ({ config }) => {
                             {config.fields.map((field) => (
                                 <label key={field.name}>
                                     {field.label}
-                                    <FieldInput field={field} value={form[field.name]} related={related} onChange={(name, value) => setForm((current) => ({ ...current, [name]: value }))} />
+                                    <FieldInput field={field} value={form[field.name]} related={related} onChange={(name, value) => setForm((cur) => ({ ...cur, [name]: value }))} />
                                 </label>
                             ))}
                         </div>
@@ -488,38 +472,63 @@ const ModuleCrudPage = ({ config }) => {
     );
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Guards de acceso
+// ─────────────────────────────────────────────────────────────────────────────
 const AdminOnly = ({ children }) => <RoleGuard allowedRoles={["ADMIN_ROLE"]}>{children}</RoleGuard>;
-const RoleSwitch = ({ admin, user }) => {
-    const role = useAuthStore((state) => state.user?.role);
-    return role === "ADMIN_ROLE" ? admin : user;
-};
+const UserOnly  = ({ children }) => <RoleGuard allowedRoles={["USER_ROLE"]}>{children}</RoleGuard>;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Rutas
+// ─────────────────────────────────────────────────────────────────────────────
 export const AppRoutes = () => {
     return (
         <Routes>
-            <Route path="/" element={<AuthPage />} />
+            {/* Pública */}
+            <Route path="/"             element={<AuthPage />} />
             <Route path="/verify-email" element={<VerifyEmailPage />} />
-            <Route path="unauthorized" element={<UnauthorizedPage />} />
+            <Route path="unauthorized"  element={<UnauthorizedPage />} />
 
+            {/* ── DASHBOARD ADMIN (/dashboard) ───────────────────────────── */}
             <Route
                 path="/dashboard"
                 element={
                     <ProtectedRoute>
-                        <RoleGuard allowedRoles={["ADMIN_ROLE", "USER_ROLE"]}>
+                        <AdminOnly>
                             <DashboardPage />
-                        </RoleGuard>
+                        </AdminOnly>
                     </ProtectedRoute>
                 }
             >
-                <Route index element={<DashboardHome />} />
-                <Route path="perfil" element={<ProfilePage />} />
-                <Route path="usuarios" element={<AdminOnly><UsersPage /></AdminOnly>} />
-                <Route path="cuentas" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.cuentas} />} user={<UserCuentasPage />} />} />
-                <Route path="transacciones" element={<AdminOnly><ModuleCrudPage config={entityConfigs.transacciones} /></AdminOnly>} />
-                <Route path="productos" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.productos} />} user={<UserProductosPage />} />} />
-                <Route path="divisas" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.divisas} />} user={<UserDivisasPage />} />} />
-                <Route path="tipos-cambio" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.tiposCambio} />} user={<UserTiposCambioPage />} />} />
-                <Route path="historial" element={<RoleSwitch admin={<ModuleCrudPage config={entityConfigs.historial} />} user={<UserHistorialPage />} />} />
+                <Route index                  element={<DashboardHome />} />
+                <Route path="perfil"          element={<ProfilePage />} />
+                <Route path="usuarios"        element={<UsersPage />} />
+                <Route path="cuentas"         element={<ModuleCrudPage config={entityConfigs.cuentas} />} />
+                <Route path="transacciones"   element={<ModuleCrudPage config={entityConfigs.transacciones} />} />
+                <Route path="productos"       element={<ModuleCrudPage config={entityConfigs.productos} />} />
+                <Route path="divisas"         element={<ModuleCrudPage config={entityConfigs.divisas} />} />
+                <Route path="tipos-cambio"    element={<ModuleCrudPage config={entityConfigs.tiposCambio} />} />
+                <Route path="historial"       element={<ModuleCrudPage config={entityConfigs.historial} />} />
+            </Route>
+
+            {/* ── PORTAL USUARIO (/user) ─────────────────────────────────── */}
+            <Route
+                path="/user"
+                element={
+                    <ProtectedRoute>
+                        <UserOnly>
+                            <DashboardPage />
+                        </UserOnly>
+                    </ProtectedRoute>
+                }
+            >
+                <Route index               element={<DashboardHome />} />
+                <Route path="perfil"       element={<ProfilePage />} />
+                <Route path="transacciones"element={<UserTransaccionesPage />} />
+                <Route path="historial"    element={<UserHistorialPage />} />
+                <Route path="tipos-cambio" element={<UserTiposCambioPage />} />
+                <Route path="divisas"      element={<UserDivisasPage />} />
+                <Route path="cuentas"      element={<UserCuentasPage />} />
             </Route>
         </Routes>
     );

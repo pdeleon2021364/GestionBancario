@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
+import { useAuthStore } from "../../../features/auth/store/authStore"
 
 const icons = {
     "/dashboard/usuarios": (
@@ -36,40 +37,85 @@ const icons = {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3 2.25M21 12a9 9 0 11-3.3-6.97M21 3v5h-5" />
         </svg>
     ),
+    "/dashboard/perfil": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+    ),
+    "/user/transacciones": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+        </svg>
+    ),
+    "/user/historial": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3 2.25M21 12a9 9 0 11-3.3-6.97M21 3v5h-5" />
+        </svg>
+    ),
+    "/user/tipos-cambio": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6.75h-9m9 0l-3-3m3 3l-3 3M7.5 17.25h9m-9 0l3 3m-3-3l3-3M4.5 12a7.5 7.5 0 0112.8-5.303M19.5 12a7.5 7.5 0 01-12.8 5.303" />
+        </svg>
+    ),
+    "/user/divisas": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    ),
+    "/user/cuentas": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+        </svg>
+    ),
+    "/user/perfil": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+    ),
 }
 
+const adminItems = [
+    { label: "Usuarios",              to: "/dashboard/usuarios" },
+    { label: "Cuentas Bancarias",     to: "/dashboard/cuentas" },
+    { label: "Transacciones",         to: "/dashboard/transacciones" },
+    { label: "Productos Financieros", to: "/dashboard/productos" },
+    { label: "Divisas",               to: "/dashboard/divisas" },
+    { label: "Tipos de Cambio",       to: "/dashboard/tipos-cambio" },
+    { label: "Historial",             to: "/dashboard/historial" },
+    { label: "Mi perfil",             to: "/dashboard/perfil" },
+]
+
+const userItems = [
+    { label: "Transacciones",   to: "/user/transacciones" },
+    { label: "Mi historial",    to: "/user/historial" },
+    { label: "Tipos de cambio", to: "/user/tipos-cambio" },
+    { label: "Divisas",         to: "/user/divisas" },
+    { label: "Mis cuentas",     to: "/user/cuentas" },
+    { label: "Mi perfil",       to: "/user/perfil" },
+]
+
 export const Sidebar = () => {
-
     const location = useLocation()
-
-    const items = [
-        { label: "Usuarios",             to: "/dashboard/usuarios" },
-        { label: "Cuentas Bancarias",    to: "/dashboard/cuentas" },
-        { label: "Transacciones",        to: "/dashboard/transacciones" },
-        { label: "Productos Financieros",to: "/dashboard/productos" },
-        { label: "Divisas",              to: "/dashboard/divisas" },
-        { label: "Tipos de Cambio",      to: "/dashboard/tipos-cambio" },
-        { label: "Historial",            to: "/dashboard/historial" },
-    ]
+    const role = useAuthStore((state) => state.user?.role)
+    const isAdmin = role === "ADMIN_ROLE"
+    const items = isAdmin ? adminItems : userItems
 
     return (
         <aside className="sidebar-futuristic w-60 min-h-[calc(100vh-4rem)] p-4">
-            {/* sección label */}
             <p className="px-3 mb-3 text-xs font-semibold tracking-widest uppercase"
-                style={{ color: 'var(--text-muted)' }}>
-                Navegación
+                style={{ color: "var(--text-muted)" }}>
+                {isAdmin ? "Administración" : "Mi portal"}
             </p>
             <ul className="space-y-1">
                 {items.map((item) => {
                     const active = location.pathname === item.to
-
                     return (
                         <li key={item.to}>
                             <Link
                                 to={item.to}
                                 className={`sidebar-item sidebar-underline flex items-center gap-3 px-3 py-2.5 ${active ? "active" : ""}`}
                             >
-                                <span style={{ color: active ? '#38bdf8' : 'var(--text-muted)' }}>
+                                <span style={{ color: active ? "#38bdf8" : "var(--text-muted)" }}>
                                     {icons[item.to]}
                                 </span>
                                 {item.label}
