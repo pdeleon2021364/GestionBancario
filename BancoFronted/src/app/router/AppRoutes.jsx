@@ -222,6 +222,8 @@ const ModuleCrudPage = ({ config }) => {
     const [convertForm, setConvertForm]   = useState({ divisaBaseId: "", divisaDestinoId: "", monto: 1 });
     const [convertResult, setConvertResult] = useState(null);
     const [favoriteForm, setFavoriteForm] = useState({ alias: "", bankAccount: "" });
+    const [pdfEmail, setPdfEmail]         = useState("");
+    const [pdfSending, setPdfSending]     = useState(false);
 
     const loadRelated = async () => {
         const next = { accounts: [], currencies: [], transactions: [], favorites: [] };
@@ -322,6 +324,40 @@ const ModuleCrudPage = ({ config }) => {
         }
     };
 
+    const sendAllPdf = async (event) => {
+        event.preventDefault();
+        if (!pdfEmail) return showError("Ingresa un correo destino");
+        try {
+            setPdfSending(true);
+            await bankAccountsApi.sendAllPdf(pdfEmail);
+            writeAudit({ entity: "bankAccount", action: "envio PDF general", detail: pdfEmail });
+            setAudit(readAudit());
+            showSuccess(`PDF con todas las cuentas enviado a ${pdfEmail}`);
+            setPdfEmail("");
+        } catch (error) {
+            showError(
+    error?.response?.data?.error ||
+    error?.response?.data?.message ||
+    "No se pudo enviar el PDF"
+);
+        } finally {
+            setPdfSending(false);
+        }
+    };
+
+    const sendOnePdf = async (item) => {
+        const email = window.prompt("Correo destino para el PDF de esta cuenta:");
+        if (!email || !email.includes("@")) return showError("Correo no válido");
+        try {
+            await bankAccountsApi.sendPdf(getId(item), email);
+            writeAudit({ entity: "bankAccount", action: "envio PDF cuenta", detail: item.numeroCuenta });
+            setAudit(readAudit());
+            showSuccess(`PDF de cuenta ${item.numeroCuenta} enviado a ${email}`);
+        } catch (error) {
+            showError(error?.response?.data?.message || "No se pudo enviar el PDF");
+        }
+    };
+
     const auditByEntity = useMemo(() => {
         const groups = {};
         audit.forEach((entry) => { groups[entry.entity] = groups[entry.entity] || []; groups[entry.entity].push(entry); });
@@ -385,6 +421,9 @@ const ModuleCrudPage = ({ config }) => {
                                             <div className="entity-actions">
                                                 <button type="button" onClick={() => editItem(item)}>Editar</button>
                                                 <button type="button" className="danger" onClick={() => remove(item)}>Eliminar</button>
+                                                {config.label === "bankAccount" && (
+                                                    <button type="button" onClick={() => sendOnePdf(item)}>Enviar PDF</button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -448,6 +487,23 @@ const ModuleCrudPage = ({ config }) => {
                                 </div>
                             ))}
                         </div>
+                    )}
+
+                    {config.label === "bankAccount" && (
+                        <form className="entity-mini-form" onSubmit={sendAllPdf}>
+                            <p className="dash-label">Reportes PDF</p>
+                            <h3 style={{ margin: "0 0 8px", fontSize: "14px" }}>Enviar todas las cuentas</h3>
+                            <input
+                                type="email"
+                                value={pdfEmail}
+                                onChange={(e) => setPdfEmail(e.target.value)}
+                                placeholder="Correo destino"
+                                required
+                            />
+                            <button type="submit" disabled={pdfSending}>
+                                {pdfSending ? "Enviando..." : "Enviar PDF general"}
+                            </button>
+                        </form>
                     )}
                 </aside>
             </div>

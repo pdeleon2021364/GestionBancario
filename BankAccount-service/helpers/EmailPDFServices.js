@@ -25,7 +25,9 @@ export class EmailPDFService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
             auth: {
                 user: process.env.EMAIL_USER,   // tu correo Gmail en .env
                 pass: process.env.EMAIL_PASS    // contraseña de aplicación Gmail en .env
