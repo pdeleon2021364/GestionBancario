@@ -18,7 +18,8 @@ import { UserTiposCambioPage }   from "../../features/user/pages/UserTiposCambio
 import { UserHistorialPage }     from "../../features/user/pages/UserHistorialPage.jsx";
 import { UserCuentasPage }       from "../../features/user/pages/UserCuentasPage.jsx";
 import { UserTransaccionesPage } from "../../features/user/pages/UserTransaccionesPage.jsx";
-import { UserFavoritesTransaccionesPage } from "../../features/user/pages/UserFavoritesTransaccionesPage.jsx";
+import { UserProductosPage } from "../../features/user/pages/UserProductosPage.jsx";
+
 
 import {
     bankAccountsApi,
@@ -526,11 +527,11 @@ export const AppRoutes = () => {
                 <Route index               element={<DashboardHome />} />
                 <Route path="perfil"       element={<ProfilePage />} />
                 <Route path="transacciones"element={<UserTransaccionesPage />} />
-                <Route path="favoritos"    element={<UserFavoritesTransaccionesPage />} />
                 <Route path="historial"    element={<UserHistorialPage />} />
                 <Route path="tipos-cambio" element={<UserTiposCambioPage />} />
                 <Route path="divisas"      element={<UserDivisasPage />} />
                 <Route path="cuentas"      element={<UserCuentasPage />} />
+                <Route path="productos" element={<UserProductosPage />} />
             </Route>
         </Routes>
     );

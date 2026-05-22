@@ -96,6 +96,7 @@ const userItems = [
     { label: "Tipos de cambio", to: "/user/tipos-cambio" },
     { label: "Divisas",         to: "/user/divisas" },
     { label: "Mis cuentas",     to: "/user/cuentas" },
+    { label: "Productos",       to: "/user/productos" },
     { label: "Mi perfil",       to: "/user/perfil" },
 ]
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import Field from './bankAccount_model.js';
-import { EmailPDFService } from '../../services/EmailPDFServices.js';
+import { EmailPDFService } from '../helpers/EmailPDFServices.js';
 
 // Campos que se mostrarán en el PDF de BankAccount
 const BANK_ACCOUNT_FIELDS = [

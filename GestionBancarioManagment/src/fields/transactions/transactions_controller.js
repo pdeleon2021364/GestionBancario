@@ -6,6 +6,24 @@ import User from '../Usuarios/usuarios.model.js';
 import { sendEmail } from '../../../utils/sendEmail.js';
 import { emailTemplate } from '../../../utils/emailTemplate.js';
 
+// ─── Helper: intentar enviar email sin romper la transacción ─────────────────
+// El usuarioId en MongoDB puede ser un string con formato de .NET (ej: "usr_D268rRUTNkT6")
+// que no es un integer válido para Sequelize/PostgreSQL.
+// Si el correo falla por cualquier razón, la transacción ya se completó y no se revierte.
+const tryEmail = async (usuarioId, subject, templateData) => {
+    try {
+        // Intentar parsear como número primero (usuarios creados desde Node)
+        const pkValue = isNaN(Number(usuarioId)) ? usuarioId : Number(usuarioId);
+        const usuario = await User.findByPk(pkValue);
+        if (usuario?.email) {
+            await sendEmail(usuario.email, subject, emailTemplate(templateData));
+        }
+    } catch (emailError) {
+        // El correo falla silenciosamente — la transacción ya fue guardada
+        console.warn('[Email] No se pudo enviar notificación:', emailError.message);
+    }
+};
+
 export const createTransaction = async (req, res) => {
 
     try {
@@ -24,6 +42,8 @@ export const createTransaction = async (req, res) => {
         // =========================
         if (tipo === 'deposito') {
 
+            if (!cuentaDestino) throw new Error('Debe proporcionar cuentaDestino para un depósito');
+
             const cuenta = await BankAccount.findById(cuentaDestino);
             if (!cuenta) throw new Error('Cuenta destino no encontrada');
 
@@ -36,18 +56,12 @@ export const createTransaction = async (req, res) => {
                 cuentaDestino
             });
 
-            // 🔹 Buscar usuario en SQL
-            const usuario = await User.findByPk(cuenta.usuarioId);
-
-            await sendEmail(
-                usuario.email,
-                'Depósito realizado',
-                emailTemplate({
-                    tipo: 'deposito',
-                    monto: monto,
-                    saldo: cuenta.saldo
-                })
-            );
+            // Correo: falla silenciosamente si el usuarioId no es un integer de Postgres
+            await tryEmail(cuenta.usuarioId, 'Depósito realizado', {
+                tipo: 'deposito',
+                monto,
+                saldo: cuenta.saldo
+            });
 
             return res.status(201).json({
                 success: true,
@@ -60,6 +74,8 @@ export const createTransaction = async (req, res) => {
         // 🔹 RETIRO
         // =========================
         if (tipo === 'retiro') {
+
+            if (!cuentaOrigen) throw new Error('Debe proporcionar cuentaOrigen para un retiro');
 
             const cuenta = await BankAccount.findById(cuentaOrigen);
             if (!cuenta) throw new Error('Cuenta origen no encontrada');
@@ -77,17 +93,11 @@ export const createTransaction = async (req, res) => {
                 cuentaOrigen
             });
 
-            const usuario = await User.findByPk(cuenta.usuarioId);
-
-            await sendEmail(
-                usuario.email,
-                'Retiro realizado',
-                emailTemplate({
-                    tipo: 'retiro',
-                    monto: monto,
-                    saldo: cuenta.saldo
-                })
-            );
+            await tryEmail(cuenta.usuarioId, 'Retiro realizado', {
+                tipo: 'retiro',
+                monto,
+                saldo: cuenta.saldo
+            });
 
             return res.status(201).json({
                 success: true,
@@ -133,31 +143,19 @@ export const createTransaction = async (req, res) => {
                 cuentaDestino
             });
 
-            // 🔹 Buscar usuarios en SQL
-            const usuarioOrigen = await User.findByPk(cuentaO.usuarioId);
-            const usuarioDestino = await User.findByPk(cuentaD.usuarioId);
-
             // Correo al que envía
-            await sendEmail(
-                usuarioOrigen.email,
-                'Transferencia enviada',
-                emailTemplate({
-                    tipo: 'transferencia',
-                    monto: monto,
-                    saldo: cuentaO.saldo
-                })
-            );
+            await tryEmail(cuentaO.usuarioId, 'Transferencia enviada', {
+                tipo: 'transferencia',
+                monto,
+                saldo: cuentaO.saldo
+            });
 
             // Correo al que recibe
-            await sendEmail(
-                usuarioDestino.email,
-                'Transferencia Recibida',
-                emailTemplate({
-                    tipo: 'transferencia',
-                    monto: monto,
-                    saldo: cuentaD.saldo
-                })
-            );
+            await tryEmail(cuentaD.usuarioId, 'Transferencia recibida', {
+                tipo: 'transferencia',
+                monto,
+                saldo: cuentaD.saldo
+            });
 
             return res.status(201).json({
                 success: true,
@@ -166,16 +164,16 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-        throw new Error('Tipo de transacción inválido');
+        throw new Error('Tipo de transacción inválido. Use: deposito, retiro o transferencia');
 
     } catch (error) {
-
         return res.status(400).json({
             success: false,
             message: error.message
         });
     }
 };
+
 export const updateTransaction = async (req, res) => {
     try {
         const { id } = req.params;
@@ -196,32 +194,26 @@ export const updateTransaction = async (req, res) => {
 
         if (transaction.tipo === 'deposito') {
             const cuenta = await BankAccount.findById(transaction.cuentaDestino);
-            cuenta.saldo -= transaction.monto;
-            await cuenta.save();
+            if (cuenta) { cuenta.saldo -= transaction.monto; await cuenta.save(); }
         }
 
         if (transaction.tipo === 'retiro') {
             const cuenta = await BankAccount.findById(transaction.cuentaOrigen);
-            cuenta.saldo += transaction.monto;
-            await cuenta.save();
+            if (cuenta) { cuenta.saldo += transaction.monto; await cuenta.save(); }
         }
 
         if (transaction.tipo === 'transferencia') {
             const cuentaO = await BankAccount.findById(transaction.cuentaOrigen);
             const cuentaD = await BankAccount.findById(transaction.cuentaDestino);
-
-            cuentaO.saldo += transaction.monto;
-            cuentaD.saldo -= transaction.monto;
-
-            await cuentaO.save();
-            await cuentaD.save();
+            if (cuentaO) { cuentaO.saldo += transaction.monto; await cuentaO.save(); }
+            if (cuentaD) { cuentaD.saldo -= transaction.monto; await cuentaD.save(); }
         }
 
         // =========================
         //  APLICAR NUEVA OPERACIÓN
         // =========================
 
-        transaction.tipo = tipo || transaction.tipo;
+        transaction.tipo  = tipo  || transaction.tipo;
         transaction.monto = monto || transaction.monto;
 
         if (transaction.monto <= 0) {
@@ -230,17 +222,12 @@ export const updateTransaction = async (req, res) => {
 
         if (transaction.tipo === 'deposito') {
             const cuenta = await BankAccount.findById(transaction.cuentaDestino);
-            cuenta.saldo += transaction.monto;
-            await cuenta.save();
+            if (cuenta) { cuenta.saldo += transaction.monto; await cuenta.save(); }
         }
 
         if (transaction.tipo === 'retiro') {
             const cuenta = await BankAccount.findById(transaction.cuentaOrigen);
-
-            if (cuenta.saldo < transaction.monto) {
-                throw new Error('Saldo insuficiente');
-            }
-
+            if (!cuenta || cuenta.saldo < transaction.monto) throw new Error('Saldo insuficiente');
             cuenta.saldo -= transaction.monto;
             await cuenta.save();
         }
@@ -248,14 +235,10 @@ export const updateTransaction = async (req, res) => {
         if (transaction.tipo === 'transferencia') {
             const cuentaO = await BankAccount.findById(transaction.cuentaOrigen);
             const cuentaD = await BankAccount.findById(transaction.cuentaDestino);
-
-            if (cuentaO.saldo < transaction.monto) {
-                throw new Error('Saldo insuficiente');
-            }
-
+            if (!cuentaO || !cuentaD) throw new Error('Una de las cuentas no existe');
+            if (cuentaO.saldo < transaction.monto) throw new Error('Saldo insuficiente');
             cuentaO.saldo -= transaction.monto;
             cuentaD.saldo += transaction.monto;
-
             await cuentaO.save();
             await cuentaD.save();
         }
@@ -275,6 +258,7 @@ export const updateTransaction = async (req, res) => {
         });
     }
 };
+
 export const getTransactionById = async (req, res) => {
     try {
         const { id } = req.params;

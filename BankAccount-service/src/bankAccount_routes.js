@@ -8,8 +8,8 @@ import {
     sendAllBankAccountsPDF,
     sendBankAccountPDFById
 } from './bankAccount_controller.js';
-import { validateJWT } from '../../../middlewares/validate_jwt.js';
-import { requireRole } from '../../../middlewares/validate_role.js';
+import { validateJWT } from '../middlewares/validate_jwt.js';
+import { requireRole } from '../middlewares/validate_role.js';
 
 const router = Router();
 
