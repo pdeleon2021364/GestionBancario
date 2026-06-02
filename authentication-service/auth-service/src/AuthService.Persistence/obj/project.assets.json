@@ -6573,7 +6573,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\joaqu\\.nuget\\packages\\": {}
+    "C:\\Users\\gioca\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -6581,11 +6581,11 @@
       "projectUniqueName": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
       "projectName": "AuthService.Persistence",
       "projectPath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
-      "packagesPath": "C:\\Users\\joaqu\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\gioca\\.nuget\\packages\\",
       "outputPath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Persistence\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\joaqu\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\gioca\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6610,13 +6610,7 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "10.0.200"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -6654,26 +6648,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.26, 8.0.26]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.26, 8.0.26]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.26, 8.0.26]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.119/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

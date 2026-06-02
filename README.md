@@ -13,13 +13,14 @@ El objetivo principal es centralizar funcionalidades bancarias comunes en un eco
 ```text
 GestionBancario/
 |-- BancoFronted/                 # Aplicacion frontend
+|-- BancoBackend/                 # Microservicios backend Node.js
+|   |-- BankAccount-service/      # Gestion de cuentas bancarias
+|   |-- Currency-service/         # Gestion de monedas
+|   |-- Exchangerate-service/     # Gestion de tasas de cambio
+|   |-- Transactions-service/     # Gestion de transacciones
+|   |-- Notification-service/     # Gestion de notificaciones
+|   `-- GestionBancarioManagment/ # API principal de gestion bancaria
 |-- authentication-service/       # Servicio de autenticacion
-|-- BankAccount-service/          # Gestion de cuentas bancarias
-|-- Currency-service/             # Gestion de monedas
-|-- Exchangerate-service/         # Gestion de tasas de cambio
-|-- Transactions-service/         # Gestion de transacciones
-|-- Notification-service/         # Gestion de notificaciones
-|-- GestionBancarioManagment/     # API principal de gestion bancaria
 |-- Endpoints/                    # Referencias de endpoints
 |-- scripts/                      # Scripts de apoyo del workspace
 `-- Explicacion y Guia del Proyecto/
@@ -43,17 +44,17 @@ La aplicacion frontend consume las APIs disponibles y actua como punto de entrad
 
 ## Inicio Rapido
 
-Instala las dependencias globales del workspace:
+Instala las dependencias de los microservicios backend desde `BancoBackend`:
 
 ```powershell
-pnpm install
+cd BancoBackend
 pnpm install:services
 ```
 
-Levanta los servicios Node desde la raiz:
+Levanta los servicios Node del backend desde `BancoBackend`:
 
 ```powershell
-pnpm dev
+pnpm run dev
 ```
 
 Para ejecutar el frontend:

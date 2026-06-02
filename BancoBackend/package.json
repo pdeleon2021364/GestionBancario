@@ -1,0 +1,11 @@
+{
+  "name": "banco-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scripts para instalar y ejecutar los microservicios backend de GestionBancario",
+  "scripts": {
+    "install:services": "node ./scripts/install-services.js",
+    "dev": "node ./scripts/run-services.js"
+  },
+  "packageManager": "pnpm@10.29.2"
+}

@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LcC3WR5GU/Y=",
+  "dgSpecHash": "rGam4KY4Ob4p484QYw4VmfYK2p7uJdSVzNU9WPsVwElj+7ct13rYvfpoMZ+JiH5YRM+ZlmvyuWRwf7QWIKxvbA==",
   "success": true,
   "projectFilePath": "C:\\GestionBancario\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\joaqu\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.26\\microsoft.netcore.app.ref.8.0.26.nupkg.sha512",
-    "C:\\Users\\joaqu\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.26\\microsoft.windowsdesktop.app.ref.8.0.26.nupkg.sha512",
-    "C:\\Users\\joaqu\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.26\\microsoft.aspnetcore.app.ref.8.0.26.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }
