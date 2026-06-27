@@ -14,7 +14,10 @@ const fieldSchema = new mongoose.Schema(
             type: String,
             required: [true, 'El número de cuenta es requerido'],
             unique: true,
-            trim: true
+            trim: true,
+            minlength: [6, 'El número de cuenta debe tener al menos 6 caracteres'],
+            maxlength: [30, 'El número de cuenta no puede exceder 30 caracteres'],
+            match: [/^[A-Z0-9-]+$/i, 'El numero de cuenta solo puede contener letras, numeros y guiones']
         },
         tipoCuenta: {
             type: String,
@@ -24,18 +27,45 @@ const fieldSchema = new mongoose.Schema(
         saldo: {
             type: Number,
             required: [true, 'El saldo es requerido'],
-            default: 0,
-            min: [0, 'El saldo no puede ser negativo']
+            default: 100,
+            min: [100, 'El saldo inicial no puede ser menor a 100'],
+            max: [2000, 'El saldo inicial no puede ser mayor a 2000']
         },
         usuarioId: {
             type: mongoose.Schema.Types.Mixed,
-            required: true
+            required: true,
+            index: true
         },
         estado: {
             type: String,
             required: true,
-            enum: ['activa', 'inactiva'],
+            enum: ['activa', 'inactiva', 'bloqueada', 'cerrada'],
             default: 'activa'
+        },
+        closedAt: {
+            type: Date,
+            default: null
+        },
+        closedBy: {
+            type: mongoose.Schema.Types.Mixed,
+            default: null
+        },
+        closedReason: {
+            type: String,
+            trim: true,
+            maxLength: [255, 'El motivo de cierre no puede exceder 255 caracteres'],
+            default: null
+        },
+        limiteSobregiro: {
+            type: Number,
+            default: 0,
+            min: [0, 'El limite de sobregiro no puede ser negativo']
+        },
+        tasaInteresAnual: {
+            type: Number,
+            default: 0,
+            min: [0, 'La tasa de interes no puede ser negativa'],
+            max: [100, 'La tasa de interes no puede exceder 100%']
         },
         fechaCreacion: {
             type: Date,
@@ -50,6 +80,7 @@ const fieldSchema = new mongoose.Schema(
     }
 );
 
+fieldSchema.index({ usuarioId: 1, estado: 1 });
 
 const BankAccount = mongoose.models.BankAccount || mongoose.model('BankAccount', fieldSchema);
 export default BankAccount;

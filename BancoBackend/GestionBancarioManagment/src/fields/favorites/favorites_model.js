@@ -28,6 +28,8 @@ const favoriteSchema = new mongoose.Schema(
 }
 );
 
+favoriteSchema.index({ user: 1, bankAccount: 1 }, { unique: true });
+
 const Favorite = mongoose.models.Favorite || mongoose.model('Favorite', favoriteSchema);
 
 export default Favorite;

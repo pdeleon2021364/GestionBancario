@@ -7,7 +7,12 @@ import {
     deleteField,
     getAccountByAccountNumber,
     sendAllBankAccountsPDF,
-    sendBankAccountPDFById
+    sendBankAccountPDFById,
+    toggleAccountStatus,
+    getAccountById,
+    retirarDinero,
+    aplicarInteresMensual,
+    getActiveDestinations
 } from './bankAccount_controller.js';
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
@@ -198,14 +203,20 @@ const router = Router();
  *         description: Cuenta no encontrada
  */
 
-router.post('/create', validateJWT, requireRole('ADMIN_ROLE'), createField);
-router.post('/create/batch', validateJWT, requireRole('ADMIN_ROLE'), createFieldsForUser);
+router.post('/create', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), createField);
+router.post('/create/batch', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), createFieldsForUser);
 router.get('/', validateJWT, getFields);
-router.put('/update/:id', validateJWT, updateField);
+router.put('/update/:id', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), updateField);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteField);
-router.get('/search/:accountNumber', getAccountByAccountNumber);
-router.get('/search/numero/:numeroCuenta', getAccountByAccountNumber);
-router.get('/send-pdf/all/:email', validateJWT, requireRole('ADMIN_ROLE'), sendAllBankAccountsPDF);
-router.get('/send-pdf/:id/:email', validateJWT, requireRole('ADMIN_ROLE'), sendBankAccountPDFById);
+router.get('/search/:accountNumber', validateJWT, getAccountByAccountNumber);
+router.get('/search/numero/:numeroCuenta', validateJWT, getAccountByAccountNumber);
+router.patch('/status/:id', validateJWT, requireRole('ADMIN_ROLE'), toggleAccountStatus);
+router.get('/send-pdf/all/:email', validateJWT, requireRole('ADMIN_ROLE', 'AUDITOR_ROLE'), sendAllBankAccountsPDF);
+router.get('/send-pdf/:id/:email', validateJWT, requireRole('ADMIN_ROLE', 'AUDITOR_ROLE'), sendBankAccountPDFById);
+
+router.get('/destinations/active', validateJWT, getActiveDestinations);
+router.get('/:id', validateJWT, getAccountById);
+router.post('/withdraw/:id', validateJWT, retirarDinero);
+router.post('/apply-interest/:id', validateJWT, requireRole('ADMIN_ROLE'), aplicarInteresMensual);
 
 export default router;

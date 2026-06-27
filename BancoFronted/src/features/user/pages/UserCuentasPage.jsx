@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { bankAccountsApi } from "../../../shared/api/admin.js";
 import { showError } from "../../../shared/utils/toast.js";
 
@@ -22,6 +23,7 @@ const TipoCuentaChip = ({ tipo }) => (
 );
 
 export const UserCuentasPage = () => {
+    const navigate = useNavigate();
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -164,7 +166,13 @@ export const UserCuentasPage = () => {
                                 <tr><td colSpan={6}>No se encontraron cuentas bancarias.</td></tr>
                             ) : (
                                 filtered.map((acc) => (
-                                    <tr key={getId(acc)}>
+                                    <tr
+                                        key={getId(acc)}
+                                        onClick={() => navigate(`/user/cuentas/${getId(acc)}`)}
+                                        style={{ cursor: "pointer" }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = "var(--surface-2)"}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = ""}
+                                    >
                                         <td style={{ fontFamily: "monospace", letterSpacing: "0.05em" }}>
                                             {acc.numeroCuenta ?? "—"}
                                         </td>

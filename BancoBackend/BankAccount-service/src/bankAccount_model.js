@@ -14,7 +14,10 @@ const bankAccountSchema = new mongoose.Schema(
             type: String,
             required: [true, 'El número de cuenta es requerido'],
             unique: true,
-            trim: true
+            trim: true,
+            minlength: [6, 'El número de cuenta debe tener al menos 6 caracteres'],
+            maxlength: [30, 'El número de cuenta no puede exceder 30 caracteres'],
+            match: [/^[A-Z0-9-]+$/i, 'El número de cuenta solo puede contener letras, números y guiones']
         },
         tipoCuenta: {
             type: String,
@@ -24,13 +27,14 @@ const bankAccountSchema = new mongoose.Schema(
         saldo: {
             type: Number,
             required: [true, 'El saldo es requerido'],
-            default: 0,
-            min: [0, 'El saldo no puede ser negativo']
+            default: 100,
+            min: [100, 'El saldo inicial no puede ser menor a 100'],
+            max: [2000, 'El saldo inicial no puede ser mayor a 2000']
         },
         usuarioId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.Mixed,
             required: true,
-            ref: 'Usuario'
+            index: true
         },
         usuarioEmail: {
             type: String,
@@ -43,8 +47,22 @@ const bankAccountSchema = new mongoose.Schema(
         estado: {
             type: String,
             required: true,
-            enum: ['activa', 'inactiva'],
+            enum: ['activa', 'inactiva', 'bloqueada', 'cerrada'],
             default: 'activa'
+        },
+        closedAt: {
+            type: Date,
+            default: null
+        },
+        closedBy: {
+            type: mongoose.Schema.Types.Mixed,
+            default: null
+        },
+        closedReason: {
+            type: String,
+            trim: true,
+            maxLength: [255, 'El motivo de cierre no puede exceder 255 caracteres'],
+            default: null
         },
         fechaCreacion: {
             type: Date,
@@ -56,6 +74,8 @@ const bankAccountSchema = new mongoose.Schema(
         timestamps: true
     }
 );
+
+bankAccountSchema.index({ usuarioId: 1, estado: 1 });
 
 const BankAccount = mongoose.models.BankAccount || mongoose.model('BankAccount', bankAccountSchema);
 export default BankAccount;

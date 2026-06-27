@@ -13,7 +13,7 @@ export const register = async (data) => {
         }
     });
 
-    return await axiosAuth.post("/auth/register", formData)
+    return await axiosAuth.post("/auth/register", formData, { timeout: 30000 })
 }
 
 export const verifyEmail = async (token) => {

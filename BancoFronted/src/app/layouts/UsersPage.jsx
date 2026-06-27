@@ -90,7 +90,7 @@ export const UsersPage = () => {
     const [form, setForm] = useState(emptyForm);
 
     // ── Estado para crear cuentas bancarias al usuario ──
-    const emptyAccount = { nombre: "", tipoCuenta: "ahorro", saldo: 0, estado: "activa" };
+    const emptyAccount = { nombre: "", tipoCuenta: "ahorro", saldo: 100, estado: "activa" };
     const [accountTargetUser, setAccountTargetUser] = useState(null);
     const [accountForms, setAccountForms] = useState([{ ...emptyAccount }]);
     const [savingAccounts, setSavingAccounts] = useState(false);
@@ -226,6 +226,15 @@ export const UsersPage = () => {
         const invalidRow = accountForms.find((a) => !a.nombre.trim());
         if (invalidRow) {
             showError("Cada cuenta debe tener un nombre.");
+            return;
+        }
+
+        const invalidBalance = accountForms.find((a) => {
+            const saldo = Number(a.saldo);
+            return Number.isNaN(saldo) || saldo < 100 || saldo > 2001;
+        });
+        if (invalidBalance) {
+            showError("El saldo inicial debe estar entre Q 100.00 y Q 2,001.00.");
             return;
         }
 
@@ -441,7 +450,8 @@ export const UsersPage = () => {
                                             <input
                                                 className="input-futuristic"
                                                 type="number"
-                                                min="0"
+                                                min="100"
+                                                max="2001"
                                                 step="0.01"
                                                 value={acc.saldo}
                                                 onChange={(e) => handleAccountChange(idx, "saldo", e.target.value)}

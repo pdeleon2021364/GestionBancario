@@ -3,6 +3,19 @@
 import Field from './bankAccount_model.js';
 import { EmailPDFService } from '../helpers/EmailPDFServices.js';
 
+const ALLOWED_UPDATE_FIELDS = ['nombre', 'tipoCuenta'];
+const MIN_INITIAL_BALANCE = 100;
+const MAX_INITIAL_BALANCE = 2000;
+
+const sanitizeAccountUpdate = (data) => {
+    return ALLOWED_UPDATE_FIELDS.reduce((safeData, field) => {
+        if (Object.prototype.hasOwnProperty.call(data, field)) {
+            safeData[field] = data[field];
+        }
+        return safeData;
+    }, {});
+};
+
 // Campos que se mostrarán en el PDF de BankAccount
 const BANK_ACCOUNT_FIELDS = [
     { label: 'ID',               key: '_id' },
@@ -19,11 +32,26 @@ const BANK_ACCOUNT_FIELDS = [
 
 export const createField = async (req, res) => {
     try {
-        const fieldData = req.body;
+        const fieldData = { ...req.body };
 
         if (req.file) {
             fieldData.photo = req.file.path;
         }
+
+        const saldo = Number(fieldData.saldo ?? 0);
+        if (Number.isNaN(saldo) || saldo < MIN_INITIAL_BALANCE) {
+            return res.status(400).json({
+                success: false,
+                message: `El saldo inicial no puede ser menor a ${MIN_INITIAL_BALANCE}`
+            });
+        }
+        if (saldo > MAX_INITIAL_BALANCE) {
+            return res.status(400).json({
+                success: false,
+                message: `El saldo inicial no puede ser mayor a ${MAX_INITIAL_BALANCE}`
+            });
+        }
+        fieldData.saldo = saldo;
 
         const field = new Field(fieldData);
         await field.save();
@@ -46,8 +74,18 @@ export const createField = async (req, res) => {
 export const deleteField = async (req, res) => {
     try {
         const { id } = req.params;
+        const { reason } = req.body || {};
 
-        const deletedField = await Field.findByIdAndDelete(id);
+        const deletedField = await Field.findByIdAndUpdate(
+            id,
+            {
+                estado: 'cerrada',
+                closedAt: new Date(),
+                closedBy: req.user?.id || 'system',
+                closedReason: reason || 'Cierre administrativo'
+            },
+            { new: true, runValidators: true }
+        );
 
         if (!deletedField) {
             return res.status(404).json({
@@ -58,14 +96,14 @@ export const deleteField = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Cuenta bancaria eliminada correctamente',
+            message: 'Cuenta bancaria cerrada correctamente',
             data: deletedField
         });
 
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Error al eliminar la cuenta bancaria',
+            message: 'Error al cerrar la cuenta bancaria',
             error: error.message
         });
     }
@@ -109,10 +147,17 @@ export const getAccountByAccountNumber = async (req, res) => {
 export const updateField = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = req.body;
+        const data = sanitizeAccountUpdate(req.body);
 
         if (req.file) {
             data.photo = req.file.path;
+        }
+
+        if (Object.keys(data).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No hay campos permitidos para actualizar'
+            });
         }
 
         const updatedField = await Field.findByIdAndUpdate(
@@ -286,6 +331,46 @@ export const sendBankAccountPDFById = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al enviar el PDF',
+            error: error.message
+        });
+    }
+};
+
+export const toggleAccountStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado } = req.body;
+
+        if (!estado || !['activa', 'inactiva'].includes(estado)) {
+            return res.status(400).json({
+                success: false,
+                message: 'El estado debe ser "activa" o "inactiva"'
+            });
+        }
+
+        const account = await Field.findByIdAndUpdate(
+            id,
+            { estado },
+            { new: true, runValidators: true }
+        );
+
+        if (!account) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta bancaria no encontrada'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: `Cuenta ${estado} correctamente`,
+            data: account
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al cambiar el estado de la cuenta',
             error: error.message
         });
     }

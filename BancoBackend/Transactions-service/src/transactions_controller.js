@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import axios from 'axios';
+import { randomUUID } from 'crypto';
 
 import Transaction from './transactions_model.js';
 import BankAccount from '../bankAccount/bankAccount_model.js';
@@ -54,16 +55,85 @@ const createRecordIfAvailable = async (recordData) => {
     return await recordServiceClient.createRecord(recordData);
 };
 
+const MIN_TRANSACTION_AMOUNT = 0.01;
+const MAX_TRANSACTION_AMOUNT = 50000;
+const DAILY_TRANSACTION_LIMIT = 100000;
+const MONEY_MOVEMENT_TYPES = ['deposito', 'retiro', 'transferencia'];
+
+const getAuditData = (req) => ({
+    usuarioId: req.user?.id,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    canal: req.get('x-channel') || 'api',
+    referencia: randomUUID(),
+    idempotencyKey: req.get('Idempotency-Key') || req.body?.idempotencyKey
+});
+
+const validateAmount = (monto) => {
+    const amount = Number(monto);
+    if (!Number.isFinite(amount) || amount < MIN_TRANSACTION_AMOUNT) {
+        throw new Error('El monto debe ser mayor que 0');
+    }
+    if (amount > MAX_TRANSACTION_AMOUNT) {
+        throw new Error(`El monto no puede exceder ${MAX_TRANSACTION_AMOUNT}`);
+    }
+    return amount;
+};
+
+const validateDailyLimit = async (usuarioId, amount, session) => {
+    if (!usuarioId) return;
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const [result] = await Transaction.aggregate([
+        {
+            $match: {
+                usuarioId: String(usuarioId),
+                tipo: { $in: ['retiro', 'transferencia'] },
+                estado: 'completado',
+                createdAt: { $gte: startOfDay }
+            }
+        },
+        { $group: { _id: null, total: { $sum: '$monto' } } }
+    ]).session(session);
+
+    if ((result?.total || 0) + amount > DAILY_TRANSACTION_LIMIT) {
+        throw new Error('Límite diario de transacciones excedido');
+    }
+};
+
 export const createTransaction = async (req, res) => {
     try {
         const { tipo, monto, cuentaOrigen, cuentaDestino } = req.body;
+        const amount = validateAmount(monto);
+        const auditData = getAuditData(req);
 
         if (!tipo || monto === undefined) {
             throw new Error('Tipo y monto son obligatorios');
         }
 
-        if (Number(monto) <= 0) {
-            throw new Error('El monto debe ser mayor que 0');
+        if (!MONEY_MOVEMENT_TYPES.includes(tipo)) {
+            throw new Error('Tipo de transacción inválido');
+        }
+
+        if (auditData.idempotencyKey) {
+            const existingTransaction = await Transaction.findOne({
+                idempotencyKey: auditData.idempotencyKey,
+                usuarioId: String(req.user?.id)
+            });
+
+            if (existingTransaction) {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Transacción ya procesada previamente',
+                    data: existingTransaction
+                });
+            }
+        }
+
+        if (tipo === 'deposito' && !['ADMIN_ROLE', 'CAJERO_ROLE'].includes(req.user?.role)) {
+            throw new Error('No tienes permiso para realizar depósitos directos');
         }
 
         if (tipo === 'deposito') {
@@ -71,24 +141,39 @@ export const createTransaction = async (req, res) => {
                 throw new Error('Debe proporcionar cuentaDestino para depósito');
             }
 
-            const cuenta = await BankAccount.findById(cuentaDestino);
-            if (!cuenta) throw new Error('Cuenta destino no encontrada');
-            if (cuenta.estado !== 'activa') throw new Error('Cuenta destino no está activa');
+            const session = await mongoose.startSession();
+            let cuenta;
+            let transaction;
 
-            cuenta.saldo += Number(monto);
-            await cuenta.save();
+            try {
+                await session.withTransaction(async () => {
+                    cuenta = await BankAccount.findById(cuentaDestino).session(session);
+                    if (!cuenta) throw new Error('Cuenta destino no encontrada');
+                    if (cuenta.estado !== 'activa') throw new Error('Cuenta destino no está activa');
 
-            const transaction = await Transaction.create({
-                tipo,
-                monto: Number(monto),
-                cuentaDestino
-            });
+                    cuenta.saldo += amount;
+                    await cuenta.save({ session });
+
+                    const [createdTransaction] = await Transaction.create([{
+                        tipo,
+                        monto: amount,
+                        cuentaDestino,
+                        ...auditData,
+                        usuarioId: String(req.user?.id),
+                        descripcion: `Depósito de ${amount}`
+                    }], { session });
+
+                    transaction = createdTransaction;
+                });
+            } finally {
+                await session.endSession();
+            }
 
             await sendTransactionNotification(
                 getAccountEmail(cuenta),
                 'Depósito realizado',
                 tipo,
-                Number(monto),
+                amount,
                 cuenta.saldo
             );
 
@@ -96,13 +181,14 @@ export const createTransaction = async (req, res) => {
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
-                descripcion: `Depósito de ${monto}`,
+                descripcion: `Depósito de ${amount}`,
                 usuarioId: cuenta.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto: Number(monto),
+                    monto: amount,
                     cuentaDestino: cuentaDestino.toString(),
-                    saldo: cuenta.saldo
+                    saldo: cuenta.saldo,
+                    referencia: transaction.referencia
                 }
             });
 
@@ -118,36 +204,52 @@ export const createTransaction = async (req, res) => {
                 throw new Error('Debe proporcionar cuentaOrigen para retiro');
             }
 
-            const cuenta = await BankAccount.findById(cuentaOrigen);
-            if (!cuenta) throw new Error('Cuenta origen no encontrada');
-            if (cuenta.estado !== 'activa') throw new Error('Cuenta origen no está activa');
+            const session = await mongoose.startSession();
+            let cuenta;
+            let transaction;
 
-            // Validar que la cuenta de origen pertenece al usuario autenticado (no aplica para admin)
-            if (req.user?.role !== 'ADMIN_ROLE') {
-                const ownerCheck = String(cuenta.usuarioId) === String(req.user?.id);
-                if (!ownerCheck) {
-                    throw new Error('No tienes permiso para operar con esa cuenta de origen');
-                }
+            try {
+                await session.withTransaction(async () => {
+                    cuenta = await BankAccount.findById(cuentaOrigen).session(session);
+                    if (!cuenta) throw new Error('Cuenta origen no encontrada');
+                    if (cuenta.estado !== 'activa') throw new Error('Cuenta origen no está activa');
+
+                    if (req.user?.role !== 'ADMIN_ROLE') {
+                        const ownerCheck = String(cuenta.usuarioId) === String(req.user?.id);
+                        if (!ownerCheck) {
+                            throw new Error('No tienes permiso para operar con esa cuenta de origen');
+                        }
+                    }
+
+                    if (cuenta.saldo < amount) {
+                        throw new Error('Saldo insuficiente');
+                    }
+
+                    await validateDailyLimit(req.user?.id, amount, session);
+
+                    cuenta.saldo -= amount;
+                    await cuenta.save({ session });
+
+                    const [createdTransaction] = await Transaction.create([{
+                        tipo,
+                        monto: amount,
+                        cuentaOrigen,
+                        ...auditData,
+                        usuarioId: String(req.user?.id),
+                        descripcion: `Retiro de ${amount}`
+                    }], { session });
+
+                    transaction = createdTransaction;
+                });
+            } finally {
+                await session.endSession();
             }
-
-            if (cuenta.saldo < Number(monto)) {
-                throw new Error('Saldo insuficiente');
-            }
-
-            cuenta.saldo -= Number(monto);
-            await cuenta.save();
-
-            const transaction = await Transaction.create({
-                tipo,
-                monto: Number(monto),
-                cuentaOrigen
-            });
 
             await sendTransactionNotification(
                 getAccountEmail(cuenta),
                 'Retiro realizado',
                 tipo,
-                Number(monto),
+                amount,
                 cuenta.saldo
             );
 
@@ -155,13 +257,14 @@ export const createTransaction = async (req, res) => {
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
-                descripcion: `Retiro de ${monto}`,
+                descripcion: `Retiro de ${amount}`,
                 usuarioId: cuenta.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto: Number(monto),
+                    monto: amount,
                     cuentaOrigen: cuentaOrigen.toString(),
-                    saldo: cuenta.saldo
+                    saldo: cuenta.saldo,
+                    referencia: transaction.referencia
                 }
             });
 
@@ -181,45 +284,62 @@ export const createTransaction = async (req, res) => {
                 throw new Error('No puede transferir a la misma cuenta');
             }
 
-            const cuentaO = await BankAccount.findById(cuentaOrigen);
-            const cuentaD = await BankAccount.findById(cuentaDestino);
+            const session = await mongoose.startSession();
+            let cuentaO;
+            let cuentaD;
+            let transaction;
 
-            if (!cuentaO) throw new Error('Cuenta origen no encontrada');
-            if (!cuentaD) throw new Error('Cuenta destino no encontrada');
-            if (cuentaO.estado !== 'activa' || cuentaD.estado !== 'activa') {
-                throw new Error('Ambas cuentas deben estar activas para realizar la transferencia');
+            try {
+                await session.withTransaction(async () => {
+                    cuentaO = await BankAccount.findById(cuentaOrigen).session(session);
+                    cuentaD = await BankAccount.findById(cuentaDestino).session(session);
+
+                    if (!cuentaO) throw new Error('Cuenta origen no encontrada');
+                    if (!cuentaD) throw new Error('Cuenta destino no encontrada');
+                    if (cuentaO.estado !== 'activa' || cuentaD.estado !== 'activa') {
+                        throw new Error('Ambas cuentas deben estar activas para realizar la transferencia');
+                    }
+
+                    if (req.user?.role !== 'ADMIN_ROLE') {
+                        const ownerCheck = String(cuentaO.usuarioId) === String(req.user?.id);
+                        if (!ownerCheck) {
+                            throw new Error('No tienes permiso para transferir desde esa cuenta de origen');
+                        }
+                    }
+
+                    if (cuentaO.saldo < amount) {
+                        throw new Error('Saldo insuficiente');
+                    }
+
+                    await validateDailyLimit(req.user?.id, amount, session);
+
+                    cuentaO.saldo -= amount;
+                    cuentaD.saldo += amount;
+
+                    await cuentaO.save({ session });
+                    await cuentaD.save({ session });
+
+                    const [createdTransaction] = await Transaction.create([{
+                        tipo,
+                        monto: amount,
+                        cuentaOrigen,
+                        cuentaDestino,
+                        ...auditData,
+                        usuarioId: String(req.user?.id),
+                        descripcion: `Transferencia de ${amount}`
+                    }], { session });
+
+                    transaction = createdTransaction;
+                });
+            } finally {
+                await session.endSession();
             }
-
-            // Validar que la cuenta de origen pertenece al usuario autenticado (no aplica para admin)
-            if (req.user?.role !== 'ADMIN_ROLE') {
-                const ownerCheck = String(cuentaO.usuarioId) === String(req.user?.id);
-                if (!ownerCheck) {
-                    throw new Error('No tienes permiso para transferir desde esa cuenta de origen');
-                }
-            }
-
-            if (cuentaO.saldo < Number(monto)) {
-                throw new Error('Saldo insuficiente');
-            }
-
-            cuentaO.saldo -= Number(monto);
-            cuentaD.saldo += Number(monto);
-
-            await cuentaO.save();
-            await cuentaD.save();
-
-            const transaction = await Transaction.create({
-                tipo,
-                monto: Number(monto),
-                cuentaOrigen,
-                cuentaDestino
-            });
 
             await sendTransactionNotification(
                 getAccountEmail(cuentaO),
                 'Transferencia enviada',
                 tipo,
-                Number(monto),
+                amount,
                 cuentaO.saldo
             );
 
@@ -227,7 +347,7 @@ export const createTransaction = async (req, res) => {
                 getAccountEmail(cuentaD),
                 'Transferencia recibida',
                 tipo,
-                Number(monto),
+                amount,
                 cuentaD.saldo
             );
 
@@ -235,14 +355,15 @@ export const createTransaction = async (req, res) => {
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
-                descripcion: `Transferencia enviada de ${monto}`,
+                descripcion: `Transferencia enviada de ${amount}`,
                 usuarioId: cuentaO.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto: Number(monto),
+                    monto: amount,
                     cuentaOrigen: cuentaOrigen.toString(),
                     cuentaDestino: cuentaDestino.toString(),
-                    saldoOrigen: cuentaO.saldo
+                    saldoOrigen: cuentaO.saldo,
+                    referencia: transaction.referencia
                 }
             });
 
@@ -250,14 +371,15 @@ export const createTransaction = async (req, res) => {
                 tipo: 'transaccion',
                 entidad: 'Transaction',
                 entidadId: transaction._id,
-                descripcion: `Transferencia recibida de ${monto}`,
+                descripcion: `Transferencia recibida de ${amount}`,
                 usuarioId: cuentaD.usuarioId?.toString() || 'system',
                 datos: {
                     tipo,
-                    monto: Number(monto),
+                    monto: amount,
                     cuentaOrigen: cuentaOrigen.toString(),
                     cuentaDestino: cuentaDestino.toString(),
-                    saldoDestino: cuentaD.saldo
+                    saldoDestino: cuentaD.saldo,
+                    referencia: transaction.referencia
                 }
             });
 
@@ -280,7 +402,19 @@ export const createTransaction = async (req, res) => {
 export const updateTransaction = async (req, res) => {
     try {
         const { id } = req.params;
-        const { tipo, monto } = req.body;
+        const { estado, descripcion } = req.body;
+
+        if (
+            req.body.tipo !== undefined ||
+            req.body.monto !== undefined ||
+            req.body.cuentaOrigen !== undefined ||
+            req.body.cuentaDestino !== undefined
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'No se permite modificar campos financieros de una transacción. Usa un proceso de reversión.'
+            });
+        }
 
         const transaction = await Transaction.findById(id);
 
@@ -291,74 +425,14 @@ export const updateTransaction = async (req, res) => {
             });
         }
 
-        // =========================
-        // REVERTIR EFECTO ANTERIOR
-        // =========================
-
-        if (transaction.tipo === 'deposito') {
-            const cuenta = await BankAccount.findById(transaction.cuentaDestino);
-            cuenta.saldo -= transaction.monto;
-            await cuenta.save();
+        if (estado !== undefined) {
+            transaction.estado = estado;
         }
-
-        if (transaction.tipo === 'retiro') {
-            const cuenta = await BankAccount.findById(transaction.cuentaOrigen);
-            cuenta.saldo += transaction.monto;
-            await cuenta.save();
+        if (descripcion !== undefined) {
+            transaction.descripcion = descripcion;
         }
-
-        if (transaction.tipo === 'transferencia') {
-            const cuentaO = await BankAccount.findById(transaction.cuentaOrigen);
-            const cuentaD = await BankAccount.findById(transaction.cuentaDestino);
-
-            cuentaO.saldo += transaction.monto;
-            cuentaD.saldo -= transaction.monto;
-
-            await cuentaO.save();
-            await cuentaD.save();
-        }
-
-        // =========================
-        //  APLICAR NUEVA OPERACIÓN
-        // =========================
-
-        transaction.tipo = tipo || transaction.tipo;
-        transaction.monto = monto || transaction.monto;
-
-        if (transaction.monto <= 0) {
-            throw new Error('El monto debe ser mayor a 0');
-        }
-
-        if (transaction.tipo === 'deposito') {
-            const cuenta = await BankAccount.findById(transaction.cuentaDestino);
-            cuenta.saldo += transaction.monto;
-            await cuenta.save();
-        }
-
-        if (transaction.tipo === 'retiro') {
-            const cuenta = await BankAccount.findById(transaction.cuentaOrigen);
-
-            if (cuenta.saldo < transaction.monto) {
-                throw new Error('Saldo insuficiente');
-            }
-
-            cuenta.saldo -= transaction.monto;
-            await cuenta.save();
-        }
-
-        if (transaction.tipo === 'transferencia') {
-            const cuentaO = await BankAccount.findById(transaction.cuentaOrigen);
-            const cuentaD = await BankAccount.findById(transaction.cuentaDestino);
-
-            if (cuentaO.saldo < transaction.monto) {
-                throw new Error('Saldo insuficiente');
-            }
-
-            cuentaO.saldo -= transaction.monto;
-            cuentaD.saldo += transaction.monto;
-
-            await cuentaO.save();
-            await cuentaD.save();
+        if (!transaction.referencia) {
+            transaction.referencia = randomUUID();
         }
 
         await transaction.save();
@@ -368,13 +442,12 @@ export const updateTransaction = async (req, res) => {
             tipo: 'transaccion_actualizada',
             entidad: 'Transaction',
             entidadId: transaction._id,
-            descripcion: `Transacción actualizada a ${tipo} de ${monto}`,
-            usuarioId: 'system', // In a real app, this would come from JWT
+            descripcion: `Metadatos de transacción actualizados`,
+            usuarioId: req.user?.id || 'system',
             datos: {
-                tipoAnterior: transaction.tipo,
-                montoAnterior: transaction.monto,
-                tipoNuevo: tipo,
-                montoNuevo: monto
+                estado: transaction.estado,
+                descripcion: transaction.descripcion,
+                referencia: transaction.referencia
             }
         });
 
@@ -431,11 +504,11 @@ export const getTransactionByTipo = async (req, res) => {
             });
         }
 
-        const transaction = await Transaction.findOne({
+        const transaction = await Transaction.find({
             tipo: { $regex: tipo, $options: 'i' }
         }).populate('cuentaOrigen cuentaDestino');
 
-        if (!transaction) {
+        if (!transaction.length) {
             return res.status(404).json({
                 success: false,
                 message: 'Transacción no encontrada'
@@ -460,7 +533,14 @@ export const deleteTransaction = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const deletedTransaction = await Transaction.findByIdAndDelete(id);
+        const deletedTransaction = await Transaction.findByIdAndUpdate(
+            id,
+            {
+                estado: 'cancelado',
+                descripcion: 'Cancelación administrativa sin movimiento de saldo'
+            },
+            { new: true, runValidators: true }
+        );
 
         if (!deletedTransaction) {
             return res.status(404).json({
@@ -474,16 +554,18 @@ export const deleteTransaction = async (req, res) => {
             tipo: 'transaccion_eliminada',
             entidad: 'Transaction',
             entidadId: id,
-            descripcion: `Transacción eliminada`,
-            usuarioId: 'system', // In a real app, this would come from JWT
+            descripcion: `Transacción cancelada`,
+            usuarioId: req.user?.id || 'system',
             datos: {
-                transactionId: id
+                transactionId: id,
+                referencia: deletedTransaction.referencia
             }
         });
 
         res.status(200).json({
             success: true,
-            message: 'Transacción eliminada correctamente'
+            message: 'Transacción cancelada correctamente',
+            data: deletedTransaction
         });
 
     } catch (error) {
@@ -534,6 +616,55 @@ export const getTransactions = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error al obtener las transacciones',
+            error: error.message
+        });
+    }
+};
+
+export const getMyTransactions = async (req, res) => {
+    try {
+        const { page = 1, limit = 10, tipo, fechaInicio, fechaFin } = req.query;
+
+        const cuentas = await BankAccount.find({ usuarioId: String(req.user.id) }).select('_id');
+        const cuentaIds = cuentas.map(c => c._id);
+
+        const filter = {
+            $or: [
+                { cuentaOrigen: { $in: cuentaIds } },
+                { cuentaDestino: { $in: cuentaIds } }
+            ]
+        };
+
+        if (tipo) filter.tipo = tipo;
+        if (fechaInicio || fechaFin) {
+            filter.createdAt = {};
+            if (fechaInicio) filter.createdAt.$gte = new Date(fechaInicio);
+            if (fechaFin) filter.createdAt.$lte = new Date(fechaFin);
+        }
+
+        const transactions = await Transaction.find(filter)
+            .populate('cuentaOrigen cuentaDestino')
+            .limit(parseInt(limit))
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 });
+
+        const total = await Transaction.countDocuments(filter);
+
+        return res.status(200).json({
+            success: true,
+            data: transactions,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages: Math.ceil(total / limit),
+                totalRecords: total,
+                limit
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener tus transacciones',
             error: error.message
         });
     }

@@ -97,7 +97,7 @@ export const getFavorites = async (req, res) => {
 
         const { page = 1, limit = 10 } = req.query;
         const pageNumber = Math.max(1, parseInt(page, 10) || 1);
-        const limitNumber = Math.max(1, parseInt(limit, 10) || 10);
+        const limitNumber = Math.min(10, Math.max(1, parseInt(limit, 10) || 10));
         const userFilter = buildUserFilter(req.user.id);
 
         const favorites = await Favorite.find(userFilter)
@@ -136,13 +136,29 @@ export const updateFavorite = async (req, res) => {
 
         const { id } = req.params;
 
-        const favorite = await Favorite.findOneAndUpdate(
-            { _id: id, ...buildUserFilter(req.user.id) },
+        const favorite = await Favorite.findById(id);
+
+        if (!favorite) {
+            return res.status(404).json({
+                success: false,
+                message: 'Favorito no encontrado'
+            });
+        }
+
+        if (String(favorite.user) !== String(req.user.id)) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tienes permiso sobre este favorito'
+            });
+        }
+
+        const updatedFavorite = await Favorite.findByIdAndUpdate(
+            id,
             req.body,
             { new: true, runValidators: true }
         );
 
-        if (!favorite) {
+        if (!updatedFavorite) {
             return res.status(404).json({
                 success: false,
                 message: 'Favorito no encontrado'
@@ -152,7 +168,7 @@ export const updateFavorite = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Favorito actualizado',
-            data: favorite
+            data: updatedFavorite
         });
 
     } catch (error) {
@@ -241,10 +257,7 @@ export const deleteFavorite = async (req, res) => {
 
         const { id } = req.params;
 
-        const favorite = await Favorite.findOneAndDelete({
-            _id: id,
-            ...buildUserFilter(req.user.id)
-        });
+        const favorite = await Favorite.findById(id);
 
         if (!favorite) {
             return res.status(404).json({
@@ -253,10 +266,19 @@ export const deleteFavorite = async (req, res) => {
             });
         }
 
+        if (String(favorite.user) !== String(req.user.id)) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tienes permiso sobre este favorito'
+            });
+        }
+
+        const deletedFavorite = await Favorite.findByIdAndDelete(id);
+
         res.status(200).json({
             success: true,
             message: 'Favorito eliminado',
-            data: favorite
+            data: deletedFavorite
         });
 
     } catch (error) {

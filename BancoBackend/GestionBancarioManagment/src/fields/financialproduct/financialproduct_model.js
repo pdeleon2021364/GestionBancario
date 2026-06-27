@@ -26,6 +26,10 @@ const financialProductSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        requiereAprobacion: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,

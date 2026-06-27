@@ -18,6 +18,11 @@ export const User = sequelize.define(
       field: 'name',
       validate: {
         notEmpty: { msg: 'El nombre es obligatorio.' },
+        isOnlyLetters(value) {
+          if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+            throw new Error('El nombre solo puede contener letras');
+          }
+        },
         len: {
           args: [1, 25],
           msg: 'El nombre no puede tener más de 25 caracteres.',
@@ -30,6 +35,11 @@ export const User = sequelize.define(
       field: 'surname',
       validate: {
         notEmpty: { msg: 'El apellido es obligatorio.' },
+        isOnlyLetters(value) {
+          if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+            throw new Error('El nombre solo puede contener letras');
+          }
+        },
         len: {
           args: [1, 25],
           msg: 'El apellido no puede tener más de 25 caracteres.',
@@ -69,6 +79,11 @@ export const User = sequelize.define(
       field: 'password',
       validate: {
         notEmpty: { msg: 'La contraseña es obligatoria.' },
+        hasUppercaseAndNumber(value) {
+          if (!/[A-Z]/.test(value) || !/[0-9]/.test(value)) {
+            throw new Error('La contraseña debe tener al menos una mayúscula y un número');
+          }
+        },
         len: {
           args: [8, 255],
           msg: 'La contraseña debe tener entre 8 y 255 caracteres.',

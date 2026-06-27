@@ -154,13 +154,13 @@ export const DashboardHome = () => {
                         <p className="dash-label">GestionBanco — Portal de Usuario</p>
                         <h1>Bienvenido, {displayName}.</h1>
                         <p>
-                            Consulta divisas, tipos de cambio, tus cuentas bancarias y productos
-                            financieros disponibles. Convierte montos con nuestra calculadora y
-                            revisa tu historial de operaciones en cualquier momento.
+                            Revisa tus cuentas bancarias, productos
+                            financieros disponibles, transacciones 
+                            y tu historial de operaciones en cualquier momento.
                         </p>
                         <div className="intro-actions">
-                            <Link to="/user/tipos-cambio" className="intro-primary">
-                                Ver tipos de cambio
+                            <Link to="/user/cuentas" className="intro-primary">
+                                Mis cuentas
                             </Link>
                             <Link to="/user/historial" className="intro-secondary">
                                 Mi historial
@@ -217,25 +217,18 @@ export const DashboardHome = () => {
                                 accent="cyan"
                             />
                             <ModuleCard
-                                to="/user/tipos-cambio"
-                                title="Tipos de cambio"
-                                description="Revisa tasas de conversión disponibles."
-                                metric="ExchangeRate"
-                                accent="green"
-                            />
-                            <ModuleCard
-                                to="/user/divisas"
-                                title="Divisas"
-                                description="Consulta el catálogo de monedas registradas en el sistema."
-                                metric="Monedas"
-                                accent="cyan"
-                            />
-                            <ModuleCard
                                 to="/user/cuentas"
                                 title="Mis cuentas"
                                 description="Consulta el saldo y estado de tus cuentas bancarias."
                                 metric="BankAccount"
                                 accent="green"
+                            />
+                            <ModuleCard
+                                to="/user/productos"
+                                title="Productos financieros"
+                                description="Explorá los productos financieros disponibles en el banco."
+                                metric="Portafolio"
+                                accent="amber"
                             />
                             <ModuleCard
                                 to="/user/perfil"
@@ -255,8 +248,8 @@ export const DashboardHome = () => {
                             <strong>OK</strong>
                         </div>
                         <p>
-                            Tu sesión está protegida con JWT. Podés consultar divisas, tipos de
-                            cambio e historial con total seguridad.
+                            Tu sesión está protegida con JWT. Podés consultar tus cuentas,
+                            transacciones e historial con total seguridad.
                         </p>
                     </aside>
                 </div>
@@ -325,6 +318,7 @@ export const DashboardHome = () => {
                         <ModuleCard to="/dashboard/divisas" title="Divisas" description="Administra monedas disponibles para operaciones y conversiones." metric="Monedas" accent="blue" />
                         <ModuleCard to="/dashboard/tipos-cambio" title="Tipos de cambio" description="Controla pares, tasas, spreads y conversiones favoritas." metric="ExchangeRate" accent="green" />
                         <ModuleCard to="/dashboard/historial" title="Historial operativo" description="Consulta registros de auditoria y trazabilidad del sistema." metric="Record" />
+                        <ModuleCard to="/dashboard/solicitudes-productos" title="Solicitudes de productos" description="Revisa y aprueba solicitudes de productos de los usuarios." metric="Pendientes" accent="amber" />
                     </div>
                 </article>
 

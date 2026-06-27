@@ -1,9 +1,10 @@
 import { axiosAdmin } from "./api";
 
 const unwrap = (response) => response.data?.data ?? response.data ?? [];
+const DEFAULT_LIST_LIMIT = 10;
 
 const crud = (base) => ({
-    list:   async (params = {}) => unwrap(await axiosAdmin.get(base, { params: { limit: 100, ...params } })),
+    list:   async (params = {}) => unwrap(await axiosAdmin.get(base, { params: { limit: DEFAULT_LIST_LIMIT, ...params } })),
     create: async (data)        => unwrap(await axiosAdmin.post(`${base}/create`, data)),
     update: async (id, data)    => unwrap(await axiosAdmin.put(`${base}/update/${id}`, data)),
     remove: async (id)          => unwrap(await axiosAdmin.delete(`${base}/delete/${id}`)),
@@ -12,6 +13,7 @@ const crud = (base) => ({
 
 export const usuariosApi = {
     list:   async ()         => unwrap(await axiosAdmin.get("/Usuarios")),
+    get:    async (id)       => unwrap(await axiosAdmin.get(`/Usuarios/${id}`)),
     create: async (data)     => unwrap(await axiosAdmin.post("/Usuarios/create", data)),
     update: async (id, data) => unwrap(await axiosAdmin.put(`/Usuarios/${id}`, data)),
     remove: async (id)       => unwrap(await axiosAdmin.delete(`/Usuarios/${id}`)),
@@ -24,6 +26,9 @@ export const bankAccountsApi = {
     sendPdf:            async (id, email)     => unwrap(await axiosAdmin.get(`/bankAccount/send-pdf/${id}/${email}`)),
     // Admin: crear una o varias cuentas para un usuario específico
     createForUser:      async (data)          => unwrap(await axiosAdmin.post("/bankAccount/create/batch", data)),
+    getUserAccount:     async (id)            => unwrap(await axiosAdmin.get(`/bankAccount/${id}`)),
+    withdraw:           async (id, monto)     => unwrap(await axiosAdmin.post(`/bankAccount/withdraw/${id}`, { monto })),
+    getDestinations:    async ()              => unwrap(await axiosAdmin.get("/bankAccount/destinations/active")),
 };
 
 export const currenciesApi = {
@@ -45,7 +50,7 @@ export const financialProductsApi = {
 // ── FinancialProducts — USER (rutas restringidas: sin tasaInteres ni activo) ──
 // Usa los endpoints /create/user y /update/user/:id del backend.
 export const financialProductsUserApi = {
-    list:   async (params = {}) => unwrap(await axiosAdmin.get("/financialproduct", { params: { limit: 100, ...params } })),
+    list:   async (params = {}) => unwrap(await axiosAdmin.get("/financialproduct", { params: { limit: DEFAULT_LIST_LIMIT, ...params } })),
     create: async (data)        => unwrap(await axiosAdmin.post("/financialproduct/create/user", data)),
     update: async (id, data)    => unwrap(await axiosAdmin.put(`/financialproduct/update/user/${id}`, data)),
     get:    async (id)          => unwrap(await axiosAdmin.get(`/financialproduct/${id}`)),
@@ -54,7 +59,8 @@ export const financialProductsUserApi = {
 
 export const transactionsApi = {
     ...crud("/transactions"),
-    byType: async (tipo) => unwrap(await axiosAdmin.get(`/transactions/type/${tipo}`)),
+    byType:             async (tipo)        => unwrap(await axiosAdmin.get(`/transactions/type/${tipo}`)),
+    byAccount:          async (accountId)   => unwrap(await axiosAdmin.get(`/transactions/account/${accountId}`)),
 };
 
 export const favoritesApi = {
@@ -66,6 +72,16 @@ export const favoritesApi = {
 export const recordsApi = {
     ...crud("/record"),
     byAccount: async (cuentaId) => unwrap(await axiosAdmin.get(`/record/account/${cuentaId}`)),
+};
+
+export const userProductsApi = {
+    request:    async (data)           => unwrap(await axiosAdmin.post("/user-products/request", data)),
+    myProducts: async ()               => unwrap(await axiosAdmin.get("/user-products/my")),
+    list:       async (params = {})    => unwrap(await axiosAdmin.get("/user-products", { params })),
+    pending:    async ()               => unwrap(await axiosAdmin.get("/user-products/pending")),
+    approve:    async (id)             => unwrap(await axiosAdmin.put(`/user-products/approve/${id}`)),
+    reject:     async (id, motivo)     => unwrap(await axiosAdmin.put(`/user-products/reject/${id}`, { motivoRechazo: motivo })),
+    cancel:     async (id)             => unwrap(await axiosAdmin.put(`/user-products/cancel/${id}`)),
 };
 
 export const getUsuarios        = usuariosApi.list;

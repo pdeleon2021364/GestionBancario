@@ -23,6 +23,7 @@ import transactionsRoutes  from '../src/fields/transactions/transactions_routes.
 import authRoutes          from '../src/fields/auth/auth_routes.js';
 import usersRoutes         from '../src/routes/users.routes.js';
 import favoritesRoutes     from '../src/fields/favorites/favorites_routes.js';
+import userProductRoutes   from '../src/fields/userProduct/userProduct_routes.js';
 
 const BASE_PATH = '/gestionbanco/v1';
 
@@ -49,6 +50,7 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/record`,           recordRoutes);
     app.use(`${BASE_PATH}/transactions`,     transactionsRoutes);
     app.use(`${BASE_PATH}/favorites`,        favoritesRoutes);
+    app.use(`${BASE_PATH}/user-products`,     userProductRoutes);
 
     app.get(`${BASE_PATH}/Health`, (req, res) => {
         res.status(200).json({

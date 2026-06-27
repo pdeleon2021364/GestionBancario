@@ -5,7 +5,9 @@ import {
     updateTransaction,
     deleteTransaction,
     getTransactionById,
-    getTransactionByTipo
+    getTransactionByTipo,
+    getMyTransactions,
+    getTransactionsByAccount
 } from './transactions_controller.js';
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
@@ -155,11 +157,13 @@ const router = Router();
  *         description: No encontrada
  */
 
-router.post('/create', createTransaction);
-router.get('/', getTransactions);
+router.post('/create', validateJWT, createTransaction);
+router.get('/', validateJWT, getTransactions);
 router.put('/update/:id', validateJWT, requireRole('ADMIN_ROLE'), updateTransaction);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteTransaction);
-router.get('/type/:tipo', getTransactionByTipo);
-router.get('/:id', getTransactionById);
+router.get('/my', validateJWT, getMyTransactions);
+router.get('/type/:tipo', validateJWT, getTransactionByTipo);
+router.get('/account/:accountId', validateJWT, getTransactionsByAccount);
+router.get('/:id', validateJWT, getTransactionById);
 
 export default router;

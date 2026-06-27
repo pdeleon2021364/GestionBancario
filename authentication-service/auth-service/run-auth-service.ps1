@@ -6,7 +6,7 @@ Set-Location $scriptDir
 
 $projectPath = "src\AuthService.Api\AuthService.Api.csproj"
 $serviceName = "AuthService.Api"
-$port = 5156
+$port = 5917
 
 Write-Host "[AuthService] Ubicación actual: $scriptDir"
 Write-Host "[AuthService] Proyecto: $projectPath"

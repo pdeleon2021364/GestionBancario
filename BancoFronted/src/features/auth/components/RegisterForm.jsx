@@ -24,11 +24,7 @@ export const RegisterForm = ({ onSuccess }) => {
         };
         const res = await registerUser(payload);
         if (res.success) {
-            if (res.emailVerificationRequired) {
-                toast.success("¡Cuenta creada! Revisa tu correo para verificar tu cuenta.", { duration: 6000 });
-            } else {
-                toast.success("¡Cuenta creada exitosamente!", { duration: 4000 });
-            }
+            toast.success("¡Su cuenta ya ha sido creada!", { duration: 4000 });
             onSuccess?.();
         } else {
             toast.error(res.error || "Error al crear la cuenta");

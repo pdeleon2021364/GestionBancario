@@ -112,11 +112,13 @@ export const deleteExchangeRate = async (req, res) => {
 export const getExchangeRates = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
+        const pageNumber = Math.max(1, parseInt(page, 10) || 1);
+        const limitNumber = Math.min(10, Math.max(1, parseInt(limit, 10) || 10));
 
         const rates = await ExchangeRate.find()
             .populate('divisaBase divisaDestino')
-            .limit(parseInt(limit))
-            .skip((page - 1) * limit)
+            .limit(limitNumber)
+            .skip((pageNumber - 1) * limitNumber)
             .sort({ createdAt: -1 });
 
         const total = await ExchangeRate.countDocuments();
@@ -125,10 +127,10 @@ export const getExchangeRates = async (req, res) => {
             success: true,
             data: rates,
             pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(total / limit),
+                currentPage: pageNumber,
+                totalPages: Math.ceil(total / limitNumber),
                 totalRecords: total,
-                limit
+                limit: limitNumber
             }
         });
 

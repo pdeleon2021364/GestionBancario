@@ -1,3 +1,4 @@
+using AuthService.Application.Services;
 using AuthService.Domain.Entities;
 using AuthService.Domain.Interfaces;
 using AuthService.Persistence.Data;
@@ -11,6 +12,18 @@ public class RoleRepository(ApplicationDbContext context) : IRoleRepository
     {
         return await (context.Roles ?? throw new InvalidOperationException("Roles DbSet is null."))
             .FirstOrDefaultAsync(r => r.Name == roleName);
+    }
+
+    public async Task<Role> CreateAsync(string roleName)
+    {
+        var role = new Role
+        {
+            Id = UuidGenerator.GenerateRoleId(),
+            Name = roleName
+        };
+        (context.Roles ?? throw new InvalidOperationException("Roles DbSet is null.")).Add(role);
+        await context.SaveChangesAsync();
+        return role;
     }
 
     public async Task<int> CountUsersInRoleAsync(string roleName)

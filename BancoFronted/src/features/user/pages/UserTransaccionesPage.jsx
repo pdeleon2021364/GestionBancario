@@ -41,7 +41,7 @@ const EstadoChip = ({ estado }) => {
 const TIPOS = ["todos", "deposito", "retiro", "transferencia"];
 
 const EMPTY_FORM = {
-    tipo: "deposito",
+    tipo: "retiro",
     monto: "",
     cuentaOrigen: "",
     cuentaDestino: "",
@@ -52,6 +52,7 @@ export const UserTransaccionesPage = () => {
 
     const [transactions, setTransactions] = useState([]);
     const [accounts, setAccounts] = useState([]);
+    const [destinations, setDestinations] = useState([]);
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -72,17 +73,20 @@ export const UserTransaccionesPage = () => {
         try {
             setLoading(true);
             setError(null);
-            const [txData, accData, favData] = await Promise.all([
+            const [txData, accData, destData, favData] = await Promise.all([
                 transactionsApi.list().catch(() => []),
                 bankAccountsApi.list().catch(() => []),
+                bankAccountsApi.getDestinations().catch(() => []),
                 favoritesApi.list().catch(() => []),
             ]);
             setTransactions(Array.isArray(txData) ? txData : []);
             setAccounts(Array.isArray(accData) ? accData : []);
+            setDestinations(Array.isArray(destData) ? destData : []);
             setFavorites(Array.isArray(favData) ? favData : []);
-        } catch {
-            setError("No se pudieron cargar las transacciones. Intenta de nuevo.");
-            showError("No se pudieron cargar las transacciones.");
+        } catch (err) {
+            const msg = err?.response?.data?.message || err?.response?.data?.error || err?.message || "No se pudieron cargar las transacciones.";
+            setError(msg);
+            showError(msg);
         } finally {
             setLoading(false);
         }
@@ -135,8 +139,13 @@ export const UserTransaccionesPage = () => {
         e.preventDefault();
         setFormError(null);
 
-        if (!form.monto || Number(form.monto) <= 0) {
+        const amount = Number(form.monto);
+        if (!form.monto || amount <= 0) {
             setFormError("El monto debe ser mayor a 0.");
+            return;
+        }
+        if (amount > 50000) {
+            setFormError("El monto no puede exceder Q50,000.00 por transacción.");
             return;
         }
         if (form.tipo !== "deposito" && !form.cuentaOrigen) {
@@ -148,11 +157,22 @@ export const UserTransaccionesPage = () => {
             return;
         }
 
+        // Validar saldo suficiente antes de enviar
+        if (form.tipo !== "deposito" && form.cuentaOrigen) {
+            const originAccount = accounts.find((a) => getId(a) === form.cuentaOrigen);
+            if (originAccount && originAccount.saldo < amount) {
+                setFormError(
+                    `Saldo insuficiente. Tu saldo disponible es Q ${Number(originAccount.saldo).toLocaleString("es-GT", { minimumFractionDigits: 2 })}.`
+                );
+                return;
+            }
+        }
+
         setSaving(true);
         try {
             const payload = {
                 tipo:          form.tipo,
-                monto:         Number(form.monto),
+                monto:         amount,
                 cuentaOrigen:  form.cuentaOrigen  || undefined,
                 cuentaDestino: form.cuentaDestino || undefined,
             };
@@ -161,7 +181,7 @@ export const UserTransaccionesPage = () => {
             closeModal();
             await load();
         } catch (err) {
-            const msg = err?.response?.data?.message || err?.response?.data?.error || "No se pudo registrar la transacción.";
+            const msg = err?.response?.data?.message || err?.response?.data?.error || err?.message || "No se pudo registrar la transacción.";
             setFormError(msg);
             showError(msg);
         } finally {
@@ -200,7 +220,7 @@ export const UserTransaccionesPage = () => {
             setFavoriteForm({ alias: "", bankAccount: "" });
             await load();
         } catch (err) {
-            const msg = err?.response?.data?.message || err?.response?.data?.error || "No se pudo agregar el favorito.";
+            const msg = err?.response?.data?.message || err?.response?.data?.error || err?.message || "No se pudo agregar el favorito.";
             setFavoriteError(msg);
             showError(msg);
         } finally {
@@ -444,7 +464,6 @@ export const UserTransaccionesPage = () => {
                             <label>
                                 Tipo de transacción
                                 <select name="tipo" value={form.tipo} onChange={handleChange} required>
-                                    <option value="deposito">Depósito</option>
                                     <option value="retiro">Retiro</option>
                                     <option value="transferencia">Transferencia</option>
                                 </select>
@@ -467,23 +486,10 @@ export const UserTransaccionesPage = () => {
                             {(form.tipo === "retiro" || form.tipo === "transferencia") && (
                                 <label>
                                     Cuenta de origen
-                                    <select name="cuentaOrigen" value={form.cuentaOrigen} onChange={handleChange} required>
+                                    <select name="cuentaOrigen" value={form.cuentaOrigen} onChange={handleChange} required
+                                        style={{ maxWidth: "320px" }}>
                                         <option value="">Seleccionar cuenta…</option>
                                         {ownActiveAccounts.map((acc) => (
-                                            <option key={getId(acc)} value={getId(acc)}>
-                                                {acc.numeroCuenta} — {acc.nombre} ({money(acc.saldo)})
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
-                            )}
-
-                            {form.tipo === "deposito" && (
-                                <label>
-                                    Cuenta de destino
-                                    <select name="cuentaDestino" value={form.cuentaDestino} onChange={handleChange} required>
-                                        <option value="">Seleccionar cuenta…</option>
-                                        {activeAccounts.map((acc) => (
                                             <option key={getId(acc)} value={getId(acc)}>
                                                 {acc.numeroCuenta} — {acc.nombre} ({money(acc.saldo)})
                                             </option>
@@ -495,15 +501,19 @@ export const UserTransaccionesPage = () => {
                             {form.tipo === "transferencia" && (
                                 <label>
                                     Cuenta de destino
-                                    <select name="cuentaDestino" value={form.cuentaDestino} onChange={handleChange} required>
+                                    <select name="cuentaDestino" value={form.cuentaDestino} onChange={handleChange} required
+                                        style={{ maxWidth: "320px" }}>
                                         <option value="">Seleccionar cuenta…</option>
-                                        {activeAccounts
+                                        {destinations
                                             .filter((acc) => getId(acc) !== form.cuentaOrigen)
                                             .map((acc) => (
                                                 <option key={getId(acc)} value={getId(acc)}>
                                                     {acc.numeroCuenta} — {acc.nombre}
                                                 </option>
                                             ))}
+                                        {destinations.length <= 1 && (
+                                            <option value="" disabled>No hay otras cuentas disponibles</option>
+                                        )}
                                     </select>
                                 </label>
                             )}

@@ -1,1 +1,4 @@
 /node_modules
+authentication-service/auth-service/src/**/bin/
+authentication-service/auth-service/src/**/obj/
+authentication-service/auth-service/src/**/logs/

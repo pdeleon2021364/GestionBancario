@@ -82,7 +82,8 @@ public class AuthService(
         var defaultRole = await roleRepository.GetByNameAsync(RoleConstants.USER_ROLE);
         if (defaultRole == null)
         {
-            throw new InvalidOperationException($"Default role '{RoleConstants.USER_ROLE}' not found. Ensure seeding runs before registration.");
+            logger.LogWarning("USER_ROLE not found in database. Creating it automatically.");
+            defaultRole = await roleRepository.CreateAsync(RoleConstants.USER_ROLE);
         }
 
         var user = new User

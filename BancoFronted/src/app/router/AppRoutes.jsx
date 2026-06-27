@@ -13,12 +13,12 @@ import { showError, showSuccess } from "../../shared/utils/toast.js";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
 
 // User pages
-import { UserDivisasPage }       from "../../features/user/pages/UserDivisasPage.jsx";
-import { UserTiposCambioPage }   from "../../features/user/pages/UserTiposCambioPage.jsx";
 import { UserHistorialPage }     from "../../features/user/pages/UserHistorialPage.jsx";
 import { UserCuentasPage }       from "../../features/user/pages/UserCuentasPage.jsx";
+import { UserCuentaDetallePage } from "../../features/user/pages/UserCuentaDetallePage.jsx";
 import { UserTransaccionesPage } from "../../features/user/pages/UserTransaccionesPage.jsx";
 import { UserProductosPage } from "../../features/user/pages/UserProductosPage.jsx";
+import { ProductSolicitudesPage } from "../../features/admin/pages/ProductSolicitudesPage.jsx";
 
 
 import {
@@ -64,7 +64,7 @@ const entityConfigs = {
             { name: "nombre",       label: "Nombre",           required: true },
             { name: "numeroCuenta", label: "Numero de cuenta", required: true },
             { name: "tipoCuenta",   label: "Tipo",             type: "select", options: ["ahorro", "corriente"], required: true },
-            { name: "saldo",        label: "Saldo",            type: "number", required: true },
+            { name: "saldo",        label: "Saldo",            type: "number", min: 100, max: 2001, required: true },
             { name: "usuarioId",    label: "Usuario ID",       type: "number", required: true },
             { name: "estado",       label: "Estado",           type: "select", options: ["activa", "inactiva"], required: true },
         ],
@@ -75,7 +75,7 @@ const entityConfigs = {
             { label: "Saldo",   value: (x) => money(x.saldo) },
             { label: "Estado",  value: (x) => x.estado, chip: true },
         ],
-        empty: { nombre: "", numeroCuenta: "", tipoCuenta: "ahorro", saldo: 0, usuarioId: 1, estado: "activa" },
+        empty: { nombre: "", numeroCuenta: "", tipoCuenta: "ahorro", saldo: 100, usuarioId: 1, estado: "activa" },
     },
     transacciones: {
         label: "transactions",
@@ -106,11 +106,12 @@ const entityConfigs = {
         accent: "amber",
         api: financialProductsApi,
         fields: [
-            { name: "nombre",       label: "Nombre",        required: true },
-            { name: "descripcion",  label: "Descripcion",   required: true },
-            { name: "tasaInteres",  label: "Tasa interes",  type: "number", required: true },
-            { name: "tipoProducto", label: "Tipo producto", required: true },
-            { name: "activo",       label: "Activo",        type: "checkbox" },
+            { name: "nombre",               label: "Nombre",              required: true },
+            { name: "descripcion",          label: "Descripcion",         required: true },
+            { name: "tasaInteres",          label: "Tasa interes",        type: "number", required: true },
+            { name: "tipoProducto",         label: "Tipo producto",       required: true },
+            { name: "activo",               label: "Activo",              type: "checkbox" },
+            { name: "requiereAprobacion",   label: "Requiere aprobacion", type: "checkbox" },
         ],
         columns: [
             { label: "Producto",    value: (x) => x.nombre },
@@ -118,8 +119,9 @@ const entityConfigs = {
             { label: "Tasa",        value: (x) => `${x.tasaInteres}%` },
             { label: "Descripcion", value: (x) => x.descripcion },
             { label: "Estado",      value: (x) => x.activo ? "Activo" : "Inactivo", chip: true },
+            { label: "Req. aprob.", value: (x) => x.requiereAprobacion ? "Si" : "No", chip: true },
         ],
-        empty: { nombre: "", descripcion: "", tasaInteres: 0, tipoProducto: "", activo: true },
+        empty: { nombre: "", descripcion: "", tasaInteres: 0, tipoProducto: "", activo: true, requiereAprobacion: false },
     },
     divisas: {
         label: "Currency",
@@ -195,12 +197,15 @@ const StatusChip = ({ value }) => {
     return <span className={`entity-chip ${tone}`}>{String(value)}</span>;
 };
 
-const FieldInput = ({ field, value, onChange, related }) => {
+const FieldInput = ({ field, value, onChange, related, disabled }) => {
     const baseProps = {
         name: field.name,
         value: field.type === "checkbox" ? undefined : value ?? "",
         checked: field.type === "checkbox" ? Boolean(value) : undefined,
         required: field.required,
+        disabled,
+        min: field.min,
+        max: field.max,
         onChange: (event) => onChange(field.name, field.type === "checkbox" ? event.target.checked : event.target.value),
     };
     if (field.type === "select")      return <select {...baseProps}>{field.options.map((o) => <option key={o} value={o}>{o}</option>)}</select>;
@@ -274,6 +279,13 @@ const ModuleCrudPage = ({ config }) => {
 
     const save = async (event) => {
         event.preventDefault();
+        if (config.label === "bankAccount") {
+            const saldo = Number(form.saldo);
+            if (Number.isNaN(saldo) || saldo < 100 || saldo > 2001) {
+                showError("El saldo inicial debe estar entre Q 100.00 y Q 2,001.00.");
+                return;
+            }
+        }
         try {
             const saved = editing ? await config.api.update(getId(editing), form) : await config.api.create(form);
             writeAudit({ entity: config.label, action: editing ? "actualizo" : "creo", detail: saved?.nombre ?? saved?.numeroCuenta ?? saved?.nameDestiny ?? getId(saved) });
@@ -515,12 +527,21 @@ const ModuleCrudPage = ({ config }) => {
                         <p className="dash-label">{editing ? "Editar" : "Crear"} {config.title}</p>
                         <h2>{editing ? "Actualizar registro" : "Nuevo registro"}</h2>
                         <div className="edit-grid">
-                            {config.fields.map((field) => (
-                                <label key={field.name}>
-                                    {field.label}
-                                    <FieldInput field={field} value={form[field.name]} related={related} onChange={(name, value) => setForm((cur) => ({ ...cur, [name]: value }))} />
-                                </label>
-                            ))}
+                            {config.fields.map((field) => {
+                                const isDisabled = editing && config.label === "bankAccount" && ["numeroCuenta", "saldo", "usuarioId"].includes(field.name);
+                                return (
+                                    <label key={field.name}>
+                                        {field.label}
+                                        <FieldInput
+                                            field={field}
+                                            value={form[field.name]}
+                                            related={related}
+                                            disabled={isDisabled}
+                                            onChange={(name, value) => setForm((cur) => ({ ...cur, [name]: value }))}
+                                        />
+                                    </label>
+                                );
+                            })}
                         </div>
                         <button type="submit" className="btn-primary save-user">Guardar</button>
                     </form>
@@ -567,6 +588,7 @@ export const AppRoutes = () => {
                 <Route path="divisas"         element={<ModuleCrudPage config={entityConfigs.divisas} />} />
                 <Route path="tipos-cambio"    element={<ModuleCrudPage config={entityConfigs.tiposCambio} />} />
                 <Route path="historial"       element={<ModuleCrudPage config={entityConfigs.historial} />} />
+                <Route path="solicitudes-productos" element={<ProductSolicitudesPage />} />
             </Route>
 
             {/* ── PORTAL USUARIO (/user) ─────────────────────────────────── */}
@@ -582,12 +604,11 @@ export const AppRoutes = () => {
             >
                 <Route index               element={<DashboardHome />} />
                 <Route path="perfil"       element={<ProfilePage />} />
-                <Route path="transacciones"element={<UserTransaccionesPage />} />
+                <Route path="transacciones" element={<UserTransaccionesPage />} />
                 <Route path="historial"    element={<UserHistorialPage />} />
-                <Route path="tipos-cambio" element={<UserTiposCambioPage />} />
-                <Route path="divisas"      element={<UserDivisasPage />} />
                 <Route path="cuentas"      element={<UserCuentasPage />} />
-                <Route path="productos" element={<UserProductosPage />} />
+                <Route path="cuentas/:id" element={<UserCuentaDetallePage />} />
+                <Route path="productos"    element={<UserProductosPage />} />
             </Route>
         </Routes>
     );

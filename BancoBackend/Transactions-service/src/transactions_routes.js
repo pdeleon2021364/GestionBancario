@@ -5,7 +5,8 @@ import {
     updateTransaction,
     deleteTransaction,
     getTransactionById,
-    getTransactionByTipo
+    getTransactionByTipo,
+    getMyTransactions
 } from './transactions_controller.js';
 import { validateJWT } from '../middlewares/validate_jwt.js';
 import { requireRole } from '../middlewares/validate_role.js';
@@ -160,6 +161,7 @@ router.get('/transactions/v1/transactions', validateJWT, getTransactions);
 router.put('/transactions/v1/transactions/:id', validateJWT, requireRole('ADMIN_ROLE'), updateTransaction);
 router.delete('/transactions/v1/transactions/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteTransaction);
 router.get('/transactions/v1/transactions/type/:tipo', validateJWT, getTransactionByTipo);
+router.get('/transactions/v1/transactions/my', validateJWT, getMyTransactions);
 router.get('/transactions/v1/transactions/:id', validateJWT, getTransactionById);
 
 export default router;

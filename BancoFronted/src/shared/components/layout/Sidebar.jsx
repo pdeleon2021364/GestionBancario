@@ -37,6 +37,11 @@ const icons = {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3 2.25M21 12a9 9 0 11-3.3-6.97M21 3v5h-5" />
         </svg>
     ),
+    "/dashboard/solicitudes-productos": (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+    ),
     "/dashboard/perfil": (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -52,14 +57,9 @@ const icons = {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3 2.25M21 12a9 9 0 11-3.3-6.97M21 3v5h-5" />
         </svg>
     ),
-    "/user/tipos-cambio": (
+    "/user/productos": (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6.75h-9m9 0l-3-3m3 3l-3 3M7.5 17.25h9m-9 0l3 3m-3-3l3-3M4.5 12a7.5 7.5 0 0112.8-5.303M19.5 12a7.5 7.5 0 01-12.8 5.303" />
-        </svg>
-    ),
-    "/user/divisas": (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6.75v6.75" />
         </svg>
     ),
     "/user/cuentas": (
@@ -87,14 +87,13 @@ const adminItems = [
     { label: "Divisas",               to: "/dashboard/divisas" },
     { label: "Tipos de Cambio",       to: "/dashboard/tipos-cambio" },
     { label: "Historial",             to: "/dashboard/historial" },
+    { label: "Solicitudes",           to: "/dashboard/solicitudes-productos" },
     { label: "Mi perfil",             to: "/dashboard/perfil" },
 ]
 
 const userItems = [
     { label: "Transacciones",   to: "/user/transacciones" },
     { label: "Mi historial",    to: "/user/historial" },
-    { label: "Tipos de cambio", to: "/user/tipos-cambio" },
-    { label: "Divisas",         to: "/user/divisas" },
     { label: "Mis cuentas",     to: "/user/cuentas" },
     { label: "Productos",       to: "/user/productos" },
     { label: "Mi perfil",       to: "/user/perfil" },

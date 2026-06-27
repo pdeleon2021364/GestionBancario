@@ -6,7 +6,8 @@ import {
     deleteField,
     getAccountByAccountNumber,
     sendAllBankAccountsPDF,
-    sendBankAccountPDFById
+    sendBankAccountPDFById,
+    toggleAccountStatus
 } from './bankAccount_controller.js';
 import { validateJWT } from '../middlewares/validate_jwt.js';
 import { requireRole } from '../middlewares/validate_role.js';
@@ -38,10 +39,24 @@ const router = Router();
  *         usuarioId:
  *           type: integer
  *           example: 1
+ *         usuarioEmail:
+ *           type: string
+ *           format: email
+ *           example: usuario@dominio.com
  *         estado:
  *           type: string
  *           enum: [activa, inactiva]
  *           example: activa
+ *     BankAccountUpdateInput:
+ *       type: object
+ *       properties:
+ *         nombre:
+ *           type: string
+ *           example: Cuenta Principal
+ *         tipoCuenta:
+ *           type: string
+ *           enum: [ahorro, corriente]
+ *           example: ahorro
  */
 
 /**
@@ -96,7 +111,7 @@ const router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/BankAccountInput'
+ *             $ref: '#/components/schemas/BankAccountUpdateInput'
  *     responses:
  *       200:
  *         description: Cuenta actualizada
@@ -197,13 +212,14 @@ const router = Router();
  *         description: Cuenta no encontrada
  */
 
-router.post('/create', validateJWT, createField);
+router.post('/create', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), createField);
 router.get('/', validateJWT, getFields);
-router.put('/update/:id', validateJWT, updateField);
+router.put('/update/:id', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), updateField);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteField);
-router.get('/search/:accountNumber', getAccountByAccountNumber);
-router.get('/search/numero/:numeroCuenta', getAccountByAccountNumber);
-router.get('/send-pdf/all/:email', validateJWT, requireRole('ADMIN_ROLE'), sendAllBankAccountsPDF);
-router.get('/send-pdf/:id/:email', validateJWT, requireRole('ADMIN_ROLE'), sendBankAccountPDFById);
+router.get('/search/:accountNumber', validateJWT, getAccountByAccountNumber);
+router.get('/search/numero/:numeroCuenta', validateJWT, getAccountByAccountNumber);
+router.patch('/status/:id', validateJWT, requireRole('ADMIN_ROLE'), toggleAccountStatus);
+router.get('/send-pdf/all/:email', validateJWT, requireRole('ADMIN_ROLE', 'AUDITOR_ROLE'), sendAllBankAccountsPDF);
+router.get('/send-pdf/:id/:email', validateJWT, requireRole('ADMIN_ROLE', 'AUDITOR_ROLE'), sendBankAccountPDFById);
 
 export default router;
