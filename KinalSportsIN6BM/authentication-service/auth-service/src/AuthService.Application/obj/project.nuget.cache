@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5N7/W1LAZ28=",
+  "dgSpecHash": "O9FZbArKg+A=",
   "success": true,
-  "projectFilePath": "C:\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+  "projectFilePath": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\PC\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\PC\\.nuget\\packages\\cloudinarydotnet\\1.27.7\\cloudinarydotnet.1.27.7.nupkg.sha512",
@@ -81,9 +81,9 @@
       "code": "NU1902",
       "level": "Warning",
       "message": "El paquete \"MailKit\" 4.13.0 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-9j88-vvj5-vhgr",
-      "projectPath": "C:\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+      "projectPath": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+      "filePath": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
       "libraryId": "MailKit",
       "targetGraphs": [
         "net8.0"

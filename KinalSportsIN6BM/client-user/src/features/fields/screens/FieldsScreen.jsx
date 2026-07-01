@@ -7,6 +7,7 @@ import {
     Image,
     TouchableOpacity,
     RefreshControl,
+    Alert,
 } from "react-native";
 import { useFields } from "../hooks/useFields.js";
 import {
@@ -20,6 +21,8 @@ import {
     EmptyState,
     Card,
 } from "../../../shared/components/Common.jsx";
+import Button from "../../../shared/components/Button.jsx";
+import { useAuthStore } from "../../../shared/store/authStore.js";
 
 const FieldCard = ({ item, onPress }) => (
     <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
@@ -58,6 +61,14 @@ const FieldCard = ({ item, onPress }) => (
 
 const FieldsScreen = ({ navigation }) => {
     const { fields, loading, error, getFields } = useFields();
+    const { logout } = useAuthStore();
+
+    const handleLogout = () => {
+        Alert.alert("Cerrar Sesión", "¿Estás seguro que deseas salir?", [
+            { text: "Cancelar", style: "cancel" },
+            { text: "Aceptar", onPress: () => logout() },
+        ]);
+    };
 
     const onRefresh = useCallback(() => {
         getFields();
@@ -67,6 +78,13 @@ const FieldsScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.actions}>
+                <Button
+                    title="Cerrar sesión"
+                    variant="secondary"
+                    onPress={handleLogout}
+                />
+            </View>
             {error && !fields.length ? (
                 <EmptyState message={error} />
             ) : (
@@ -105,6 +123,12 @@ const styles = StyleSheet.create({
     },
     listContent: {
         padding: SPACING.md,
+    },
+    actions: {
+        paddingHorizontal: SPACING.md,
+        paddingTop: SPACING.md,
+        paddingBottom: SPACING.sm,
+        backgroundColor: COLORS.background,
     },
     cardContainer: {
         marginBottom: SPACING.md,
