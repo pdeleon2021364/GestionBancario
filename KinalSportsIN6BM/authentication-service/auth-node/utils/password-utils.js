@@ -17,21 +17,57 @@ export const hashPassword = async (password) => {
   }
 };
 
+const parseArgon2Hash = (hashedPassword) => {
+  const parts = hashedPassword.split('$');
+  if (parts.length !== 6 || parts[1] !== 'argon2id') {
+    throw new Error('Formato de hash Argon2 inválido');
+  }
+
+  const version = parseInt(parts[2].split('=')[1], 10);
+  const paramsPart = parts[3];
+  const saltPart = parts[4];
+  const hashPart = parts[5];
+
+  const params = paramsPart.split(',').reduce((acc, part) => {
+    const [key, value] = part.split('=');
+    acc[key] = parseInt(value, 10);
+    return acc;
+  }, {});
+
+  return {
+    version,
+    memoryCost: params.m,
+    timeCost: params.t,
+    parallelism: params.p,
+    salt: Buffer.from(saltPart, 'base64'),
+    hash: Buffer.from(hashPart, 'base64'),
+  };
+};
+
 export const verifyPassword = async (hashedPassword, plainPassword) => {
   try {
-    // Primero intentar verificación directa con argon2 (formato Node.js nativo)
     try {
       const result = await argon2.verify(hashedPassword, plainPassword);
       if (result) return true;
-    } catch {
-      // Continue to manual verification
+    } catch (verifyError) {
+      // If the default verification fails, we may still support .NET-style Argon2 hashes manually.
+      if (!hashedPassword.startsWith('$argon2id$v=19$')) {
+        throw verifyError;
+      }
     }
 
-    // Si es un hash de .NET, usar verificación manual
     if (hashedPassword.startsWith('$argon2id$v=19$')) {
-      // Minimal stub: always return false (not implemented)
-      // Replace with real .NET Argon2 hash verification if needed
-      return false;
+      const parsed = parseArgon2Hash(hashedPassword);
+      const computedHash = await argon2.hash(plainPassword, {
+        type: argon2.argon2id,
+        memoryCost: parsed.memoryCost,
+        timeCost: parsed.timeCost,
+        parallelism: parsed.parallelism,
+        hashLength: parsed.hash.length,
+        salt: parsed.salt,
+      });
+
+      return computedHash === hashedPassword;
     }
 
     return false;

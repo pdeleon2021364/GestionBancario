@@ -8,6 +8,34 @@ export const useAuth = () => {
     const login = useAuthStore((state) => state.login);
     const logout = useAuthStore((state) => state.logout);
 
+    const verifyEmail = async (token) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await authClient.post("/verify-email", { token });
+            return response.data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error al verificar el email");
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const resendVerification = async (email) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await authClient.post("/resend-verification", { email });
+            return response.data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error al reenviar el email");
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleLogin = async (data) => {
         try {
             setLoading(true);
@@ -64,5 +92,13 @@ export const useAuth = () => {
         }
     };
 
-    return { handleLogin, handleRegister, loading, error, logout };
+    return {
+        handleLogin,
+        handleRegister,
+        verifyEmail,
+        resendVerification,
+        loading,
+        error,
+        logout,
+    };
 };

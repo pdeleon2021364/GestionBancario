@@ -41,11 +41,15 @@ const RegisterScreen = ({ navigation }) => {
     const onSubmit = async (data) => {
         try {
             const { confirmPassword, ...rest } = data
-            await handleRegister(rest)
+            const result = await handleRegister(rest)
+
+            const successMessage = result?.emailVerificationRequired
+                ? "Tu cuenta ha sido creada. Revisa tu correo y verifica tu email antes de iniciar sesión."
+                : "Tu cuenta ha sido creada. Ahora puedes iniciar sesión"
 
             Alert.alert(
                 "Registro exitoso",
-                "Tu cuenta ha sido creada. Ahora puedes iniciar sesión",
+                successMessage,
                 [{ text: "OK", onPress: () => navigation.navigate("Login") }]
             )
         } catch (error) {

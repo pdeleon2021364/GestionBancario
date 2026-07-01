@@ -111,6 +111,11 @@ const LoginScreen = ({ navigation }) => {
                         <Text style={styles.helperText}>¿Olvidaste tu contraseña?</Text>
                     </View>
 
+                    <View style={styles.verifyRow}>
+                        <Text style={styles.verifyText}>¿No puedes usar el link del correo?</Text>
+                        <Text style={styles.verifyLink} onPress={() => navigation.navigate("VerifyEmail")}>Verificar manualmente</Text>
+                    </View>
+
                     <Button
                         title="Iniciar sesión"
                         onPress={handleSubmit(onSubmit)}
@@ -238,6 +243,21 @@ const styles = StyleSheet.create({
     helperText: {
         color: COLORS.primary,
         fontSize: FONT_SIZE.xs,
+    },
+    verifyRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: SPACING.sm,
+    },
+    verifyText: {
+        color: COLORS.textLight,
+        fontSize: FONT_SIZE.xs,
+    },
+    verifyLink: {
+        color: COLORS.secondary,
+        fontSize: FONT_SIZE.xs,
+        fontWeight: "700",
     },
     button: {
         marginTop: SPACING.sm,
