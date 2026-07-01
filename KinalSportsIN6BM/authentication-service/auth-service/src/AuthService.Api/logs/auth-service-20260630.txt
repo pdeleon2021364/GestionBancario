@@ -1,0 +1,168 @@
+[2026-06-30 15:02:23 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 15:02:28 ERR] An error occurred while initializing the database {"SourceContext":"Program"}
+Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
+ ---> System.Net.Sockets.SocketException (10061): No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabaseCreator.EnsureCreatedAsync(CancellationToken cancellationToken)
+   at Program.<Main>$(String[] args) in C:\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\Program.cs:line 148
+[2026-06-30 15:03:36 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 15:03:36 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 15:03:37 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 15:03:37 ERR] An exception occurred while trying to decrypt the element. {"EventId":{"Id":43,"Name":"ExceptionOccurredTryingToDecryptElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+[2026-06-30 15:03:37 ERR] An exception occurred while processing the key element '<key id="093d04ea-b93e-463c-9aa8-b4e5e81d554a" version="1" />'. {"EventId":{"Id":24,"Name":"ExceptionOccurredWhileProcessingTheKeyElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+[2026-06-30 15:03:37 WRN] Key {093d04ea-b93e-463c-9aa8-b4e5e81d554a} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-06-30 15:03:37 WRN] Key {093d04ea-b93e-463c-9aa8-b4e5e81d554a} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+--- End of stack trace from previous location ---
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-06-30 15:03:37 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 15:06:21 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 15:06:22 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 15:06:22 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 15:06:22 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 15:49:23 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 15:49:24 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 15:49:24 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 15:49:24 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 15:52:36 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 15:52:37 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 15:52:37 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 15:52:37 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 16:00:52 INF] HTTP GET /health responded 200 in 60.2801 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMMUC6KC07V:00000001","ConnectionId":"0HNMMUC6KC07V"}
+[2026-06-30 16:01:08 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNMMUC6KC07V:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMMUC6KC07V"}
+System.ArgumentException: Cloud name must be specified in Account!
+   at CloudinaryDotNet.ApiShared..ctor(Account account)
+   at CloudinaryDotNet.Api..ctor(Account account)
+   at CloudinaryDotNet.Cloudinary..ctor(Account account)
+   at AuthService.Application.Services.CloudinaryService..ctor(IConfiguration configuration) in C:\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\Services\CloudinaryService.cs:line 10
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeConstructorInfo.Invoke(BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at lambda_method27(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-06-30 16:01:09 INF] HTTP POST /api/v1/auth/login responded 400 in 66.1377 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMMUC6KC07V:00000002","ConnectionId":"0HNMMUC6KC07V"}
+[2026-06-30 16:02:43 INF] HTTP GET /health responded 200 in 2.1113 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMMUC6KC080:00000001","ConnectionId":"0HNMMUC6KC080"}
+[2026-06-30 16:03:59 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 16:04:00 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 16:04:00 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 16:04:00 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 16:13:14 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 16:13:15 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 16:13:15 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 16:13:15 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 16:13:34 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNMMUJ9U8VT0:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMMUJ9U8VT0"}
+System.ArgumentException: Cloud name must be specified in Account!
+   at CloudinaryDotNet.ApiShared..ctor(Account account)
+   at CloudinaryDotNet.Api..ctor(Account account)
+   at CloudinaryDotNet.Cloudinary..ctor(Account account)
+   at AuthService.Application.Services.CloudinaryService..ctor(IConfiguration configuration) in C:\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\Services\CloudinaryService.cs:line 10
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeConstructorInfo.Invoke(BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at lambda_method27(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-06-30 16:13:35 INF] HTTP POST /api/v1/auth/login responded 400 in 108.7878 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMMUJ9U8VT0:00000001","ConnectionId":"0HNMMUJ9U8VT0"}
+[2026-06-30 16:14:44 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-06-30 16:14:44 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-06-30 16:14:44 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-06-30 16:14:44 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-06-30 16:15:08 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"50f633f2-d1e8-4ed6-ab48-2962c16f16a7","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNMMUK5RAI0C:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMMUK5RAI0C"}
+[2026-06-30 16:15:09 INF] HTTP POST /api/v1/auth/login responded 200 in 545.6614 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMMUK5RAI0C:00000001","ConnectionId":"0HNMMUK5RAI0C"}
+[2026-06-30 16:16:26 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"50f633f2-d1e8-4ed6-ab48-2962c16f16a7","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNMMUK5RAI0D:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMMUK5RAI0D"}
+[2026-06-30 16:16:26 INF] HTTP POST /api/v1/auth/login responded 200 in 327.5612 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMMUK5RAI0D:00000001","ConnectionId":"0HNMMUK5RAI0D"}

@@ -1,0 +1,56 @@
+[2026-04-21 14:41:36 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-04-21 14:41:40 ERR] An error occurred while initializing the database {"SourceContext":"Program"}
+Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
+ ---> System.Net.Sockets.SocketException (10061): No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabaseCreator.EnsureCreatedAsync(CancellationToken cancellationToken)
+   at Program.<Main>$(String[] args) in C:\Tareas\IN6BV\KinalSports\authentication-service\auth-service\src\AuthService.Api\Program.cs:line 148
+[2026-04-21 14:43:22 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-04-21 14:43:22 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-04-21 14:43:22 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-04-21 14:43:23 INF] AuthService API is running at http://localhost:5156. Health endpoint: http://localhost:5156/health {"SourceContext":"Program"}
+[2026-04-21 14:44:30 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 4.1104 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMM:00000001","ConnectionId":"0HNKVSR4QJVMM"}
+[2026-04-21 14:44:32 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"2c0549ba-478e-4cf4-b5cf-292aa937a04f","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNKVSR4QJVMM:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNKVSR4QJVMM"}
+[2026-04-21 14:44:32 INF] HTTP POST /api/v1/auth/login responded 200 in 1476.8115 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMM:00000002","ConnectionId":"0HNKVSR4QJVMM"}
+[2026-04-21 14:48:02 INF] HTTP OPTIONS /api/v1/auth/users responded 204 in 0.6396 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMN:00000001","ConnectionId":"0HNKVSR4QJVMN"}
+[2026-04-21 14:48:02 INF] HTTP GET /api/v1/auth/users responded 200 in 156.6585 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMN:00000002","ConnectionId":"0HNKVSR4QJVMN"}
+[2026-04-21 15:45:17 INF] HTTP OPTIONS /api/v1/auth/users responded 204 in 0.6726 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMO:00000001","ConnectionId":"0HNKVSR4QJVMO"}
+[2026-04-21 15:45:17 INF] HTTP GET /api/v1/auth/users responded 401 in 12.6102 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMO:00000002","ConnectionId":"0HNKVSR4QJVMO"}
+[2026-04-21 15:46:36 INF] HTTP GET /api/v1/auth/users responded 401 in 4.4095 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMO:00000003","ConnectionId":"0HNKVSR4QJVMO"}
+[2026-04-21 15:51:14 INF] HTTP GET /api/v1/auth/users responded 401 in 2.7622 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMP:00000001","ConnectionId":"0HNKVSR4QJVMP"}
+[2026-04-21 15:52:33 INF] HTTP GET /api/v1/auth/users responded 401 in 1.1148 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMP:00000002","ConnectionId":"0HNKVSR4QJVMP"}
+[2026-04-21 15:56:16 INF] HTTP OPTIONS /api/v1/auth/users responded 204 in 0.6041 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMQ:00000001","ConnectionId":"0HNKVSR4QJVMQ"}
+[2026-04-21 15:56:16 INF] HTTP GET /api/v1/auth/users responded 401 in 3.7070 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMQ:00000002","ConnectionId":"0HNKVSR4QJVMQ"}
+[2026-04-21 16:00:34 INF] HTTP GET /api/v1/auth/users responded 401 in 3.6610 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMR:00000001","ConnectionId":"0HNKVSR4QJVMR"}
+[2026-04-21 16:05:00 INF] HTTP GET /api/v1/auth/users responded 401 in 1.4639 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMS:00000001","ConnectionId":"0HNKVSR4QJVMS"}
+[2026-04-21 16:41:37 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 1.9450 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000001","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:41:37 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"2c0549ba-478e-4cf4-b5cf-292aa937a04f","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNKVSR4QJVMT:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:41:37 INF] HTTP POST /api/v1/auth/login responded 200 in 358.0818 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000002","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:42:16 INF] HTTP OPTIONS /api/v1/auth/users responded 204 in 0.1682 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000003","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:42:16 INF] HTTP GET /api/v1/auth/users responded 200 in 13.3189 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000004","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:44:06 INF] HTTP GET /api/v1/auth/users responded 200 in 11.1280 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000005","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:44:47 INF] HTTP OPTIONS /api/v1/users/usr_P2vBXSzsF3aS/role responded 204 in 0.2677 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000006","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:44:47 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 180.9348 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000007","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:44:54 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 26.4764 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000008","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:45:45 INF] HTTP GET /api/v1/auth/users responded 200 in 26.9842 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:00000009","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:46:18 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 39.6738 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:0000000A","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:46:21 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 72.9352 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:0000000B","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:46:38 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 97.2171 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:0000000C","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:46:42 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 34.1054 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:0000000D","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:46:49 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 29.6705 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:0000000E","ConnectionId":"0HNKVSR4QJVMT"}
+[2026-04-21 16:46:52 INF] HTTP PUT /api/v1/users/usr_P2vBXSzsF3aS/role responded 200 in 33.5978 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNKVSR4QJVMT:0000000F","ConnectionId":"0HNKVSR4QJVMT"}
