@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [2026-07-02 01:03:55 INF] Checking database connection... {"SourceContext":"Program"}
 [2026-07-02 01:04:00 ERR] An error occurred while initializing the database {"SourceContext":"Program"}
 Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
@@ -103,3 +104,69 @@ Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
 [2026-07-02 02:08:01 INF] Database ready. Running seed data... {"SourceContext":"Program"}
 [2026-07-02 02:08:02 INF] Database initialization completed successfully {"SourceContext":"Program"}
 [2026-07-02 02:08:02 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+=======
+[2026-07-02 00:58:17 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-07-02 00:58:17 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-07-02 00:58:18 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-07-02 00:58:18 ERR] An exception occurred while trying to decrypt the element. {"EventId":{"Id":43,"Name":"ExceptionOccurredTryingToDecryptElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+[2026-07-02 00:58:18 ERR] An exception occurred while processing the key element '<key id="0ddfe16d-8eec-4e55-87e0-1f1deff1503b" version="1" />'. {"EventId":{"Id":24,"Name":"ExceptionOccurredWhileProcessingTheKeyElement"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+[2026-07-02 00:58:18 WRN] Key {0ddfe16d-8eec-4e55-87e0-1f1deff1503b} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-07-02 00:58:18 WRN] Key {0ddfe16d-8eec-4e55-87e0-1f1deff1503b} is ineligible to be the default key because its CreateEncryptor method failed. {"EventId":{"Id":12,"Name":"KeyIsIneligibleToBeTheDefaultKeyBecauseItsMethodFailed"},"SourceContext":"Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver"}
+System.Security.Cryptography.CryptographicException: Error occurred during a cryptographic operation.
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapiCore(Byte* pbProtectedData, UInt32 cbProtectedData, Byte* pbOptionalEntropy, UInt32 cbOptionalEntropy)
+   at Microsoft.AspNetCore.DataProtection.Cng.DpapiSecretSerializerHelper.UnprotectWithDpapi(Byte[] protectedSecret)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor.Decrypt(XElement encryptedElement)
+   at Microsoft.AspNetCore.DataProtection.XmlEncryption.XmlEncryptionExtensions.DecryptElement(XElement element, IActivator activator)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager.Microsoft.AspNetCore.DataProtection.KeyManagement.Internal.IInternalXmlKeyManager.DeserializeDescriptorFromKeyElement(XElement keyElement)
+   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)
+--- End of stack trace from previous location ---
+   at System.Lazy`1.CreateValue()
+   at Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.CngGcmAuthenticatedEncryptorFactory.CreateEncryptorInstance(IKey key)
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.KeyBase.CreateEncryptor()
+   at Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver.CanCreateAuthenticatedEncryptor(IKey key)
+[2026-07-02 00:58:18 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-07-02 01:00:32 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-07-02 01:00:33 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-07-02 01:00:33 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-07-02 01:00:33 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-07-02 01:04:15 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-07-02 01:04:16 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-07-02 01:04:16 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-07-02 01:04:16 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-07-02 01:11:52 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-07-02 01:11:53 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-07-02 01:11:53 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-07-02 01:11:53 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-07-02 01:15:20 INF] Checking database connection... {"SourceContext":"Program"}
+[2026-07-02 01:15:21 INF] Database ready. Running seed data... {"SourceContext":"Program"}
+[2026-07-02 01:15:21 INF] Database initialization completed successfully {"SourceContext":"Program"}
+[2026-07-02 01:15:21 INF] AuthService API is running at http://0.0.0.0:5156. Health endpoint: http://0.0.0.0:5156/health {"SourceContext":"Program"}
+[2026-07-02 01:18:56 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"785f1851-06f9-4477-b7d7-1d09bd1c4be1","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNMO18LOL4QQ:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMO18LOL4QQ"}
+[2026-07-02 01:18:56 INF] HTTP POST /api/v1/auth/login responded 200 in 4286.4206 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMO18LOL4QQ:00000001","ConnectionId":"0HNMO18LOL4QQ"}
+[2026-07-02 01:26:05 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"785f1851-06f9-4477-b7d7-1d09bd1c4be1","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNMO18LOL4QR:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMO18LOL4QR"}
+[2026-07-02 01:26:05 INF] HTTP POST /api/v1/auth/login responded 200 in 640.3372 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMO18LOL4QR:00000001","ConnectionId":"0HNMO18LOL4QR"}
+[2026-07-02 01:26:44 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"785f1851-06f9-4477-b7d7-1d09bd1c4be1","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNMO18LOL4QS:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNMO18LOL4QS"}
+[2026-07-02 01:26:44 INF] HTTP POST /api/v1/auth/login responded 200 in 340.6958 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNMO18LOL4QS:00000001","ConnectionId":"0HNMO18LOL4QS"}
+>>>>>>> 05a66dded361f6dd82da1073fc537abdf180aeac
