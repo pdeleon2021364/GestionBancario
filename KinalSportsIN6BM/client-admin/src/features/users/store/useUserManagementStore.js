@@ -17,14 +17,12 @@ export const useUserManagementStore = create((set, get) => ({
       if (typeof updateUserRoleRequest !== "function") {
         throw new Error("La función updateUserRole no está disponible");
       }
-      const { data: updatedUser } = await updateUserRoleRequest(
-        userId,
-        newRole,
-      );
+      const response = await updateUserRoleRequest(userId, { rol: newRole });
+      const updatedUser = response.data?.data || response.data;
 
       // Actualizar el usuario en el estado local
       const users = get().users.map((u) =>
-        u.id === updatedUser.id ? { ...u, role: updatedUser.role } : u,
+        u.id === updatedUser.id ? { ...u, role: updatedUser.rol || updatedUser.role } : u,
       );
       set({ users, loading: false });
       return { success: true, user: updatedUser };

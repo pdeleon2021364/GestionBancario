@@ -10,7 +10,8 @@ import { Reservations } from "../../features/reservations/components/Reservation
 import { ResetPasswordPage } from "../../features/auth/pages/ResetPasswordPage.jsx";
 import { Teams } from "../../features/teams/components/Teams.jsx";
 import { Tournaments } from "../../features/tournaments/components/Tournaments.jsx";
-import { Users } from "../../features/users/components/Users.jsx";
+import { UsersPage } from "../../features/users/components/UsersPage.jsx";
+import { DashboardHome } from "../../features/dashboard/components/DashboardHome.jsx";
 
 export const AppRoutes = () => {
   return (
@@ -32,11 +33,12 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
+        <Route index element={<DashboardHome />} />
         <Route path="fields" element={<Fields />} />
         <Route path="reservations" element={<Reservations />} />
         <Route path="teams" element={<Teams />} />
         <Route path="tournaments" element={<Tournaments />} />
-        <Route path="users" element={<Users />} />
+        <Route path="users" element={<UsersPage />} />
       </Route>
     </Routes>
   );

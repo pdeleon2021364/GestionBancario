@@ -1,4 +1,15 @@
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.42.107:3006/gestionbanco/v1";
+
 export const ENDPOINTS = {
-    AUTH: process.env.EXPO_PUBLIC_AUTH_URL || "http://172.25.224.1:5156/api/v1/auth",
-    USER: process.env.EXPO_PUBLIC_USER_URL || "http://172.25.224.1:3003/kinalSportsUser/v1"
-}
+    API: API_URL,
+    AUTH: `${API_URL}/auth`,
+    BANK_ACCOUNT: `${API_URL}/bankAccount`,
+    CURRENCY: `${API_URL}/Currency`,
+    EXCHANGE_RATE: `${API_URL}/ExchangeRate`,
+    TRANSACTIONS: `${API_URL}/transactions`,
+    FINANCIAL_PRODUCT: `${API_URL}/financialproduct`,
+    FAVORITES: `${API_URL}/favorites`,
+    RECORD: `${API_URL}/record`,
+    USER_PRODUCTS: `${API_URL}/user-products`,
+    USUARIOS: `${API_URL}/Usuarios`,
+};

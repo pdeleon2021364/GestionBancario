@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   login,
+  refreshToken,
   verifyEmail,
   requestPasswordReset,
   resetPassword,
@@ -205,6 +206,7 @@ const router = Router();
  */
 
 router.post('/login', login);
+router.post('/refresh', refreshToken);
 router.post('/verify-email', verifyEmail);
 router.get('/verify-email', verifyEmail);
 router.post('/request-reset', requestPasswordReset);

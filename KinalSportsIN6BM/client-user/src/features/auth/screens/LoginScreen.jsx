@@ -3,7 +3,6 @@ import {
     View,
     Text,
     StyleSheet,
-    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -11,13 +10,12 @@ import {
     TouchableOpacity,
 } from "react-native"
 
+import { MaterialIcons } from "@expo/vector-icons"
 import { useForm, Controller } from "react-hook-form"
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme"
 import Input from "../../../shared/components/Input"
 import Button from "../../../shared/components/Button"
 import { useAuth } from "../hooks/useAuth"
-
-import kinalSportsLogo from "../../../../assets/kinal_sports.png"
 
 const LoginScreen = ({ navigation }) => {
     const { handleLogin, loading } = useAuth();
@@ -51,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
 
                 <View style={styles.card}>
                     <View style={styles.header}>
-                        <Image source={kinalSportsLogo} style={styles.logo} resizeMode="contain" />
+                        <MaterialIcons name="account-balance" size={48} color={COLORS.primary} />
                         <Text style={styles.title}>OVA Bank</Text>
                         <Text style={styles.subtitle}>Portal de acceso seguro</Text>
                     </View>
@@ -185,8 +183,8 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.xl,
     },
     logo: {
-        height: 74,
-        width: 180,
+        height: 48,
+        width: 48,
         marginBottom: SPACING.sm,
     },
     title: {

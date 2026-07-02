@@ -1,6 +1,6 @@
 import { useState } from "react";
-import authClient from "../../../shared/api/authClient.js";
-import { useAuthStore } from "../../../shared/store/authStore.js";
+import { useAuthStore } from "../../../shared/store/authStore";
+import { verifyEmailApi, resendVerificationApi } from "../../../shared/api/banco";
 
 export const useAuth = () => {
     const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export const useAuth = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await authClient.post("/verify-email", { token });
+            const response = await verifyEmailApi(token);
             return response.data;
         } catch (err) {
             setError(err.response?.data?.message || "Error al verificar el email");
@@ -26,7 +26,7 @@ export const useAuth = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await authClient.post("/resend-verification", { email });
+            const response = await resendVerificationApi(email);
             return response.data;
         } catch (err) {
             setError(err.response?.data?.message || "Error al reenviar el email");
@@ -40,19 +40,16 @@ export const useAuth = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await authClient.post("/login", data);
-            // El backend (auth-node) devuelve: accessToken, refreshToken, userDetails
-            // (algunos servicios pueden devolver variantes como token/user)
-            const { accessToken, refreshToken, userDetails, token, user } =
-                response.data;
-
-            const mappedAccessToken = accessToken || token;
-            const mappedUser = userDetails || user;
-
-            await login(mappedAccessToken, mappedUser, refreshToken);
-            return response.data;
+            const result = await login({
+                email: data.emailOrUsername || data.email,
+                password: data.password,
+            });
+            if (!result.success) {
+                throw new Error(result.error || "Error al iniciar sesión");
+            }
+            return result;
         } catch (err) {
-            setError(err.response?.data?.message || "Error al iniciar sesión");
+            setError(err.message || "Error al iniciar sesión");
             throw err;
         } finally {
             setLoading(false);
@@ -63,29 +60,13 @@ export const useAuth = () => {
         try {
             setLoading(true);
             setError(null);
-
-            const formData = new FormData();
-
-            formData.append("name", data.name);
-            formData.append("surname", data.surname);
-            formData.append("username", data.username);
-            formData.append("email", data.email);
-            formData.append("password", data.password);
-            formData.append("phone", data.phone);
-
-            const response = await authClient.post(
-                "/register",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-
-            return response.data;
+            const result = await useAuthStore.getState().register(data);
+            if (!result.success) {
+                throw new Error(result.error || "Error al registrarse");
+            }
+            return result;
         } catch (err) {
-            setError(err.response?.data?.message || "Error al registrarse");
+            setError(err.message || "Error al registrarse");
             throw err;
         } finally {
             setLoading(false);

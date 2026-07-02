@@ -81,7 +81,7 @@ export const updateUser = async (req, res) => {
   try {
 
     const { id } = req.params;
-    const { nombre, email } = req.body;
+    const { nombre, email, rol } = req.body;
 
     const user = await User.findByPk(id);
 
@@ -92,11 +92,36 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    await user.update({ nombre, email });
+    const updateData = {
+      nombre,
+      email,
+    };
+
+    if (rol) {
+      const allowedRoles = ['ADMIN_ROLE', 'USER_ROLE'];
+      if (!allowedRoles.includes(rol)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Rol inválido'
+        });
+      }
+      updateData.rol = rol;
+    }
+
+    await user.update(updateData);
 
     res.json({
       success: true,
-      message: 'Usuario actualizado correctamente'
+      data: {
+        id: user.id,
+        nombre: user.nombre,
+        email: user.email,
+        rol: user.rol,
+        profilePicture: user.profilePicture,
+        emailVerified: user.emailVerified,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
     });
 
   } catch (error) {

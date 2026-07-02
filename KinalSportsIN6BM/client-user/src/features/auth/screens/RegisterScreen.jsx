@@ -7,15 +7,13 @@ import {
     Platform,
     ScrollView,
     Alert,
-    Image,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme.js";
 import Input from "../../../shared/components/Input.jsx";
 import Button from "../../../shared/components/Button.jsx";
 import { useAuth } from "../hooks/useAuth.js";
-
-import kinalSportsLogo from "../../../../assets/kinal_sports.png"
 
 const RegisterScreen = ({ navigation }) => {
     const { handleRegister, loading } = useAuth()
@@ -54,7 +52,7 @@ const RegisterScreen = ({ navigation }) => {
             )
         } catch (error) {
             console.error(error)
-            const message = error.response?.data?.message || "Error al registrarse"
+            const message = error.message || "Error al registrarse"
             Alert.alert("Error", message)
         }
     };
@@ -70,7 +68,7 @@ const RegisterScreen = ({ navigation }) => {
 
                 <View style={styles.card}>
                     <View style={styles.header}>
-                        <Image source={kinalSportsLogo} style={styles.logo} resizeMode="contain" />
+                        <MaterialIcons name="account-balance" size={48} color={COLORS.primary} />
                         <Text style={styles.title}>Crear cuenta</Text>
                         <Text style={styles.subtitle}>Completa tu información para empezar</Text>
                     </View>
@@ -284,8 +282,8 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.xl,
     },
     logo: {
-        height: 70,
-        width: 180,
+        height: 48,
+        width: 48,
         marginBottom: SPACING.sm,
     },
     title: {

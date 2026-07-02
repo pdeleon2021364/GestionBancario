@@ -56,7 +56,7 @@ export const useAuthStore = create(
       login: async ({ emailOrUsername, password }) => {
         try {
           set({ loading: true, error: null });
-          const { data } = await loginRequest({ emailOrUsername, password });
+          const { data } = await loginRequest({ email: emailOrUsername, password });
 
           // Sólo administradores pueden iniciar sesión en el client-admin.
           const role = data?.userDetails?.role;

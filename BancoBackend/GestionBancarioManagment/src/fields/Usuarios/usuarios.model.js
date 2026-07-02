@@ -37,18 +37,34 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  refreshToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  refreshTokenExpiration: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   resetTokenExpiration: {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  refreshToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  refreshTokenExpiration: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   deleteToken: {
-  type: DataTypes.STRING,
-  allowNull: true,
-},
-deleteTokenExpiration: {
-  type: DataTypes.DATE,
-  allowNull: true,
-}
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  deleteTokenExpiration: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   timestamps: true,
 });
