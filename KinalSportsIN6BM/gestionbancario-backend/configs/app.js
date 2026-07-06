@@ -1,0 +1,128 @@
+'use strict';
+
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import bcrypt from 'bcryptjs';
+
+import { dbConnection, connectPostgres, sequelize } from './db.js';
+import { corsOptions } from './cors-configuration.js';
+import { helmetConfiguration } from './helmet-configuration.js';
+
+//Importar Swagger 
+import { setupSwagger } from './swagger.js';
+
+import User from '../src/fields/Usuarios/usuarios.model.js';
+import usuariosRoutes      from '../src/fields/Usuarios/usuarios.routes.js';
+import bankAccountRoutes   from '../src/fields/bankAccount/bankAccount_routes.js';
+import roleRoutes          from '../src/fields/Roles/role_routes.js';
+import currencyRoutes      from '../src/fields/Currency/Currency_routes.js';
+import exchangeRateRoutes  from '../src/fields/ExchangeRate/ExchangeRate_routes.js';
+import financialproduct    from '../src/fields/financialproduct/financialproduct_routes.js';
+import recordRoutes        from '../src/fields/record/record_routes.js';
+import transactionsRoutes  from '../src/fields/transactions/transactions_routes.js';
+import authRoutes          from '../src/fields/auth/auth_routes.js';
+import usersRoutes         from '../src/routes/users.routes.js';
+import favoritesRoutes     from '../src/fields/favorites/favorites_routes.js';
+import userProductRoutes   from '../src/fields/userProduct/userProduct_routes.js';
+
+const BASE_PATH = '/gestionbanco/v1';
+
+const middlewares = (app) => {
+    app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+    app.use(express.json({ limit: '10mb' }));
+    app.use(cors(corsOptions));
+    app.use(helmet(helmetConfiguration));
+    app.use(morgan('dev'));
+};
+
+const routes = (app) => {
+    //Swagger Documentation
+    setupSwagger(app);
+
+    app.use(`${BASE_PATH}/auth`,             usersRoutes);
+    app.use(`${BASE_PATH}/auth`,             authRoutes);
+    app.use(`${BASE_PATH}/Usuarios`,         usuariosRoutes);
+    app.use(`${BASE_PATH}/bankAccount`,      bankAccountRoutes);
+    app.use(`${BASE_PATH}/Roles`,            roleRoutes);
+    app.use(`${BASE_PATH}/Currency`,         currencyRoutes);
+    app.use(`${BASE_PATH}/ExchangeRate`,     exchangeRateRoutes);
+    app.use(`${BASE_PATH}/financialproduct`, financialproduct);
+    app.use(`${BASE_PATH}/record`,           recordRoutes);
+    app.use(`${BASE_PATH}/transactions`,     transactionsRoutes);
+    app.use(`${BASE_PATH}/favorites`,        favoritesRoutes);
+    app.use(`${BASE_PATH}/user-products`,     userProductRoutes);
+
+    app.get(`${BASE_PATH}/Health`, (req, res) => {
+        res.status(200).json({
+            status: 'Healthy',
+            timestamp: new Date().toISOString(),
+            service: 'gestionbanco'
+        });
+    });
+
+    app.use((req, res) => {
+        res.status(404).json({
+            success: false,
+            message: 'Endpoint no encontrado en Admin API'
+        });
+    });
+};
+
+const ensureAdminUser = async () => {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@ksports.local';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin1234!';
+    const adminName = process.env.ADMIN_NAME || 'Admin KSports';
+
+    const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+    const encryptedPassword = await bcrypt.hash(adminPassword, 10);
+
+    if (existingAdmin) {
+        existingAdmin.rol = 'ADMIN_ROLE';
+        existingAdmin.emailVerified = true;
+        existingAdmin.password = encryptedPassword;
+        await existingAdmin.save();
+        return;
+    }
+
+    await User.create({
+        nombre: adminName,
+        email: adminEmail,
+        password: encryptedPassword,
+        rol: 'ADMIN_ROLE',
+        emailToken: null,
+        emailVerified: true,
+    });
+};
+
+export const createApp = async () => {
+    const app = express();
+    const PORT = process.env.PORT || 3006;
+
+    app.set('trust proxy', 1);
+
+    await dbConnection();
+    await connectPostgres();
+    await sequelize.sync({ alter: true });
+    await ensureAdminUser();
+    middlewares(app);
+    routes(app);
+
+    return app;
+};
+
+export const initServer = async () => {
+    try {
+        const app = await createApp();
+        const PORT = process.env.PORT || 3006;
+
+        app.listen(PORT, () => {
+            console.log(`gestionbanco Server running on port ${PORT}`);
+            console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/Health`);
+        });
+    } catch (error) {
+        console.error(`Error starting Server: ${error.message}`);
+        process.exit(1);
+    }
+};

@@ -8,8 +8,16 @@ export const loginApi = async (data) => {
 };
 
 export const registerApi = async (data) => {
-    const { name, ...rest } = data;
-    const payload = { nombre: name, ...rest };
+    const { name, surname, username, phone, confirmPassword, ...rest } = data;
+    const payload = {
+        nombre: name || rest.nombre || `${surname || ''}`.trim(),
+        ...rest,
+        ...(name ? { name } : {}),
+        ...(surname ? { surname } : {}),
+        ...(username ? { username } : {}),
+        ...(phone ? { phone } : {}),
+        ...(confirmPassword ? { confirmPassword } : {}),
+    };
     return await bancoClient.post("/auth/register", payload, { timeout: 30000 });
 };
 

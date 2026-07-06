@@ -65,9 +65,23 @@ const isValidHttpUrl = (value) => {
 
 export const register = async (req, res) => {
   try {
-    const { nombre, email, password, profilePictureUrl } = req.body;
+    const {
+      nombre,
+      name,
+      email,
+      password,
+      profilePictureUrl,
+      surname,
+      username,
+      phone,
+      confirmPassword,
+    } = req.body;
 
-    if (!nombre || !email || !password) {
+    const resolvedName = typeof nombre === 'string' && nombre.trim()
+      ? nombre.trim()
+      : [name, surname].filter(Boolean).join(' ').trim();
+
+    if (!resolvedName || !email || !password) {
       return res.status(400).json({
         success: false,
         message: 'nombre, email y password son obligatorios'
@@ -104,7 +118,7 @@ export const register = async (req, res) => {
     const rol = totalUsers === 0 ? 'ADMIN_ROLE' : 'USER_ROLE';
 
     const user = await User.create({
-      nombre,
+      nombre: resolvedName,
       email,
       password: encryptedPassword,
       rol,

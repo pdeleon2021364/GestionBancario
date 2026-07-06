@@ -1,4 +1,4 @@
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://192.168.42.107:3006/gestionbanco/v1";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.0.2.2:3006/gestionbanco/v1";
 
 export const ENDPOINTS = {
     API: API_URL,

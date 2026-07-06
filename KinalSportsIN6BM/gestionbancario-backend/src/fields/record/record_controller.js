@@ -1,0 +1,172 @@
+import Record from './record_model.js';
+
+export const createRecord = async (req, res) => {
+    try {
+        const record = new Record(req.body);
+        await record.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Historial creado exitosamente',
+            data: record
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al crear el historial',
+            error: error.message
+        });
+    }
+};
+
+export const getRecordById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const record = await Record.findById(id)
+            .populate('cuentaId listaTransacciones');
+
+        if (!record) {
+            return res.status(404).json({
+                success: false,
+                message: 'Historial no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: record
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar el historial',
+            error: error.message
+        });
+    }
+};
+
+export const getRecordsByAccount = async (req, res) => {
+    try {
+        const { cuentaId } = req.params;
+
+        const records = await Record.find({ cuentaId })
+            .populate('cuentaId listaTransacciones')
+            .sort({ createdAt: -1 });
+
+        if (!records.length) {
+            return res.status(404).json({
+                success: false,
+                message: 'No hay historial para esta cuenta'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: records
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al buscar historial por cuenta',
+            error: error.message
+        });
+    }
+};
+
+export const updateRecord = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+
+        const updatedRecord = await Record.findByIdAndUpdate(
+            id,
+            data,
+            { new: true, runValidators: true }
+        ).populate('cuentaId listaTransacciones');
+
+        if (!updatedRecord) {
+            return res.status(404).json({
+                success: false,
+                message: 'Historial no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Historial actualizado correctamente',
+            data: updatedRecord
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al actualizar el historial',
+            error: error.message
+        });
+    }
+};
+
+export const deleteRecord = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedRecord = await Record.findByIdAndDelete(id);
+
+        if (!deletedRecord) {
+            return res.status(404).json({
+                success: false,
+                message: 'Historial no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Historial eliminado correctamente'
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Error al eliminar el historial',
+            error: error.message
+        });
+    }
+};
+
+export const getRecords = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const pageNumber = Math.max(1, parseInt(page, 10) || 1);
+        const limitNumber = Math.min(10, Math.max(1, parseInt(limit, 10) || 10));
+
+        const records = await Record.find()
+            .populate('cuentaId listaTransacciones')
+            .limit(limitNumber)
+            .skip((pageNumber - 1) * limitNumber)
+            .sort({ createdAt: -1 });
+
+        const total = await Record.countDocuments();
+
+        res.status(200).json({
+            success: true,
+            data: records,
+            pagination: {
+                currentPage: pageNumber,
+                totalPages: Math.ceil(total / limitNumber),
+                totalRecords: total,
+                limit: limitNumber
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener los historiales',
+            error: error.message
+        });
+    }
+};

@@ -57,7 +57,11 @@ const emailTemplate = ({ title, message, buttonText, link, color }) => `
 =========================== */
 export const register = async (req, res) => {
   try {
-    const { nombre, email, password } = req.body;
+    const { nombre, name, email, password, surname } = req.body;
+    const resolvedName = typeof nombre === 'string' && nombre.trim()
+      ? nombre.trim()
+      : [name, surname].filter(Boolean).join(' ').trim();
+
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) return res.status(400).json({ success: false, message: 'El correo ya está registrado' });
 
@@ -67,7 +71,7 @@ export const register = async (req, res) => {
     const totalUsers = await User.count();
     const rol = totalUsers === 0 ? 'ADMIN_ROLE' : 'USER_ROLE';
 
-    await User.create({ nombre, email, password: encryptedPassword, rol, emailToken, emailVerified: false });
+    await User.create({ nombre: resolvedName, email, password: encryptedPassword, rol, emailToken, emailVerified: false });
 
     const verifyLink = `http://localhost:${process.env.PORT || 3006}/gestionbanco/v1/auth/verify-email?token=${emailToken}`;
 
@@ -108,8 +112,8 @@ export const resendVerification = async (req, res) => {
 =========================== */
 export const login = async (req, res) => {
   try {
-    const { email, password, emailOrUsername } = req.body;
-    const identifier = email || emailOrUsername;
+    const { email, password, emailOrUsername, username } = req.body;
+    const identifier = email || emailOrUsername || username;
     const user = await User.findOne({
       where: {
         [Op.or]: [
@@ -119,7 +123,11 @@ export const login = async (req, res) => {
       },
     });
     if (!user) return res.status(400).json({ success: false, message: 'Credenciales inválidas' });
-    if (!user.emailVerified) return res.status(403).json({ success: false, message: 'Debes verificar tu correo primero' });
+
+    const allowUnverifiedLogin = process.env.ALLOW_UNVERIFIED_LOGIN === 'true' || process.env.NODE_ENV !== 'production';
+    if (!user.emailVerified && !allowUnverifiedLogin) {
+      return res.status(403).json({ success: false, message: 'Debes verificar tu correo primero' });
+    }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).json({ success: false, message: 'Credenciales inválidas' });
