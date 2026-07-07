@@ -12,7 +12,10 @@ import {
     getAccountById,
     retirarDinero,
     aplicarInteresMensual,
-    getActiveDestinations
+    getActiveDestinations,
+    createMyAccount,
+    closeMyAccount,
+    downloadAccountPDF
 } from './bankAccount_controller.js';
 import { validateJWT } from '../../../middlewares/validate_jwt.js';
 import { requireRole } from '../../../middlewares/validate_role.js';
@@ -212,11 +215,15 @@ router.get('/search/:accountNumber', validateJWT, getAccountByAccountNumber);
 router.get('/search/numero/:numeroCuenta', validateJWT, getAccountByAccountNumber);
 router.patch('/status/:id', validateJWT, requireRole('ADMIN_ROLE'), toggleAccountStatus);
 router.get('/send-pdf/all/:email', validateJWT, requireRole('ADMIN_ROLE', 'AUDITOR_ROLE'), sendAllBankAccountsPDF);
-router.get('/send-pdf/:id/:email', validateJWT, requireRole('ADMIN_ROLE', 'AUDITOR_ROLE'), sendBankAccountPDFById);
+router.get('/send-pdf/:id/:email', validateJWT, sendBankAccountPDFById);
 
 router.get('/destinations/active', validateJWT, getActiveDestinations);
 router.get('/:id', validateJWT, getAccountById);
 router.post('/withdraw/:id', validateJWT, retirarDinero);
 router.post('/apply-interest/:id', validateJWT, requireRole('ADMIN_ROLE'), aplicarInteresMensual);
+
+router.post('/my/create', validateJWT, createMyAccount);
+router.put('/my/close/:id', validateJWT, closeMyAccount);
+router.get('/download-pdf/:id', validateJWT, downloadAccountPDF);
 
 export default router;

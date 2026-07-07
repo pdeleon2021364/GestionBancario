@@ -58,6 +58,12 @@ const transactionSchema = new mongoose.Schema(
             trim: true,
             maxLength: 255,
         },
+        categoria: {
+            type: String,
+            enum: ['alimentos', 'transporte', 'servicios', 'entretenimiento', 'salud', 'educacion', 'vivienda', 'ropa', 'ahorro', 'otros'],
+            default: 'otros',
+            trim: true
+        },
         canal: {
             type: String,
             enum: ['web', 'api', 'movil', 'caja'],

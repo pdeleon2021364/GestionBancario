@@ -26,6 +26,9 @@ import authRoutes          from '../src/fields/auth/auth_routes.js';
 import usersRoutes         from '../src/routes/users.routes.js';
 import favoritesRoutes     from '../src/fields/favorites/favorites_routes.js';
 import userProductRoutes   from '../src/fields/userProduct/userProduct_routes.js';
+import scheduledTransferRoutes from '../src/fields/scheduledTransfer/scheduledTransfer_routes.js';
+import savingGoalRoutes    from '../src/fields/savingGoal/savingGoal_routes.js';
+import categoriaRoutes     from '../src/fields/categoria/categoria_routes.js';
 
 const BASE_PATH = '/gestionbanco/v1';
 
@@ -53,6 +56,9 @@ const routes = (app) => {
     app.use(`${BASE_PATH}/transactions`,     transactionsRoutes);
     app.use(`${BASE_PATH}/favorites`,        favoritesRoutes);
     app.use(`${BASE_PATH}/user-products`,     userProductRoutes);
+    app.use(`${BASE_PATH}/saving-goals`,       savingGoalRoutes);
+    app.use(`${BASE_PATH}/scheduled-transfer`, scheduledTransferRoutes);
+    app.use(`${BASE_PATH}/categorias`,         categoriaRoutes);
 
     app.get(`${BASE_PATH}/Health`, (req, res) => {
         res.status(200).json({

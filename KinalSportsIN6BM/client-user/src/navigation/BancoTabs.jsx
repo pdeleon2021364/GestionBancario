@@ -11,6 +11,9 @@ import CurrenciesScreen from "../features/banco/screens/CurrenciesScreen";
 import ExchangeRatesScreen from "../features/banco/screens/ExchangeRatesScreen";
 import ProductsScreen from "../features/banco/screens/ProductsScreen";
 import ProfileScreen from "../features/banco/screens/ProfileScreen";
+import FavoritesScreen from "../features/banco/screens/FavoritesScreen";
+import SavingsGoalsScreen from "../features/banco/screens/SavingsGoalsScreen";
+import ScheduledTransfersScreen from "../features/banco/screens/ScheduledTransfersScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -83,6 +86,9 @@ const MoreStack = () => (
         }}
     >
         <Stack.Screen name="ProductsMain" component={ProductsScreen} />
+        <Stack.Screen name="Favorites" component={FavoritesScreen} options={{ title: "Favoritos" }} />
+        <Stack.Screen name="SavingsGoals" component={SavingsGoalsScreen} options={{ title: "Metas" }} />
+        <Stack.Screen name="ScheduledTransfers" component={ScheduledTransfersScreen} options={{ title: "Programadas" }} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
 );

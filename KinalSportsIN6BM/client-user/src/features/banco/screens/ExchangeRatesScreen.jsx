@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl, Modal, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, FlatList, RefreshControl, Modal, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useCallback } from "react";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme";
@@ -6,6 +6,19 @@ import { getExchangeRatesApi, convertCurrencyApi, getCurrenciesApi } from "../..
 import { useFocusEffect } from "@react-navigation/native";
 import Input from "../../../shared/components/Input";
 import Button from "../../../shared/components/Button";
+
+const FLAG_COLORS = {
+    US: "#2563eb", EU: "#facc15", GB: "#dc2626", JPY: "#ef4444",
+    CAD: "#dc2626", AUD: "#2563eb", CHF: "#dc2626", GTQ: "#16a34a",
+};
+
+const getFlagColor = (code) => {
+    const upper = (code || "").toUpperCase();
+    for (const [key, val] of Object.entries(FLAG_COLORS)) {
+        if (upper.includes(key)) return val;
+    }
+    return COLORS.secondary;
+};
 
 const ExchangeRatesScreen = () => {
     const [rates, setRates] = useState([]);
@@ -66,27 +79,45 @@ const ExchangeRatesScreen = () => {
         }
     };
 
-    const renderRate = ({ item }) => (
-        <View style={styles.card}>
-            <View style={styles.cardTop}>
-                <MaterialIcons name="trending-up" size={20} color={COLORS.warning} />
-                <Text style={styles.rateName}>{item.nameDestiny || "Par"}</Text>
+    const baseCode = (item) => typeof item.divisaBase === "object" ? item.divisaBase?.codigo : item.divisaBase || "?";
+    const destCode = (item) => typeof item.divisaDestino === "object" ? item.divisaDestino?.codigo : item.divisaDestino || "?";
+
+    const renderRate = ({ item }) => {
+        const flagColor = getFlagColor(destCode(item));
+        return (
+            <View style={styles.card}>
+                <View style={styles.cardTop}>
+                    <View style={[styles.pairIcon, { backgroundColor: flagColor + "20" }]}>
+                        <MaterialIcons name="trending-up" size={18} color={flagColor} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.rateName}>{item.nameDestiny || `${baseCode(item)}/${destCode(item)}`}</Text>
+                        <Text style={styles.ratePair}>
+                            {baseCode(item)} → {destCode(item)}
+                        </Text>
+                    </View>
+                    <View style={styles.rateBadge}>
+                        <Text style={[styles.rateValue, { color: flagColor }]}>{item.tasa}</Text>
+                    </View>
+                </View>
+                {item.updatedAt && (
+                    <View style={styles.rateFooter}>
+                        <MaterialIcons name="update" size={12} color={COLORS.textMuted} />
+                        <Text style={styles.rateDate}>
+                            {new Date(item.updatedAt).toLocaleDateString("es-GT", {
+                                day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+                            })}
+                        </Text>
+                    </View>
+                )}
             </View>
-            <View style={styles.rateRow}>
-                <Text style={styles.ratePair}>
-                    {typeof item.divisaBase === "object" ? item.divisaBase?.codigo : item.divisaBase || "?"}
-                    {" → "}
-                    {typeof item.divisaDestino === "object" ? item.divisaDestino?.codigo : item.divisaDestino || "?"}
-                </Text>
-                <Text style={styles.rateValue}>{item.tasa}</Text>
-            </View>
-            {item.updatedAt && (
-                <Text style={styles.rateDate}>
-                    Actualizado: {new Date(item.updatedAt).toLocaleDateString("es-GT")}
-                </Text>
-            )}
-        </View>
-    );
+        );
+    };
+
+    const getCurrencyName = (id) => {
+        const c = currencies.find((cur) => (cur._id || cur.id) === id);
+        return c ? `${c.codigo} - ${c.nombre}` : "Seleccionar";
+    };
 
     return (
         <View style={styles.container}>
@@ -105,7 +136,7 @@ const ExchangeRatesScreen = () => {
                             <Text style={styles.count}>{rates.length} tasa(s)</Text>
                         </View>
                         <TouchableOpacity style={styles.convertBtn} onPress={() => setShowConvert(true)}>
-                            <MaterialIcons name="swap-horiz" size={20} color={COLORS.surface} />
+                            <MaterialIcons name="swap-horiz" size={18} color={COLORS.surface} />
                             <Text style={styles.convertBtnText}>Convertir</Text>
                         </TouchableOpacity>
                     </View>
@@ -114,25 +145,26 @@ const ExchangeRatesScreen = () => {
                     !loading ? (
                         <View style={styles.empty}>
                             <MaterialIcons name="trending-up" size={60} color={COLORS.textMuted} />
-                            <Text style={styles.emptyText}>Sin tipos de cambio</Text>
+                            <Text style={styles.emptyText}>Sin tipos de cambio disponibles</Text>
                         </View>
                     ) : null
                 }
             />
 
             <Modal visible={showConvert} transparent animationType="slide">
-                <View style={styles.modalOverlay}>
+                <ScrollView style={styles.modalOverlay}>
                     <View style={styles.modal}>
                         <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Conversión</Text>
+                            <Text style={styles.modalTitle}>Conversión de Divisas</Text>
                             <TouchableOpacity onPress={() => { setShowConvert(false); setConvertResult(null); }}>
                                 <MaterialIcons name="close" size={24} color={COLORS.text} />
                             </TouchableOpacity>
                         </View>
 
                         <Input
-                            label="Monto"
+                            label="Monto a convertir"
                             keyboardType="numeric"
+                            placeholder="1.00"
                             value={convertForm.monto}
                             onChangeText={(v) => setConvertForm((f) => ({ ...f, monto: v }))}
                         />
@@ -146,7 +178,7 @@ const ExchangeRatesScreen = () => {
                                     onPress={() => setConvertForm((f) => ({ ...f, divisaBaseId: c._id || c.id }))}
                                 >
                                     <Text style={[styles.optionText, convertForm.divisaBaseId === (c._id || c.id) && styles.optionTextActive]}>
-                                        {c.codigo} - {c.nombre}
+                                        {c.codigo}
                                     </Text>
                                 </TouchableOpacity>
                             ))}
@@ -161,7 +193,7 @@ const ExchangeRatesScreen = () => {
                                     onPress={() => setConvertForm((f) => ({ ...f, divisaDestinoId: c._id || c.id }))}
                                 >
                                     <Text style={[styles.optionText, convertForm.divisaDestinoId === (c._id || c.id) && styles.optionTextActive]}>
-                                        {c.codigo} - {c.nombre}
+                                        {c.codigo}
                                     </Text>
                                 </TouchableOpacity>
                             ))}
@@ -171,182 +203,69 @@ const ExchangeRatesScreen = () => {
 
                         {convertResult && (
                             <View style={styles.resultBox}>
-                                <Text style={styles.resultTitle}>Resultado</Text>
-                                <Text style={styles.resultValue}>
-                                    {JSON.stringify(convertResult, null, 2)}
-                                </Text>
+                                <MaterialIcons name="check-circle" size={24} color={COLORS.success} />
+                                <Text style={styles.resultTitle}>Resultado de la conversión</Text>
+                                <View style={styles.resultRow}>
+                                    <Text style={styles.resultLabel}>{getCurrencyName(convertForm.divisaBase)}</Text>
+                                    <Text style={styles.resultValue}>{Number(convertForm.monto).toFixed(2)}</Text>
+                                </View>
+                                <View style={styles.resultArrow}>
+                                    <MaterialIcons name="arrow-downward" size={20} color={COLORS.primary} />
+                                </View>
+                                <View style={styles.resultRow}>
+                                    <Text style={styles.resultLabel}>{getCurrencyName(convertForm.divisaDestino)}</Text>
+                                    <Text style={[styles.resultValue, { color: COLORS.primary, fontSize: FONT_SIZE.xl }]}>
+                                        {(convertResult.resultado || convertResult.montoConvertido || 0).toFixed(2)}
+                                    </Text>
+                                </View>
+                                {convertResult.tasa && (
+                                    <Text style={styles.resultTasa}>Tasa: {convertResult.tasa}</Text>
+                                )}
                             </View>
                         )}
                     </View>
-                </View>
+                </ScrollView>
             </Modal>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: COLORS.background,
-    },
-    list: {
-        padding: SPACING.lg,
-        paddingBottom: 100,
-    },
-    header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: SPACING.lg,
-    },
-    title: {
-        fontSize: FONT_SIZE.xxl,
-        fontWeight: "700",
-        color: COLORS.text,
-    },
-    count: {
-        fontSize: FONT_SIZE.sm,
-        color: COLORS.textMuted,
-        marginTop: 2,
-    },
-    convertBtn: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        backgroundColor: COLORS.primary,
-        paddingHorizontal: SPACING.md,
-        paddingVertical: SPACING.sm,
-        borderRadius: 12,
-        ...SHADOWS.sm,
-    },
-    convertBtnText: {
-        color: COLORS.surface,
-        fontWeight: "700",
-        fontSize: FONT_SIZE.sm,
-    },
-    card: {
-        backgroundColor: COLORS.surface,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        padding: SPACING.md,
-        marginBottom: SPACING.xs,
-        ...SHADOWS.sm,
-    },
-    cardTop: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        marginBottom: SPACING.sm,
-    },
-    rateName: {
-        fontSize: FONT_SIZE.md,
-        fontWeight: "700",
-        color: COLORS.text,
-    },
-    rateRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    ratePair: {
-        fontSize: FONT_SIZE.sm,
-        color: COLORS.textLight,
-    },
-    rateValue: {
-        fontSize: FONT_SIZE.xl,
-        fontWeight: "700",
-        color: COLORS.warning,
-    },
-    rateDate: {
-        fontSize: FONT_SIZE.xs,
-        color: COLORS.textMuted,
-        marginTop: SPACING.sm,
-    },
-    empty: {
-        alignItems: "center",
-        paddingVertical: 80,
-        gap: SPACING.md,
-    },
-    emptyText: {
-        fontSize: FONT_SIZE.md,
-        color: COLORS.textMuted,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: "rgba(2,13,26,0.85)",
-        justifyContent: "flex-end",
-    },
-    modal: {
-        backgroundColor: COLORS.surface,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        padding: SPACING.xl,
-        maxHeight: "85%",
-    },
-    modalHeader: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: SPACING.lg,
-    },
-    modalTitle: {
-        fontSize: FONT_SIZE.xl,
-        fontWeight: "700",
-        color: COLORS.text,
-    },
-    fieldLabel: {
-        fontSize: FONT_SIZE.sm,
-        fontWeight: "600",
-        color: COLORS.textLight,
-        marginBottom: SPACING.xs,
-        marginTop: SPACING.sm,
-    },
-    optionGroup: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 4,
-        marginBottom: SPACING.sm,
-    },
-    optionBtn: {
-        paddingVertical: SPACING.sm,
-        paddingHorizontal: SPACING.md,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        backgroundColor: COLORS.surfaceAlt,
-    },
-    optionBtnActive: {
-        borderColor: COLORS.primary,
-        backgroundColor: COLORS.primary + "15",
-    },
-    optionText: {
-        fontSize: FONT_SIZE.xs,
-        color: COLORS.textLight,
-    },
-    optionTextActive: {
-        color: COLORS.primary,
-        fontWeight: "600",
-    },
-    resultBox: {
-        marginTop: SPACING.md,
-        padding: SPACING.md,
-        backgroundColor: COLORS.surfaceAlt,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-    },
-    resultTitle: {
-        fontSize: FONT_SIZE.sm,
-        fontWeight: "700",
-        color: COLORS.text,
-        marginBottom: 4,
-    },
-    resultValue: {
-        fontSize: FONT_SIZE.xs,
-        color: COLORS.textLight,
-        fontFamily: "monospace",
-    },
+    container: { flex: 1, backgroundColor: COLORS.background },
+    list: { padding: SPACING.lg, paddingBottom: 100 },
+    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: SPACING.lg },
+    title: { fontSize: FONT_SIZE.xxl, fontWeight: "700", color: COLORS.text },
+    count: { fontSize: FONT_SIZE.sm, color: COLORS.textMuted, marginTop: 2 },
+    convertBtn: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: COLORS.primary, paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, borderRadius: 12, ...SHADOWS.sm },
+    convertBtnText: { color: COLORS.surface, fontWeight: "700", fontSize: FONT_SIZE.sm },
+    card: { backgroundColor: COLORS.surface, borderRadius: 16, borderWidth: 1, borderColor: COLORS.border, padding: SPACING.md, marginBottom: SPACING.xs, ...SHADOWS.sm },
+    cardTop: { flexDirection: "row", alignItems: "center", gap: SPACING.sm },
+    pairIcon: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+    rateName: { fontSize: FONT_SIZE.md, fontWeight: "700", color: COLORS.text },
+    ratePair: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted, marginTop: 1 },
+    rateBadge: { backgroundColor: COLORS.surfaceAlt, borderRadius: 10, paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs },
+    rateValue: { fontSize: FONT_SIZE.md, fontWeight: "700" },
+    rateFooter: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: SPACING.sm, paddingTop: SPACING.sm, borderTopWidth: 1, borderTopColor: COLORS.border },
+    rateDate: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted },
+    empty: { alignItems: "center", paddingVertical: 80, gap: SPACING.md },
+    emptyText: { fontSize: FONT_SIZE.md, color: COLORS.textMuted },
+    modalOverlay: { flex: 1, backgroundColor: "rgba(2,13,26,0.85)" },
+    modal: { backgroundColor: COLORS.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: SPACING.xl, marginTop: 60 },
+    modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: SPACING.lg },
+    modalTitle: { fontSize: FONT_SIZE.xl, fontWeight: "700", color: COLORS.text },
+    fieldLabel: { fontSize: FONT_SIZE.sm, fontWeight: "600", color: COLORS.textLight, marginBottom: SPACING.xs, marginTop: SPACING.sm },
+    optionGroup: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: SPACING.sm },
+    optionBtn: { paddingVertical: SPACING.sm, paddingHorizontal: SPACING.md, borderRadius: 12, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.surfaceAlt },
+    optionBtnActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primary + "15" },
+    optionText: { fontSize: FONT_SIZE.xs, color: COLORS.textLight, fontWeight: "600" },
+    optionTextActive: { color: COLORS.primary },
+    resultBox: { marginTop: SPACING.lg, padding: SPACING.xl, backgroundColor: COLORS.surfaceAlt, borderRadius: 16, borderWidth: 1, borderColor: COLORS.border, alignItems: "center", gap: SPACING.md },
+    resultTitle: { fontSize: FONT_SIZE.sm, fontWeight: "700", color: COLORS.text },
+    resultRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" },
+    resultLabel: { fontSize: FONT_SIZE.sm, color: COLORS.textMuted },
+    resultValue: { fontSize: FONT_SIZE.lg, fontWeight: "700", color: COLORS.text },
+    resultArrow: { paddingVertical: SPACING.xs },
+    resultTasa: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted, marginTop: SPACING.sm },
 });
 
 export default ExchangeRatesScreen;

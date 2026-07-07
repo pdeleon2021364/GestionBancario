@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { createScheduled, getMyScheduled, getScheduledById, updateScheduled, pauseScheduled, resumeScheduled, cancelScheduled } from './scheduledTransfer_controller.js';
+import { validateJWT } from '../../../middlewares/validate_jwt.js';
+const router = Router();
+router.post('/create', validateJWT, createScheduled);
+router.get('/', validateJWT, getMyScheduled);
+router.get('/:id', validateJWT, getScheduledById);
+router.put('/update/:id', validateJWT, updateScheduled);
+router.put('/:id/pause', validateJWT, pauseScheduled);
+router.put('/:id/resume', validateJWT, resumeScheduled);
+router.delete('/delete/:id', validateJWT, cancelScheduled);
+export default router;

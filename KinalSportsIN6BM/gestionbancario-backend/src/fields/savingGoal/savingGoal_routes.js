@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { createGoal, getMyGoals, getGoalById, updateGoal, addFunds, deleteGoal } from './savingGoal_controller.js';
+import { validateJWT } from '../../../middlewares/validate_jwt.js';
+const router = Router();
+router.post('/create', validateJWT, createGoal);
+router.get('/', validateJWT, getMyGoals);
+router.get('/:id', validateJWT, getGoalById);
+router.put('/update/:id', validateJWT, updateGoal);
+router.post('/:id/add-funds', validateJWT, addFunds);
+router.delete('/delete/:id', validateJWT, deleteGoal);
+export default router;

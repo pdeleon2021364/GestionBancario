@@ -63,11 +63,113 @@ export const createField = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
-            message: 'Error al crear el campo',
+            message: 'Error al enviar el PDF',
             error: error.message
         });
+    }
+};
+
+export const createMyAccount = async (req, res) => {
+    try {
+        const { nombre, tipoCuenta = 'ahorro' } = req.body;
+        if (!nombre) return res.status(400).json({ success: false, message: 'El nombre es obligatorio' });
+        
+        const numeroCuenta = `ACC-${Date.now()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+        const field = new Field({
+            nombre, numeroCuenta, tipoCuenta, saldo: 100,
+            usuarioId: String(req.user.id), estado: 'activa'
+        });
+        await field.save();
+        res.status(201).json({ success: true, message: 'Cuenta creada exitosamente', data: field });
+    } catch (error) {
+        res.status(400).json({ success: false, message: 'Error al crear la cuenta', error: error.message });
+    }
+};
+
+export const closeMyAccount = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const account = await Field.findById(id);
+        if (!account) return res.status(404).json({ success: false, message: 'Cuenta no encontrada' });
+        if (String(account.usuarioId) !== String(req.user.id))
+            return res.status(403).json({ success: false, message: 'No tienes permiso para cerrar esta cuenta' });
+        if (account.saldo > 0)
+            return res.status(400).json({ success: false, message: 'Debe retirar todo el saldo antes de cerrar la cuenta' });
+        account.estado = 'cerrada';
+        account.closedAt = new Date();
+        account.closedBy = String(req.user.id);
+        account.closedReason = 'Cerrada por el usuario';
+        await account.save();
+        res.status(200).json({ success: true, message: 'Cuenta cerrada correctamente', data: account });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error al cerrar la cuenta', error: error.message });
+    }
+};
+
+export const downloadAccountPDF = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const account = await Field.findById(id);
+        if (!account) return res.status(404).json({ success: false, message: 'Cuenta no encontrada' });
+        if (req.user?.role !== 'ADMIN_ROLE' && String(account.usuarioId) !== String(req.user?.id))
+            return res.status(403).json({ success: false, message: 'No tienes permiso' });
+        
+        const PDFDocument = (await import('pdfkit')).default;
+        const doc = new PDFDocument({ margin: 50 });
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=cuenta_${account.numeroCuenta}.pdf`);
+        doc.pipe(res);
+        
+        doc.rect(0, 0, doc.page.width, 80).fill('#1F2D3D');
+        doc.fillColor('#FFFFFF').fontSize(22).font('Helvetica-Bold').text('GESTIÓN BANCO', 50, 30);
+        doc.fontSize(11).font('Helvetica').fillColor('#D5DBDB').text('Estado de Cuenta', 50, 55);
+        doc.moveDown(3);
+        doc.fillColor('#1F2D3D').fontSize(18).font('Helvetica-Bold').text(`Cuenta: ${account.numeroCuenta}`, { align: 'center' });
+        doc.moveDown(1);
+        
+        const Transaction = (await import('../transactions/transactions_model.js')).default;
+        const transactions = await Transaction.find({
+            $or: [{ cuentaOrigen: account._id }, { cuentaDestino: account._id }]
+        }).sort({ createdAt: -1 }).limit(10);
+        
+        doc.fillColor('#2C3E50').fontSize(12).font('Helvetica-Bold').text(`Titular: ${account.nombre}`, 50, doc.y);
+        doc.fontSize(11).font('Helvetica').text(`Tipo: ${account.tipoCuenta}   |   Saldo: Q${Number(account.saldo).toFixed(2)}`, 50, doc.y + 5);
+        doc.text(`Estado: ${account.estado}   |   Creada: ${new Date(account.createdAt).toLocaleDateString()}`, 50, doc.y + 5);
+        doc.moveDown(2);
+        
+        doc.fillColor('#1F2D3D').fontSize(14).font('Helvetica-Bold').text('Últimos movimientos', 50, doc.y);
+        doc.moveDown(0.5);
+        
+        if (transactions.length === 0) {
+            doc.fontSize(10).font('Helvetica').fillColor('#7B7D7D').text('Sin movimientos recientes', 50, doc.y);
+        } else {
+            transactions.forEach((tx, i) => {
+                const bgColor = i % 2 === 0 ? '#FAFAFA' : '#FFFFFF';
+                const rowY = doc.y;
+                doc.rect(50, rowY, 495, 20).fill(bgColor);
+                doc.fillColor('#34495E').fontSize(9).font('Helvetica-Bold')
+                    .text(new Date(tx.createdAt).toLocaleDateString(), 55, rowY + 5, { width: 80 });
+                doc.font('Helvetica')
+                    .text(tx.tipo, 140, rowY + 5, { width: 90 });
+                doc.text(tx.monto ? `Q${Number(tx.monto).toFixed(2)}` : '', 240, rowY + 5, { width: 80 });
+                doc.text(tx.estado, 330, rowY + 5, { width: 70 });
+                doc.text(tx.categoria || 'otros', 410, rowY + 5, { width: 80 });
+                doc.moveDown(0.8);
+            });
+        }
+        
+        doc.moveDown(2);
+        const pageCount = doc.bufferedPageRange().count;
+        for (let i = 0; i < pageCount; i++) {
+            doc.switchToPage(i);
+            doc.fontSize(8).fillColor('#A6ACAF')
+                .text(`Generado por Gestión Banco | Página ${i + 1} de ${pageCount}`, 50, doc.page.height - 40, { align: 'center' });
+        }
+        doc.end();
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error al generar PDF', error: error.message });
     }
 };
 
@@ -612,6 +714,14 @@ export const sendBankAccountPDFById = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Cuenta bancaria no encontrada'
+            });
+        }
+
+        // Allow only if user is ADMIN/AUDITOR or owner of the account
+        if (req.user.role !== 'ADMIN_ROLE' && req.user.role !== 'AUDITOR_ROLE' && String(account.usuarioId) !== String(req.user.id)) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tienes permiso para enviar esta cuenta'
             });
         }
 

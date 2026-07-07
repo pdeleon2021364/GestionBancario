@@ -92,4 +92,4 @@ C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\Auth
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\refint\AuthService.Application.dll
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.pdb
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\ref\AuthService.Application.dll
-C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.csproj.CopyComplete
+C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthServ.67992DEE.Up2Date
