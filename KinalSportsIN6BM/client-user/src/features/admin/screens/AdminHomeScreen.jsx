@@ -7,12 +7,10 @@ import { useAuthStore } from "../../../shared/store/authStore";
 
 const MODULES = [
     { key: "Users", icon: "people", label: "Usuarios", color: "#0ea5e9", desc: "CRUD de usuarios" },
-    { key: "Accounts", icon: "account-balance", label: "Cuentas", color: "#22d3ee", desc: "Gestionar cuentas" },
+    { key: "Accounts", icon: "account-balance", label: "Cuentas", color: "#22d3ee", desc: "Asignar y gestionar cuentas" },
     { key: "Currencies", icon: "currency-exchange", label: "Divisas", color: "#34d399", desc: "Catálogo de monedas" },
-    { key: "ExchangeRates", icon: "trending-up", label: "Tipos de Cambio", color: "#fbbf24", desc: "Tasas de cambio" },
     { key: "Products", icon: "card-giftcard", label: "Productos", color: "#a78bfa", desc: "Productos financieros" },
     { key: "Transactions", icon: "swap-horiz", label: "Movimientos", color: "#fb7185", desc: "Todas las transacciones" },
-    { key: "Roles", icon: "admin-panel-settings", label: "Roles", color: "#f472b6", desc: "Gestión de roles" },
 ];
 
 const AdminHomeScreen = ({ navigation }) => {
@@ -47,7 +45,7 @@ const AdminHomeScreen = ({ navigation }) => {
                 <View style={styles.balanceCard}>
                     <MaterialIcons name="admin-panel-settings" size={40} color={COLORS.secondary} />
                     <Text style={styles.balanceTitle}>OVA Bank Admin</Text>
-                    <Text style={styles.balanceDesc}>Gestiona usuarios, cuentas, divisas, productos y más</Text>
+                    <Text style={styles.balanceDesc}>Gestiona usuarios, cuentas, divisas, productos y transacciones</Text>
                 </View>
 
                 <Text style={styles.sectionTitle}>Módulos de Administración</Text>

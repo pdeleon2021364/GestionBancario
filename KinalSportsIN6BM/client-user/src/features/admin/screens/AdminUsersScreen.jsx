@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme";
 import { useUsersStore } from "../store/useUsersStore";
+import { getAllAccountsApi } from "../../../shared/api/adminApi";
 import { LoadingSpinner, EmptyState } from "../../../shared/components/Common";
 import Button from "../../../shared/components/Button";
 
@@ -14,6 +15,8 @@ const AdminUsersScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [editing, setEditing] = useState(null);
+    const [profileModalVisible, setProfileModalVisible] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [form, setForm] = useState({ nombre: "", email: "", password: "", rol: "USER_ROLE" });
 
     useFocusEffect(useCallback(() => { fetchUsers(); }, []));
@@ -32,7 +35,7 @@ const AdminUsersScreen = () => {
 
     const openEdit = (user) => {
         setEditing(user);
-        setForm({ nombre: user.nombre || "", email: user.email || "", password: "", rol: user.rol || user.role || "USER_ROLE" });
+        setForm({ nombre: user.nombre || "", email: user.email || "", password: "", rol: "" });
         setModalVisible(true);
     };
 
@@ -41,30 +44,80 @@ const AdminUsersScreen = () => {
             Alert.alert("Error", "Nombre y email son requeridos");
             return;
         }
-        const payload = { nombre: form.nombre.trim(), email: form.email.trim(), rol: form.rol };
-        if (form.password) payload.password = form.password;
         try {
-            if (editing) await updateUser(editing.id || editing._id, payload);
-            else await createUser(payload);
-            setModalVisible(false);
-            Alert.alert("Éxito", editing ? "Usuario actualizado" : "Usuario creado");
+            if (editing) {
+                await updateUser(editing.id || editing._id, { nombre: form.nombre.trim(), email: form.email.trim() });
+                setModalVisible(false);
+                Alert.alert("Éxito", "Usuario actualizado");
+            } else {
+                const payload = { nombre: form.nombre.trim(), email: form.email.trim(), password: form.password, rol: form.rol };
+                await createUser(payload);
+                setModalVisible(false);
+                Alert.alert("Éxito", "Usuario creado");
+            }
         } catch { Alert.alert("Error", "No se pudo guardar"); }
     };
 
     const handleDelete = (user) => {
-        Alert.alert("Eliminar Usuario", `¿Eliminar a ${user.nombre || user.email}?`, [
-            { text: "Cancelar", style: "cancel" },
-            { text: "Eliminar", style: "destructive", onPress: async () => {
-                try { await deleteUser(user.id || user._id); Alert.alert("Eliminado"); }
-                catch { Alert.alert("Error", "No se pudo eliminar"); }
-            }},
-        ]);
+        Alert.alert(
+            "Eliminar Usuario",
+            "Se verificará que el usuario no tenga saldos pendientes",
+            [
+                { text: "Cancelar", style: "cancel" },
+                { text: "Verificar y Eliminar", style: "destructive", onPress: async () => {
+                    try {
+                        const accounts = await getAllAccountsApi({ limit: 1000 });
+                        const userAccounts = Array.isArray(accounts)
+                            ? accounts.filter((a) => String(a.usuarioId) === String(user.id || user._id))
+                            : [];
+                        const hasBalance = userAccounts.some((a) => Number(a.saldo || 0) > 0);
+                        if (hasBalance) {
+                            return Alert.alert(
+                                "No se puede eliminar",
+                                `El usuario tiene ${userAccounts.filter((a) => Number(a.saldo || 0) > 0).length} cuenta(s) con saldo mayor a Q0.00. Saldo total: Q ${userAccounts.reduce((s, a) => s + Number(a.saldo || 0), 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`
+                            );
+                        }
+                        Alert.alert(
+                            "Confirmar eliminación",
+                            `¿Eliminar a ${user.nombre || user.email}? Todas sus cuentas tienen saldo Q0.00.`,
+                            [
+                                { text: "Cancelar", style: "cancel" },
+                                { text: "Eliminar", style: "destructive", onPress: async () => {
+                                    try {
+                                        await deleteUser(user.id || user._id);
+                                        Alert.alert("Eliminado", "Usuario eliminado correctamente");
+                                    } catch { Alert.alert("Error", "No se pudo eliminar"); }
+                                }},
+                            ]
+                        );
+                    } catch {
+                        Alert.alert("Error", "No se pudo verificar el saldo del usuario");
+                    }
+                }},
+            ]
+        );
     };
+
+    const openProfile = (user) => {
+        setSelectedUser(user);
+        setProfileModalVisible(true);
+    };
+
+    const userFields = [
+        { key: "ID", value: selectedUser?.id || selectedUser?._id, icon: "fingerprint" },
+        { key: "Nombre", value: selectedUser?.nombre, icon: "person" },
+        { key: "Email", value: selectedUser?.email, icon: "email" },
+        { key: "Rol", value: (selectedUser?.rol || selectedUser?.role || "USER_ROLE").replace("_ROLE", ""), icon: "badge" },
+        { key: "Email verificado", value: selectedUser?.emailVerified ? "Sí" : "No", icon: selectedUser?.emailVerified ? "verified" : "cancel" },
+        { key: "Foto de perfil", value: selectedUser?.profilePicture ? "Disponible" : "Sin foto", icon: "photo-camera" },
+        { key: "Creado", value: selectedUser?.createdAt ? new Date(selectedUser.createdAt).toLocaleString("es-GT") : "-", icon: "calendar-today" },
+        { key: "Actualizado", value: selectedUser?.updatedAt ? new Date(selectedUser.updatedAt).toLocaleString("es-GT") : "-", icon: "update" },
+    ];
 
     const renderItem = ({ item }) => {
         const role = item.rol || item.role || "USER_ROLE";
         return (
-            <View style={styles.card}>
+            <TouchableOpacity style={styles.card} onPress={() => openProfile(item)} activeOpacity={0.7}>
                 <View style={styles.cardRow}>
                     {item.profilePicture ? (
                         <Image source={{ uri: item.profilePicture }} style={styles.avatar} />
@@ -76,18 +129,20 @@ const AdminUsersScreen = () => {
                     <View style={styles.cardBody}>
                         <Text style={styles.cardName}>{item.nombre || "Sin nombre"}</Text>
                         <Text style={styles.cardEmail}>{item.email}</Text>
-                        <View style={styles.roleBadge}>
-                            <MaterialIcons name="badge" size={14} color={role === "ADMIN_ROLE" ? COLORS.warning : COLORS.primary} />
-                            <Text style={[styles.roleText, { color: role === "ADMIN_ROLE" ? COLORS.warning : COLORS.primary }]}>
-                                {role.replace("_ROLE", "")}
-                            </Text>
-                        </View>
-                        {item.emailVerified && (
-                            <View style={styles.verifiedBadge}>
-                                <MaterialIcons name="verified" size={12} color={COLORS.success} />
-                                <Text style={[styles.roleText, { color: COLORS.success }]}>Verificado</Text>
+                        <View style={styles.badgesRow}>
+                            <View style={styles.roleBadge}>
+                                <MaterialIcons name="badge" size={14} color={role === "ADMIN_ROLE" ? COLORS.warning : COLORS.primary} />
+                                <Text style={[styles.roleText, { color: role === "ADMIN_ROLE" ? COLORS.warning : COLORS.primary }]}>
+                                    {role.replace("_ROLE", "")}
+                                </Text>
                             </View>
-                        )}
+                            {item.emailVerified && (
+                                <View style={styles.verifiedBadge}>
+                                    <MaterialIcons name="verified" size={12} color={COLORS.success} />
+                                    <Text style={[styles.roleText, { color: COLORS.success }]}>Verificado</Text>
+                                </View>
+                            )}
+                        </View>
                         <View style={styles.cardActions}>
                             <TouchableOpacity style={styles.actionBtn} onPress={() => openEdit(item)}>
                                 <MaterialIcons name="edit" size={18} color={COLORS.primary} />
@@ -98,7 +153,11 @@ const AdminUsersScreen = () => {
                         </View>
                     </View>
                 </View>
-            </View>
+                <View style={styles.profileHint}>
+                    <MaterialIcons name="touch-app" size={14} color={COLORS.textMuted} />
+                    <Text style={styles.profileHintText}>Toca para ver perfil completo</Text>
+                </View>
+            </TouchableOpacity>
         );
     };
 
@@ -108,7 +167,7 @@ const AdminUsersScreen = () => {
         <View style={styles.container}>
             <FlatList
                 data={Array.isArray(users) ? users : []}
-                keyExtractor={(item) => item._id || item.id?.toString()}
+                keyExtractor={(item) => String(item._id || item.id)}
                 renderItem={renderItem}
                 contentContainerStyle={styles.list}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
@@ -135,16 +194,54 @@ const AdminUsersScreen = () => {
                         </View>
                         <TextInput style={styles.input} placeholder="Nombre" placeholderTextColor={COLORS.textMuted} value={form.nombre} onChangeText={(t) => setForm({ ...form, nombre: t })} />
                         <TextInput style={styles.input} placeholder="Email" placeholderTextColor={COLORS.textMuted} value={form.email} onChangeText={(t) => setForm({ ...form, email: t })} keyboardType="email-address" autoCapitalize="none" />
-                        <TextInput style={styles.input} placeholder={editing ? "Nueva contraseña (dejar vacío)" : "Contraseña"} placeholderTextColor={COLORS.textMuted} value={form.password} onChangeText={(t) => setForm({ ...form, password: t })} secureTextEntry />
-                        <Text style={styles.label}>Rol</Text>
-                        <View style={styles.pickerRow}>
-                            {ROLES.map((r) => (
-                                <TouchableOpacity key={r} style={[styles.pickerOption, form.rol === r && styles.pickerActive]} onPress={() => setForm({ ...form, rol: r })}>
-                                    <Text style={[styles.pickerText, form.rol === r && styles.pickerTextActive]}>{r.replace("_ROLE", "")}</Text>
-                                </TouchableOpacity>
+                        {editing ? (
+                            <View style={styles.editNote}>
+                                <MaterialIcons name="info" size={16} color={COLORS.warning} />
+                                <Text style={styles.editNoteText}>Solo se puede editar nombre y correo</Text>
+                            </View>
+                        ) : (
+                            <>
+                                <TextInput style={styles.input} placeholder="Contraseña" placeholderTextColor={COLORS.textMuted} value={form.password} onChangeText={(t) => setForm({ ...form, password: t })} secureTextEntry />
+                                <Text style={styles.label}>Rol</Text>
+                                <View style={styles.pickerRow}>
+                                    {ROLES.map((r) => (
+                                        <TouchableOpacity key={r} style={[styles.pickerOption, form.rol === r && styles.pickerActive]} onPress={() => setForm({ ...form, rol: r })}>
+                                            <Text style={[styles.pickerText, form.rol === r && styles.pickerTextActive]}>{r.replace("_ROLE", "")}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            </>
+                        )}
+                        <Button title={editing ? "Actualizar" : "Crear Usuario"} onPress={handleSave} />
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal visible={profileModalVisible} transparent animationType="slide" onRequestClose={() => setProfileModalVisible(false)}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Perfil Completo</Text>
+                            <TouchableOpacity onPress={() => setProfileModalVisible(false)}>
+                                <MaterialIcons name="close" size={24} color={COLORS.text} />
+                            </TouchableOpacity>
+                        </View>
+                        {selectedUser?.profilePicture ? (
+                            <Image source={{ uri: selectedUser.profilePicture }} style={styles.profileAvatar} />
+                        ) : (
+                            <View style={styles.profileAvatarPlaceholder}>
+                                <MaterialIcons name="person" size={48} color={COLORS.textMuted} />
+                            </View>
+                        )}
+                        <View style={styles.fieldsList}>
+                            {userFields.map((f) => (
+                                <View key={f.key} style={styles.fieldRow}>
+                                    <MaterialIcons name={f.icon} size={18} color={COLORS.primary} />
+                                    <Text style={styles.fieldKey}>{f.key}</Text>
+                                    <Text style={styles.fieldValue}>{f.value || "-"}</Text>
+                                </View>
                             ))}
                         </View>
-                        <Button title={editing ? "Actualizar" : "Crear Usuario"} onPress={handleSave} />
                     </View>
                 </View>
             </Modal>
@@ -166,11 +263,14 @@ const styles = StyleSheet.create({
     cardBody: { flex: 1 },
     cardName: { fontSize: FONT_SIZE.md, fontWeight: "700", color: COLORS.text },
     cardEmail: { fontSize: FONT_SIZE.sm, color: COLORS.textLight, marginTop: 2 },
-    roleBadge: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6 },
+    badgesRow: { flexDirection: "row", alignItems: "center", gap: SPACING.sm, marginTop: 6 },
+    roleBadge: { flexDirection: "row", alignItems: "center", gap: 4 },
     roleText: { fontSize: FONT_SIZE.xs, fontWeight: "600" },
-    verifiedBadge: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 },
+    verifiedBadge: { flexDirection: "row", alignItems: "center", gap: 4 },
     cardActions: { flexDirection: "row", gap: SPACING.sm, marginTop: SPACING.sm },
     actionBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.surfaceAlt, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: COLORS.border },
+    profileHint: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4, marginTop: SPACING.sm, borderTopWidth: 1, borderTopColor: COLORS.border, paddingTop: SPACING.sm },
+    profileHintText: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted },
     modalOverlay: { flex: 1, backgroundColor: "rgba(2,13,26,0.85)", justifyContent: "flex-end" },
     modalContent: { backgroundColor: COLORS.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: SPACING.lg, maxHeight: "80%" },
     modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: SPACING.lg },
@@ -182,6 +282,14 @@ const styles = StyleSheet.create({
     pickerActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primary + "20" },
     pickerText: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted, fontWeight: "600" },
     pickerTextActive: { color: COLORS.primary },
+    editNote: { flexDirection: "row", alignItems: "center", gap: SPACING.sm, backgroundColor: COLORS.warning + "15", borderRadius: 10, padding: SPACING.sm, marginBottom: SPACING.md },
+    editNoteText: { fontSize: FONT_SIZE.xs, color: COLORS.warning, fontWeight: "500", flex: 1 },
+    profileAvatar: { width: 80, height: 80, borderRadius: 40, resizeMode: "cover", alignSelf: "center", marginBottom: SPACING.md },
+    profileAvatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: COLORS.surfaceAlt, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: COLORS.border, alignSelf: "center", marginBottom: SPACING.md },
+    fieldsList: { gap: SPACING.sm },
+    fieldRow: { flexDirection: "row", alignItems: "center", gap: SPACING.sm, paddingVertical: SPACING.sm, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+    fieldKey: { fontSize: FONT_SIZE.sm, fontWeight: "600", color: COLORS.textLight, width: 120 },
+    fieldValue: { fontSize: FONT_SIZE.sm, color: COLORS.text, flex: 1, textAlign: "right" },
 });
 
 export default AdminUsersScreen;

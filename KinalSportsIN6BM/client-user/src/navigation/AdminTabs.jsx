@@ -7,10 +7,8 @@ import AdminHomeScreen from "../features/admin/screens/AdminHomeScreen";
 import AdminUsersScreen from "../features/admin/screens/AdminUsersScreen";
 import AdminAccountsScreen from "../features/admin/screens/AdminAccountsScreen";
 import AdminCurrenciesScreen from "../features/admin/screens/AdminCurrenciesScreen";
-import AdminExchangeRatesScreen from "../features/admin/screens/AdminExchangeRatesScreen";
 import AdminProductsScreen from "../features/admin/screens/AdminProductsScreen";
 import AdminTransactionsScreen from "../features/admin/screens/AdminTransactionsScreen";
-import AdminRolesScreen from "../features/admin/screens/AdminRolesScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,10 +23,8 @@ const HomeStack = createStack("AdminHomeMain", AdminHomeScreen);
 const UsersStack = createStack("UsersMain", AdminUsersScreen);
 const AccountsStack = createStack("AccountsMain", AdminAccountsScreen);
 const CurrenciesStack = createStack("CurrenciesMain", AdminCurrenciesScreen);
-const ExchangeRatesStack = createStack("ExchangeRatesMain", AdminExchangeRatesScreen);
 const ProductsStack = createStack("ProductsMain", AdminProductsScreen);
 const TransactionsStack = createStack("TransactionsMain", AdminTransactionsScreen);
-const RolesStack = createStack("RolesMain", AdminRolesScreen);
 
 const screenOptions = ({ route }) => ({
     headerShown: false,
@@ -48,10 +44,8 @@ const screenOptions = ({ route }) => ({
             Users: "people",
             Accounts: "account-balance",
             Currencies: "currency-exchange",
-            Rates: "trending-up",
             Products: "card-giftcard",
             Transactions: "swap-horiz",
-            Roles: "admin-panel-settings",
         };
         return <MaterialIcons name={icons[route.name] || "circle"} size={size} color={color} />;
     },
