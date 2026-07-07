@@ -48,6 +48,10 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sqlite3"
+    ],
+    "ignoredBuiltDependencies": [
+      "@scarf/scarf",
+      "core-js"
     ]
   }
 }

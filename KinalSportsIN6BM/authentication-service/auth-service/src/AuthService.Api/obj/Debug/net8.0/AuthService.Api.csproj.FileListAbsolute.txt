@@ -1050,7 +1050,6 @@ C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\Auth
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.pdb
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\AuthService.Api.genruntimeconfig.cache
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\ref\AuthService.Api.dll
-C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\bin\Debug\net8.0\System.Formats.Asn1.dll
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\staticwebassets\msbuild.AuthService.Api.Microsoft.AspNetCore.StaticWebAssets.props
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\staticwebassets\msbuild.build.AuthService.Api.props
 C:\GestionBancario\KinalSportsIN6BM\authentication-service\auth-service\src\AuthService.Api\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.AuthService.Api.props

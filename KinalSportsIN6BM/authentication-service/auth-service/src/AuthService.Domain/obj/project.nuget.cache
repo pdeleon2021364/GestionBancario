@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "h5kSJ16GAz4BdAAumd+ad2/QCWSkHOBhcxelPv6gqf+Yz6B7V2f0u/zjG85vnAGszjOVVwvVYmK1EPfY9evhoA==",
+  "dgSpecHash": "UdZy85HSxgC24tifGxCcw4YTB//ydFKDGAZLKzCtbUf01bUCjrDF4uEPz/7nw55bdz+oNJbVf2Ji1fZwSrfUXQ==",
   "success": true,
   "projectFilePath": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [],

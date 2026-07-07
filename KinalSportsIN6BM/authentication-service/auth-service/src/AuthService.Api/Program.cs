@@ -4,6 +4,7 @@ using AuthService.Api.ModelBinders;
 using AuthService.Persistence.Data;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
@@ -39,6 +40,12 @@ builder.Services.AddRateLimitingPolicies();
 // Add security services
 builder.Services.AddSecurityPolicies(builder.Configuration);
 builder.Services.AddSecurityOptions();
+
+// Configure Data Protection to persist keys to a shared folder
+var keysDir = Path.Combine(builder.Environment.ContentRootPath, "..", "DataProtectionKeys");
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keysDir))
+    .SetApplicationName("GestionBancario");
 
 var app = builder.Build();
 

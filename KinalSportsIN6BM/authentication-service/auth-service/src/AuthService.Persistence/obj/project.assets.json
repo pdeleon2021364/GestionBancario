@@ -6573,7 +6573,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\milto\\.nuget\\packages\\": {}
+    "C:\\Users\\gioca\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -6581,11 +6581,11 @@
       "projectUniqueName": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
       "projectName": "AuthService.Persistence",
       "projectPath": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
-      "packagesPath": "C:\\Users\\milto\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\gioca\\.nuget\\packages\\",
       "outputPath": "C:\\GestionBancario\\KinalSportsIN6BM\\authentication-service\\auth-service\\src\\AuthService.Persistence\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\milto\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\gioca\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6653,7 +6653,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.119/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
