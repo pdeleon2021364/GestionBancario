@@ -144,7 +144,7 @@ const AdminCalculadora = () => {
 export const DashboardHome = () => {
     const user = useAuthStore((state) => state.user);
     const isAdmin = user?.role === "ADMIN_ROLE";
-    const displayName = user?.name || user?.username || (isAdmin ? "Administrador" : "Usuario");
+    const displayName = user?.name || user?.username;
 
     if (!isAdmin) {
         return (

@@ -102,14 +102,11 @@ const ProfileScreen = () => {
                     setAccounts(Array.isArray(accountsData) ? accountsData : []);
                     if (profileData) {
                         setProfile(profileData);
-                        setUserField("nombre", profileData.name);
-                        setUserField("surname", profileData.surname);
-                        setUserField("username", profileData.username);
+                        setUserField("nombre", profileData.nombre);
                         setUserField("email", profileData.email);
                         setUserField("profilePicture", profileData.profilePicture);
-                        setUserField("phone", profileData.phone);
                         setUserField("createdAt", profileData.createdAt);
-                        setUserField("emailVerified", profileData.isEmailVerified);
+                        setUserField("emailVerified", profileData.emailVerified);
                     }
                 } catch {}
             })();
@@ -156,14 +153,14 @@ const ProfileScreen = () => {
                         )}
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.name}>{profile?.name || user?.nombre || "Usuario"}</Text>
+                <Text style={styles.name}>{profile?.nombre || user?.nombre}</Text>
                 <Text style={styles.email}>{profile?.email || user?.email || ""}</Text>
                 <View style={styles.roleRow}>
                     <View style={styles.roleBadge}>
                         <MaterialIcons name="shield" size={14} color={COLORS.primary} />
                         <Text style={styles.roleText}>{user?.role || "USER"}</Text>
                     </View>
-                    {(profile?.isEmailVerified ?? user?.emailVerified) ? (
+                    {(profile?.emailVerified ?? user?.emailVerified) ? (
                         <View style={[styles.roleBadge, { backgroundColor: COLORS.success + "15", borderColor: COLORS.success + "30" }]}>
                             <MaterialIcons name="check-circle" size={14} color={COLORS.success} />
                             <Text style={[styles.roleText, { color: COLORS.success }]}>Verificado</Text>
@@ -204,7 +201,7 @@ const ProfileScreen = () => {
                         <MaterialIcons name="badge" size={20} color={COLORS.textMuted} />
                         <View style={styles.infoContent}>
                             <Text style={styles.infoLabel}>Nombre completo</Text>
-                            <Text style={styles.infoValue}>{[profile?.name || user?.nombre, profile?.surname].filter(Boolean).join(" ") || "—"}</Text>
+                            <Text style={styles.infoValue}>{profile?.nombre || user?.nombre || "—"}</Text>
                         </View>
                     </View>
                     <View style={styles.divider} />
@@ -212,7 +209,7 @@ const ProfileScreen = () => {
                         <MaterialIcons name="person-outline" size={20} color={COLORS.textMuted} />
                         <View style={styles.infoContent}>
                             <Text style={styles.infoLabel}>Usuario</Text>
-                            <Text style={styles.infoValue}>{profile?.username || user?.username || user?.name || "—"}</Text>
+                            <Text style={styles.infoValue}>{profile?.username || user?.username || user?.nombre || "—"}</Text>
                         </View>
                     </View>
                     <View style={styles.divider} />
@@ -245,9 +242,9 @@ const ProfileScreen = () => {
                         <View style={styles.infoContent}>
                             <Text style={styles.infoLabel}>Estado de verificación</Text>
                             <View style={styles.verifyRow}>
-                                <View style={[styles.verifyDot, { backgroundColor: profile?.isEmailVerified ?? user?.emailVerified ? COLORS.success : COLORS.warning }]} />
-                                <Text style={[styles.infoValue, { color: profile?.isEmailVerified ?? user?.emailVerified ? COLORS.success : COLORS.warning }]}>
-                                    {profile?.isEmailVerified ?? user?.emailVerified ? "Verificado" : "Pendiente"}
+                                <View style={[styles.verifyDot, { backgroundColor: profile?.emailVerified ?? user?.emailVerified ? COLORS.success : COLORS.warning }]} />
+                                <Text style={[styles.infoValue, { color: profile?.emailVerified ?? user?.emailVerified ? COLORS.success : COLORS.warning }]}>
+                                    {profile?.emailVerified ?? user?.emailVerified ? "Verificado" : "Pendiente"}
                                 </Text>
                             </View>
                         </View>

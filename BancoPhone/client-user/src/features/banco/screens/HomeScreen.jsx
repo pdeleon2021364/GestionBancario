@@ -70,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
                 <View style={styles.orbTwo} />
                 <View style={styles.header}>
                     <View>
-                        <Text style={styles.greeting}>Hola, {user?.nombre || user?.username || "Usuario"}</Text>
+                        <Text style={styles.greeting}>Hola, {user?.nombre || user?.username}</Text>
                         <Text style={styles.subtitle}>Portal Bancario</Text>
                     </View>
                     <TouchableOpacity style={styles.logoutBtn} onPress={() => useAuthStore.getState().logout()}>

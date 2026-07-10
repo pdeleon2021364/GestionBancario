@@ -5,6 +5,7 @@ using AuthService.Persistence.Data;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
@@ -152,7 +153,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogInformation("Checking database connection...");
 
         // Ensure database is created (similar to Sequelize sync in Node.js)
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         logger.LogInformation("Database ready. Running seed data...");
         await DataSeeder.SeedAsync(context);

@@ -1,0 +1,207 @@
+services:
+
+  # ========== Databases ==========
+
+  mongo:
+    image: mongo:7
+    container_name: gestionbancario-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - gestionbanco-net
+
+  postgres:
+    image: postgres:16
+    container_name: gestionbancario-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gestionbanco
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-dbs.sql:/docker-entrypoint-initdb.d/init-dbs.sql:ro
+    networks:
+      - gestionbanco-net
+
+  # ========== Backend Node.js Microservices ==========
+
+  bankaccount-service:
+    build:
+      context: ./BancoBackend/BankAccount-service
+      dockerfile: Dockerfile
+    container_name: gestionbancario-bankaccount
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3004"
+    ports:
+      - "3004:3004"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - gestionbanco-net
+
+  currency-service:
+    build:
+      context: ./BancoBackend/Currency-service
+      dockerfile: Dockerfile
+    container_name: gestionbancario-currency
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3002"
+    ports:
+      - "3002:3002"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - gestionbanco-net
+
+  exchangerate-service:
+    build:
+      context: ./BancoBackend/Exchangerate-service
+      dockerfile: Dockerfile
+    container_name: gestionbancario-exchangerate
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3005"
+    ports:
+      - "3005:3005"
+    depends_on: []
+    networks:
+      - gestionbanco-net
+
+  transactions-service:
+    build:
+      context: ./BancoBackend/Transactions-service
+      dockerfile: Dockerfile
+    container_name: gestionbancario-transactions
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3003"
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - gestionbanco-net
+
+  notification-service:
+    build:
+      context: ./BancoBackend/Notification-service
+      dockerfile: Dockerfile
+    container_name: gestionbancario-notification
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3010"
+    ports:
+      - "3010:3010"
+    depends_on: []
+    networks:
+      - gestionbanco-net
+
+  gestionbancario-managment:
+    build:
+      context: ./BancoBackend/GestionBancarioManagment
+      dockerfile: Dockerfile
+    container_name: gestionbancario-managment
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3006"
+    ports:
+      - "3006:3006"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - gestionbanco-net
+
+  # ========== Authentication Services ==========
+
+  auth-node:
+    build:
+      context: ./authentication-service/auth-node
+      dockerfile: Dockerfile
+    container_name: gestionbancario-auth-node
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "3001"
+      NODE_ENV: "development"
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - gestionbanco-net
+
+  auth-service-dotnet:
+    build:
+      context: ./authentication-service/auth-service
+      dockerfile: Dockerfile
+    container_name: gestionbancario-auth-dotnet
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_URLS: http://+:5917
+      ConnectionStrings__DefaultConnection: "Host=ep-patient-credit-ahmqd1iq-pooler.c-3.us-east-1.aws.neon.tech;Port=5432;Database=neondb;Username=neondb_owner;Password=npg_QONCtwI1f2ky;SSL Mode=Require;Trust Server Certificate=true;"
+    env_file:
+      - .env.docker
+    ports:
+      - "5917:5917"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - gestionbanco-net
+
+  # ========== Frontend ==========
+
+  frontend:
+    build:
+      context: ./BancoFronted
+      dockerfile: Dockerfile
+      args:
+        VITE_AUTH_URL: http://localhost:5917/api/v1
+        VITE_ADMIN_URL: http://localhost:3006/gestionbanco/v1
+    container_name: gestionbancario-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-service-dotnet
+      - gestionbancario-managment
+    networks:
+      - gestionbanco-net
+
+# ========== Volumes ==========
+
+volumes:
+  mongo_data:
+  postgres_data:
+
+# ========== Networks ==========
+
+networks:
+  gestionbanco-net:
+    driver: bridge

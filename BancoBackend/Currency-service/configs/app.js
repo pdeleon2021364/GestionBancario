@@ -13,7 +13,7 @@ import { helmetConfiguration } from './helmet-configuration.js';
 import { setupSwagger } from './swagger.js';
 import Currency from '../src/Currency_model.js';
 
-import currencyRoutes from '../src/currency_routes.js';
+import currencyRoutes from '../src/Currency_routes.js';
 
 const BASE_PATH = '/currency/v1';
 

@@ -24,7 +24,7 @@ const FlowStep = ({ number, title, text }) => (
 
 export const DashboardHome = () => {
   const user = useAuthStore((state) => state.user);
-  const displayName = user?.name || user?.username || "Administrador";
+  const displayName = user?.name || user?.username;
 
   return (
     <section className="dashboard-home intro-home animate-fadeInUp">

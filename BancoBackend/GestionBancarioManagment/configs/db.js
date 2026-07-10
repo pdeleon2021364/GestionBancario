@@ -19,6 +19,12 @@ const createSequelizeClient = (dialectName = (process.env.DB_FORCE_POSTGRES === 
   if (dialectName === 'postgres') {
     sequelizeOptions.host = process.env.DB_HOST || 'localhost';
     sequelizeOptions.port = Number(process.env.DB_PORT || 5432);
+    sequelizeOptions.dialectOptions = {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    };
   } else if (dialectName === 'sqlite') {
     sequelizeOptions.storage = process.env.DB_STORAGE || './database.sqlite';
   }

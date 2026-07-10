@@ -34,7 +34,7 @@ const AdminHomeScreen = ({ navigation }) => {
 
                 <View style={styles.header}>
                     <View>
-                        <Text style={styles.greeting}>Admin, {user?.nombre || "Admin"}</Text>
+                        <Text style={styles.greeting}>Admin, {user?.nombre}</Text>
                         <Text style={styles.subtitle}>Panel de Administración Bancaria</Text>
                     </View>
                     <TouchableOpacity style={styles.logoutBtn} onPress={() => useAuthStore.getState().logout()}>

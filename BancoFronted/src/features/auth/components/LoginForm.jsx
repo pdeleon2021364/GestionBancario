@@ -34,7 +34,6 @@ export const LoginForm = ({ onForgot }) => {
         const res = await login(data)
         if (res.success) {
             const role = useAuthStore.getState().user?.role; navigate(role === "ADMIN_ROLE" ? "/dashboard" : "/user")
-            toast.success("¡Bienvenido de nuevo!", { duration: 4000 })
         } else {
             toast.error(res.error || "Credenciales incorrectas")
         }

@@ -3,3 +3,6 @@ authentication-service/auth-service/src/**/bin/
 authentication-service/auth-service/src/**/obj/
 authentication-service/auth-service/src/**/logs/
 authentication-service/auth-service/src/DataProtectionKeys/
+
+# Environment files with API keys (Neon, Brevo, etc.)
+.env

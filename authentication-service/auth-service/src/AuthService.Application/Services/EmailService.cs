@@ -269,14 +269,25 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
             switch (emailProvider)
             {
                 case "sendgrid":
-                    var apiKey = GetSendGridApiKey();
-                    if (!HasValue(apiKey))
+                    var sgApiKey = GetSendGridApiKey();
+                    if (!HasValue(sgApiKey))
                     {
                         logger.LogError("SendGrid API key is not configured");
                         throw new InvalidOperationException("SendGrid API key is not configured.");
                     }
 
-                    await SendEmailWithSendGridAsync(to, subject, body, fromEmail, fromName, apiKey!);
+                    await SendEmailWithSendGridAsync(to, subject, body, fromEmail, fromName, sgApiKey!);
+                    break;
+
+                case "brevoapi":
+                    var brevoApiKey = GetBrevoApiKey(smtpSettings);
+                    if (!HasValue(brevoApiKey))
+                    {
+                        logger.LogError("Brevo API key is not configured");
+                        throw new InvalidOperationException("Brevo API key is not configured.");
+                    }
+
+                    await SendEmailWithBrevoAsync(to, subject, body, fromEmail, fromName, brevoApiKey!);
                     break;
 
                 case "file":
@@ -359,6 +370,12 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
     private string? GetSendGridApiKey()
     {
         var value = configuration["SendGridSettings:ApiKey"] ?? Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+        return HasValue(value) ? value : null;
+    }
+
+    private string? GetBrevoApiKey(IConfigurationSection smtpSettings)
+    {
+        var value = smtpSettings["Password"] ?? Environment.GetEnvironmentVariable("BREVO_API_KEY");
         return HasValue(value) ? value : null;
     }
 
@@ -463,6 +480,35 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         }
 
         logger.LogInformation("Email sent successfully via SendGrid");
+    }
+
+    private async Task SendEmailWithBrevoAsync(string to, string subject, string body, string fromEmail, string fromName, string apiKey)
+    {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("api-key", apiKey);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+        var payload = new
+        {
+            sender = new { email = fromEmail, name = fromName },
+            to = new[] { new { email = to } },
+            subject,
+            htmlContent = body
+        };
+
+        var json = JsonSerializer.Serialize(payload);
+        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("https://api.brevo.com/v3/smtp/email", content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = await response.Content.ReadAsStringAsync();
+            logger.LogError("Brevo API response error: {StatusCode} {ErrorBody}", response.StatusCode, errorBody);
+            throw new InvalidOperationException($"Brevo API error: {(int)response.StatusCode} {response.ReasonPhrase}. {errorBody}");
+        }
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        logger.LogInformation("Email sent successfully via Brevo API: {Response}", responseBody);
     }
 
     private async Task SaveEmailToFileAsync(string to, string subject, string body, string fromEmail, string fromName, string pickupDirectory)
