@@ -18,6 +18,6 @@ COPY --from=build /app/publish .
 
 EXPOSE 5917
 
-ENV ASPNETCORE_URLS=http://+:5917
+ENV ASPNETCORE_URLS=http://+:${PORT:-5917}
 
 ENTRYPOINT ["dotnet", "AuthService.Api.dll"]
