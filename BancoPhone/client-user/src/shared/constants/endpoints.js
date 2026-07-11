@@ -1,5 +1,6 @@
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.0.2.2:3006/gestionbanco/v1";
-const ADMIN_URL = process.env.EXPO_PUBLIC_ADMIN_URL || "http://10.0.2.2:3007/kinalSportsAdmin/v1";
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const ADMIN_URL = process.env.EXPO_PUBLIC_ADMIN_URL;
+const AUTH_URL = process.env.EXPO_PUBLIC_AUTH_URL;
 
 export const ENDPOINTS = {
     API: API_URL,
@@ -14,4 +15,5 @@ export const ENDPOINTS = {
     RECORD: `${API_URL}/record`,
     USER_PRODUCTS: `${API_URL}/user-products`,
     USUARIOS: `${API_URL}/Usuarios`,
+    USER: AUTH_URL,
 };

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "client-user",
-    "slug": "client-user",
+    "name": "OVA Bank",
+    "slug": "ova-bank",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,9 +12,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ovabank.app"
     },
     "android": {
+      "package": "com.ovabank.app",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -27,7 +36,13 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-font"
-    ]
+      "expo-font",
+      "expo-image-picker"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d4739b2c-84d4-47f8-a267-a5fd3bd6c3ff"
+      }
+    }
   }
 }
