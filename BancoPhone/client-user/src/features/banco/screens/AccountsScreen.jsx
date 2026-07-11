@@ -6,6 +6,8 @@ import { getAccountsApi, createAccountApi } from "../../../shared/api/banco";
 import { useFocusEffect } from "@react-navigation/native";
 import Input from "../../../shared/components/Input";
 import Button from "../../../shared/components/Button";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
+import { formatMoney } from "../../../shared/utils/formatMoney";
 
 const STATUS_COLORS = {
     activa: "#34d399",
@@ -27,7 +29,7 @@ const AccountsScreen = ({ navigation }) => {
     const [creating, setCreating] = useState(false);
     const [newName, setNewName] = useState("");
 
-    const load = async () => {
+    const load = useCallback(async () => {
         try {
             const data = await getAccountsApi();
             setAccounts(Array.isArray(data) ? data : []);
@@ -35,13 +37,13 @@ const AccountsScreen = ({ navigation }) => {
             setLoading(false);
             setRefreshing(false);
         }
-    };
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
             load();
-        }, []),
+        }, [load]),
     );
 
     const onRefresh = () => {
@@ -49,8 +51,9 @@ const AccountsScreen = ({ navigation }) => {
         load();
     };
 
-    const money = (value) =>
-        `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const exchangeRates = useCurrencyStore((s) => s.exchangeRates);
+    const money = (value) => formatMoney(value, selectedCurrency, exchangeRates);
 
     const activeAccounts = accounts.filter((a) => a.estado === "activa");
     const totalBalance = activeAccounts.reduce((sum, a) => sum + Number(a.saldo || 0), 0);

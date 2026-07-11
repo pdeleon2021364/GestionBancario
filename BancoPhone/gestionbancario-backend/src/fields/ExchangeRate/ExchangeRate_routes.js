@@ -175,7 +175,7 @@ const router = Router();
 router.post('/create', validateJWT, requireRole('ADMIN_ROLE'), createExchangeRate);
 router.get('/', getExchangeRates);
 router.put('/update/:id', validateJWT, requireRole('ADMIN_ROLE'), updateExchangeRate);
-router.post('/convert', validateJWT, requireRole('ADMIN_ROLE'), convertCurrency);
+router.post('/convert', validateJWT, convertCurrency);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteExchangeRate);
 router.get('/:id', getExchangeRateById);
 

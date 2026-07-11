@@ -48,8 +48,10 @@ export const useAuthStore = create(
                     });
 
                     if (data.refreshToken) {
-                        const { setItemAsync } = await import("expo-secure-store");
-                        await setItemAsync("refreshToken", data.refreshToken);
+                        try {
+                            const { setItemAsync } = await import("expo-secure-store");
+                            await setItemAsync("refreshToken", data.refreshToken);
+                        } catch {}
                     }
 
                     return { success: true };

@@ -4,6 +4,14 @@ import * as authApi from "../../../shared/api/auth.js";
 const getAllUsers = authApi.getAllUsers;
 const updateUserRoleRequest = authApi.updateUserRole;
 
+const normalizeUser = (u) => ({
+  ...u,
+  name: u.name || u.nombre || '',
+  surname: u.surname || '',
+  username: u.username || u.email?.split('@')[0] || '',
+  role: u.role || u.rol || 'USER_ROLE',
+});
+
 export const useUserManagementStore = create((set, get) => ({
   /**
    * Cambia el rol de un usuario usando la API de auth-service (.NET)
@@ -18,11 +26,11 @@ export const useUserManagementStore = create((set, get) => ({
         throw new Error("La función updateUserRole no está disponible");
       }
       const response = await updateUserRoleRequest(userId, { rol: newRole });
-      const updatedUser = response.data?.data || response.data;
+      const rawUpdated = response.data?.data || response.data;
+      const updatedUser = normalizeUser(rawUpdated);
 
-      // Actualizar el usuario en el estado local
       const users = get().users.map((u) =>
-        u.id === updatedUser.id ? { ...u, role: updatedUser.rol || updatedUser.role } : u,
+        u.id === updatedUser.id ? { ...u, role: updatedUser.role } : u,
       );
       set({ users, loading: false });
       return { success: true, user: updatedUser };
@@ -60,7 +68,8 @@ export const useUserManagementStore = create((set, get) => ({
     try {
       const fetcher = typeof apiFn === "function" ? apiFn : getAllUsers;
       const result = await fetcher();
-      set({ users: result.users || result, loading: false });
+      const rawUsers = result.users || result;
+      set({ users: Array.isArray(rawUsers) ? rawUsers.map(normalizeUser) : rawUsers, loading: false });
     } catch (err) {
       set({ error: err.message || "Error al cargar usuarios", loading: false });
     }

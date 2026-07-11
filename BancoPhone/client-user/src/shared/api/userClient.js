@@ -58,7 +58,12 @@ userClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const refreshToken = await SecureStore.getItemAsync("refreshToken");
+                let refreshToken;
+                try {
+                    refreshToken = await SecureStore.getItemAsync("refreshToken");
+                } catch {
+                    refreshToken = useAuthStore.getState().refreshToken || null;
+                }
                 if (!refreshToken) throw new Error("No refresh token");
 
                 const { data } = await axios.post(`${ENDPOINTS.AUTH}/refresh`, {
@@ -66,7 +71,7 @@ userClient.interceptors.response.use(
                 });
 
                 useAuthStore.getState().setAccessToken(data.accessToken);
-                await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+                try { await SecureStore.setItemAsync("refreshToken", data.refreshToken); } catch {}
 
                 processQueue(null, data.accessToken);
                 originalRequest.headers = originalRequest.headers || {};
@@ -75,6 +80,7 @@ userClient.interceptors.response.use(
                 return userClient(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError, null);
+                try { await SecureStore.deleteItemAsync("refreshToken"); } catch {}
                 useAuthStore.getState().logout();
                 return Promise.reject(refreshError);
             } finally {

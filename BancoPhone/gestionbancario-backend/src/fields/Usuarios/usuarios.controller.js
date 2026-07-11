@@ -92,10 +92,10 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    const updateData = {
-      nombre,
-      email,
-    };
+    const updateData = {};
+
+    if (nombre !== undefined) updateData.nombre = nombre;
+    if (email !== undefined) updateData.email = email;
 
     if (rol) {
       const allowedRoles = ['ADMIN_ROLE', 'USER_ROLE'];

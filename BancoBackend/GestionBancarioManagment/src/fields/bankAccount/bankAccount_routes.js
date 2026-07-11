@@ -2,6 +2,8 @@ import { Router } from 'express';
 import {
     createField,
     createFieldsForUser,
+    createMyAccount,
+    closeMyAccount,
     getFields,
     updateField,
     deleteField,
@@ -205,6 +207,8 @@ const router = Router();
 
 router.post('/create', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), createField);
 router.post('/create/batch', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), createFieldsForUser);
+router.post('/my/create', validateJWT, createMyAccount);
+router.put('/my/close/:id', validateJWT, closeMyAccount);
 router.get('/', validateJWT, getFields);
 router.put('/update/:id', validateJWT, requireRole('ADMIN_ROLE', 'CAJERO_ROLE'), updateField);
 router.delete('/delete/:id', validateJWT, requireRole('ADMIN_ROLE'), deleteField);

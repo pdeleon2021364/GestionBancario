@@ -3,18 +3,22 @@ import Currency from '../Currency/Currency_model.js';
 
 export const convertCurrency = async (req, res) => {
     try {
-        const { from, to, amount } = req.body;
+        const { divisaBaseId, divisaDestinoId, monto, from, to, amount } = req.body;
 
-        if (!from || !to || !amount) {
+        const baseId = divisaBaseId || from;
+        const destId = divisaDestinoId || to;
+        const montoNum = monto ?? amount;
+
+        if (!baseId || !destId || !montoNum) {
             return res.status(400).json({
                 success: false,
-                message: 'Debe enviar from, to y amount'
+                message: 'Debe enviar divisaBaseId, divisaDestinoId y monto'
             });
         }
 
         const rate = await ExchangeRate.findOne({
-            divisaBase: from,
-            divisaDestino: to
+            divisaBase: baseId,
+            divisaDestino: destId
         });
 
         if (!rate) {
@@ -24,15 +28,17 @@ export const convertCurrency = async (req, res) => {
             });
         }
 
-        const convertedAmount = Number(amount) * Number(rate.tasa);
+        const convertedAmount = Number(montoNum) * Number(rate.tasa);
 
         res.status(200).json({
             success: true,
-            from,
-            to,
-            originalAmount: amount,
+            from: baseId,
+            to: destId,
+            originalAmount: montoNum,
             rate: rate.tasa,
-            convertedAmount
+            convertedAmount,
+            resultado: convertedAmount,
+            montoConvertido: convertedAmount
         });
 
     } catch (error) {

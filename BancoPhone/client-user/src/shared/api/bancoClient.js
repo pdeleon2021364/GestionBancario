@@ -1,7 +1,15 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import { useAuthStore } from "../store/authStore";
 import { ENDPOINTS } from "../constants/endpoints";
+
+let _getAuthStore = null;
+const getAuthStore = () => {
+  if (!_getAuthStore) {
+    const mod = require("../store/authStore");
+    _getAuthStore = () => mod.useAuthStore;
+  }
+  return _getAuthStore();
+};
 
 const bancoClient = axios.create({
     baseURL: ENDPOINTS.API,
@@ -10,7 +18,7 @@ const bancoClient = axios.create({
 });
 
 bancoClient.interceptors.request.use(async (config) => {
-    const token = useAuthStore.getState().token;
+    const token = getAuthStore().getState().token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
     if (config.data instanceof FormData) delete config.headers["Content-Type"];
     return config;
@@ -57,20 +65,28 @@ bancoClient.interceptors.response.use(
             originalRequest._retry = true;
             isRefreshing = true;
             try {
-                const refreshToken = await SecureStore.getItemAsync("refreshToken");
+                let refreshToken;
+                try {
+                    refreshToken = await SecureStore.getItemAsync("refreshToken");
+                } catch {
+                    refreshToken = getAuthStore().getState().refreshToken || null;
+                }
                 if (!refreshToken) throw new Error("No refresh token");
                 const { data } = await axios.post(`${ENDPOINTS.AUTH}/refresh`, {
                     refreshToken,
                 });
-                useAuthStore.getState().setAccessToken(data.accessToken || data.token);
-                await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+                getAuthStore().getState().setAccessToken(data.accessToken || data.token);
+                try {
+                    await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+                } catch {}
                 processQueue(null, data.accessToken || data.token);
                 originalRequest.headers.Authorization = `Bearer ${data.accessToken || data.token}`;
                 return bancoClient(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError, null);
-                await SecureStore.deleteItemAsync("refreshToken");
-                useAuthStore.getState().logout();
+                try { await SecureStore.deleteItemAsync("refreshToken"); } catch (e) {}
+                try { await SecureStore.setItemAsync("refreshToken", ""); } catch (e) {}
+                getAuthStore().getState().logout();
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;

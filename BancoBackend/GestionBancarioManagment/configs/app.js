@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import bcrypt from 'bcryptjs';
 
 import { dbConnection, connectPostgres, sequelize } from './db.js';
 import { corsOptions } from './cors-configuration.js';
@@ -12,6 +13,7 @@ import { helmetConfiguration } from './helmet-configuration.js';
 //Importar Swagger 
 import { setupSwagger } from './swagger.js';
 
+import User from '../src/fields/Usuarios/usuarios.model.js';
 import usuariosRoutes      from '../src/fields/Usuarios/usuarios.routes.js';
 import bankAccountRoutes   from '../src/fields/bankAccount/bankAccount_routes.js';
 import roleRoutes          from '../src/fields/Roles/role_routes.js';
@@ -68,6 +70,32 @@ const routes = (app) => {
     });
 };
 
+const ensureAdminUser = async () => {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@ksports.local';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin1234!';
+    const adminName = process.env.ADMIN_NAME || 'Admin KSports';
+
+    const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+    const encryptedPassword = await bcrypt.hash(adminPassword, 10);
+
+    if (existingAdmin) {
+        existingAdmin.rol = 'ADMIN_ROLE';
+        existingAdmin.emailVerified = true;
+        existingAdmin.password = encryptedPassword;
+        await existingAdmin.save();
+        return;
+    }
+
+    await User.create({
+        nombre: adminName,
+        email: adminEmail,
+        password: encryptedPassword,
+        rol: 'ADMIN_ROLE',
+        emailToken: null,
+        emailVerified: true,
+    });
+};
+
 export const createApp = async () => {
     const app = express();
     const PORT = process.env.PORT || 3006;
@@ -77,6 +105,7 @@ export const createApp = async () => {
     await dbConnection();
     await connectPostgres();
     await sequelize.sync({ alter: true });
+    await ensureAdminUser();
     middlewares(app);
     routes(app);
 

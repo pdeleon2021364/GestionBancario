@@ -58,7 +58,7 @@ const ProductsScreen = () => {
 
     const handleRequest = async (productId) => {
         try {
-            await requestProductApi({ financialProductId: productId });
+            await requestProductApi({ productoId: productId });
             Alert.alert("Solicitud enviada", "Tu solicitud está pendiente de aprobación");
             load();
         } catch (err) {

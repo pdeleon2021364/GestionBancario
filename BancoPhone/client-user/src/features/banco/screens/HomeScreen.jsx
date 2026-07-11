@@ -4,6 +4,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useCallback } from "react";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme";
 import { useAuthStore } from "../../../shared/store/authStore";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
+import { formatMoney } from "../../../shared/utils/formatMoney";
 import { getAccountsApi, getMyTransactionsApi } from "../../../shared/api/banco";
 
 const MODULES = [
@@ -23,7 +25,6 @@ const HomeScreen = ({ navigation }) => {
     const user = useAuthStore((state) => state.user);
     const [refreshing, setRefreshing] = useState(false);
     const [accounts, setAccounts] = useState([]);
-    const [recentTx, setRecentTx] = useState([]);
     const [metrics, setMetrics] = useState({ accounts: 0, transactions: 0, balance: 0, ingresos: 0, egresos: 0 });
 
     const onRefresh = useCallback(async () => {
@@ -40,7 +41,6 @@ const HomeScreen = ({ navigation }) => {
             const ingresos = monthTxs.filter((tx) => tx.tipo === "deposito").reduce((s, tx) => s + Number(tx.monto || 0), 0);
             const egresos = monthTxs.filter((tx) => tx.tipo === "retiro" || tx.tipo === "transferencia").reduce((s, tx) => s + Number(tx.monto || 0), 0);
 
-            setRecentTx(txList.slice(0, 3));
             setMetrics({
                 accounts: accountList.length,
                 transactions: txList.length,
@@ -52,13 +52,9 @@ const HomeScreen = ({ navigation }) => {
         setRefreshing(false);
     }, []);
 
-    const money = (value) =>
-        `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
-
-    const dateText = (value) => {
-        if (!value) return "";
-        return new Date(value).toLocaleDateString("es-GT", { day: "2-digit", month: "short" });
-    };
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const exchangeRates = useCurrencyStore((s) => s.exchangeRates);
+    const money = (value) => formatMoney(value, selectedCurrency, exchangeRates);
 
     return (
         <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -164,35 +160,6 @@ const HomeScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     ))}
                 </View>
-
-                {recentTx.length > 0 && (
-                    <View style={styles.recentSection}>
-                        <View style={styles.recentHeader}>
-                            <Text style={styles.sectionTitle}>Últimos movimientos</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("Transactions")}>
-                                <Text style={styles.seeAllText}>Ver todos</Text>
-                            </TouchableOpacity>
-                        </View>
-                        {recentTx.map((tx, idx) => (
-                            <View key={tx._id || idx} style={styles.recentCard}>
-                                <View style={[styles.recentIcon, { backgroundColor: (tx.tipo === "deposito" ? COLORS.success : COLORS.error) + "20" }]}>
-                                    <MaterialIcons
-                                        name={tx.tipo === "deposito" ? "arrow-downward" : tx.tipo === "retiro" ? "arrow-upward" : "swap-horiz"}
-                                        size={18}
-                                        color={tx.tipo === "deposito" ? COLORS.success : COLORS.error}
-                                    />
-                                </View>
-                                <View style={styles.recentInfo}>
-                                    <Text style={styles.recentType}>{tx.tipo === "transferencia" ? "Transferencia" : tx.tipo === "deposito" ? "Depósito" : "Retiro"}</Text>
-                                    <Text style={styles.recentDate}>{dateText(tx.createdAt)}</Text>
-                                </View>
-                                <Text style={[styles.recentAmount, { color: tx.tipo === "deposito" ? COLORS.success : COLORS.error }]}>
-                                    {tx.tipo === "deposito" ? "+" : "-"}{money(tx.monto)}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                )}
             </ScrollView>
         </View>
     );
@@ -232,15 +199,6 @@ const styles = StyleSheet.create({
     moduleCard: { width: "30%", backgroundColor: COLORS.surface, borderRadius: 16, borderWidth: 1, borderColor: COLORS.border, padding: SPACING.md, alignItems: "center", gap: 6, ...SHADOWS.sm },
     moduleIcon: { width: 44, height: 44, borderRadius: 12, alignItems: "center", justifyContent: "center" },
     moduleLabel: { fontSize: FONT_SIZE.xs, fontWeight: "600", color: COLORS.text, textAlign: "center" },
-    recentSection: { marginTop: SPACING.sm },
-    recentHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: SPACING.sm },
-    seeAllText: { fontSize: FONT_SIZE.sm, color: COLORS.primary, fontWeight: "600" },
-    recentCard: { flexDirection: "row", alignItems: "center", backgroundColor: COLORS.surface, borderRadius: 12, borderWidth: 1, borderColor: COLORS.border, padding: SPACING.md, marginBottom: SPACING.xs, gap: SPACING.sm },
-    recentIcon: { width: 36, height: 36, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-    recentInfo: { flex: 1 },
-    recentType: { fontSize: FONT_SIZE.sm, fontWeight: "600", color: COLORS.text, textTransform: "capitalize" },
-    recentDate: { fontSize: FONT_SIZE.xs, color: COLORS.textMuted, marginTop: 1 },
-    recentAmount: { fontSize: FONT_SIZE.md, fontWeight: "700" },
 });
 
 export default HomeScreen;

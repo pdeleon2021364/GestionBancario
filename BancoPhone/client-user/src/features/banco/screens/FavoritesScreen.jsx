@@ -6,6 +6,8 @@ import { getFavoritesApi, createFavoriteApi, deleteFavoriteApi, transferToFavori
 import { useFocusEffect } from "@react-navigation/native";
 import Input from "../../../shared/components/Input";
 import Button from "../../../shared/components/Button";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
+import { formatMoney } from "../../../shared/utils/formatMoney";
 
 const FavoritesScreen = () => {
     const [favorites, setFavorites] = useState([]);
@@ -29,8 +31,9 @@ const FavoritesScreen = () => {
         monto: "",
     });
 
-    const money = (value) =>
-        `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const exchangeRates = useCurrencyStore((s) => s.exchangeRates);
+    const money = (value) => formatMoney(value, selectedCurrency, exchangeRates);
 
     const load = async () => {
         try {

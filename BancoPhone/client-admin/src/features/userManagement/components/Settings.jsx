@@ -4,7 +4,7 @@ import { useUIStore } from "../../auth/store/uiStore";
 import { useAuthStore } from "../../auth/store/authStore";
 
 export const Settings = () => {
-  const { users, loading, fetchUsers, changeRole } = useUserManagementStore();
+  const { users, loading, fetchUsers, updateUserRole } = useUserManagementStore();
   const { openConfirm } = useUIStore();
   const { user: currentUser } = useAuthStore();
 
@@ -18,7 +18,7 @@ export const Settings = () => {
       title: "Cambiar Rol",
       message: `¿Seguro que deseas cambiar el rol de ${user.username} a ${newRole}?`,
       onConfirm: async () => {
-        await changeRole(user.id, newRole);
+        await updateUserRole(user.id, newRole);
       },
     });
   };

@@ -46,19 +46,24 @@ adminClient.interceptors.response.use(
             originalRequest._retry = true;
             isRefreshing = true;
             try {
-                const refreshToken = await SecureStore.getItemAsync("refreshToken");
+                let refreshToken;
+                try {
+                    refreshToken = await SecureStore.getItemAsync("refreshToken");
+                } catch {
+                    refreshToken = useAuthStore.getState().refreshToken || null;
+                }
                 if (!refreshToken) throw new Error("No refresh token");
                 const { data } = await axios.post(`${ENDPOINTS.AUTH}/refresh`, {
                     refreshToken,
                 });
                 useAuthStore.getState().setAccessToken(data.accessToken || data.token);
-                await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+                try { await SecureStore.setItemAsync("refreshToken", data.refreshToken); } catch {}
                 processQueue(null, data.accessToken || data.token);
                 originalRequest.headers.Authorization = `Bearer ${data.accessToken || data.token}`;
                 return adminClient(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError, null);
-                await SecureStore.deleteItemAsync("refreshToken");
+                try { await SecureStore.deleteItemAsync("refreshToken"); } catch {}
                 useAuthStore.getState().logout();
                 return Promise.reject(refreshError);
             } finally {

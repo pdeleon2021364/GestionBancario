@@ -1,39 +1,45 @@
 'use strict';
 
-import nodemailer from 'nodemailer';
+import https from 'https';
 import PDFDocument from 'pdfkit';
 
-/**
- * Servicio reutilizable para generar un PDF con datos de una entidad
- * y enviarlo por correo usando Nodemailer + Gmail.
- *
- * USO:
- *   const service = new EmailPDFService();
- *   await service.sendEntityPDF({
- *       toEmail: 'destino@gmail.com',
- *       subject: 'Reporte de Cuentas Bancarias',
- *       title: 'Listado de Cuentas Bancarias',
- *       entityName: 'BankAccount',
- *       data: [...],           // array de objetos o un único objeto
- *       fields: [              // campos que quieres mostrar en el PDF
- *           { label: 'Nombre', key: 'nombre' },
- *           { label: 'Número de Cuenta', key: 'numeroCuenta' },
- *       ]
- *   });
- */
-export class EmailPDFService {
+const BREVO_API_KEY = process.env.EMAIL_PASS;
+const BREVO_API = 'api.brevo.com';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'pablodeleonwxz@gmail.com';
+const FROM_NAME = 'Gestión Banco';
 
-    constructor() {
-        this.transporter = nodemailer.createTransport({
-            host: 'smtp-relay.brevo.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
+function brevoRequest(body) {
+    return new Promise((resolve, reject) => {
+        const data = JSON.stringify(body);
+        const options = {
+            hostname: BREVO_API,
+            path: '/v3/smtp/email',
+            method: 'POST',
+            headers: {
+                'api-key': BREVO_API_KEY,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(data)
             }
+        };
+        const req = https.request(options, (res) => {
+            let chunks = [];
+            res.on('data', c => chunks.push(c));
+            res.on('end', () => {
+                const raw = Buffer.concat(chunks).toString();
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    resolve(JSON.parse(raw));
+                } else {
+                    reject(new Error(`Brevo API ${res.statusCode}: ${raw}`));
+                }
+            });
         });
-    }
+        req.on('error', reject);
+        req.write(data);
+        req.end();
+    });
+}
+
+export class EmailPDFService {
 
     /**
      * Genera el PDF en memoria como Buffer
@@ -207,93 +213,44 @@ export class EmailPDFService {
 
         const pdfFilename = filename || `${entityName.toLowerCase()}_reporte.pdf`;
 
-        await this.transporter.sendMail({
-            from: `"Gestión Banco" <${process.env.EMAIL_USER}>`,
-            to: toEmail,
+        const pdfBase64 = pdfBuffer.toString('base64');
+
+        await brevoRequest({
+            sender: { name: FROM_NAME, email: FROM_EMAIL },
+            to: [{ email: toEmail }],
             subject,
-            html: `
-<div style="background-color:#f4f6f9; padding:40px 0; font-family: 'Segoe UI', Arial, sans-serif;">
-    <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
-
-        <!-- Header -->
-        <div style="background-color:#2C3E50; padding:20px 30px;">
-            <h1 style="margin:0; color:#ffffff; font-size:20px; font-weight:600;">
-                Gestión Banco
-            </h1>
-            <p style="margin:5px 0 0; color:#dcdcdc; font-size:13px;">
-                Sistema de Reportes Automatizados
-            </p>
-        </div>
-
-        <!-- Body -->
-        <div style="padding:30px; color:#333333;">
-
-            <h2 style="margin-top:0; font-size:18px; color:#2C3E50;">
-                ${subject}
-            </h2>
-
-            <p style="font-size:14px; line-height:1.6;">
-                Estimado usuario,
-            </p>
-
-            <p style="font-size:14px; line-height:1.6;">
-                Se ha generado correctamente el reporte correspondiente a la entidad 
-                <strong>${entityName}</strong>.
-            </p>
-
-            <div style="background:#f8f9fb; padding:15px; border-left:4px solid #2C3E50; margin:20px 0;">
-                <p style="margin:0; font-size:13px;">
-                    <strong>Fecha de generación:</strong><br>
-                    ${new Date().toLocaleString('es-GT')}
-                </p>
-                <p style="margin:8px 0 0; font-size:13px;">
-                    <strong>Total de registros incluidos:</strong><br>
-                    ${Array.isArray(data) ? data.length : 1}
-                </p>
-            </div>
-
-            <p style="font-size:14px; line-height:1.6;">
-                El documento en formato PDF se encuentra adjunto a este correo.
-            </p>
-
-            <!-- Contacto -->
-            <div style="margin-top:25px; padding:15px; background:#F4F6F7; border-radius:6px;">
-                <p style="margin:0; font-size:13px; color:#2C3E50; font-weight:600;">
-                    Soporte / Administrador del Sistema
-                </p>
-                <p style="margin:5px 0 0; font-size:13px;">
-                    Correo de contacto:
-                </p>
-                <p style="margin:5px 0 0;">
-                    <a href="mailto:pdeleon-20213646@kinal.edu.gt" 
-                       style="color:#2C3E50; text-decoration:none; font-weight:500;">
-                       pdeleon-20213646@kinal.edu.gt
-                    </a>
-                </p>
-            </div>
-
-        </div>
-
-        <!-- Footer -->
-        <div style="background:#f1f1f1; padding:15px 30px; text-align:center;">
-            <p style="margin:0; font-size:12px; color:#777777;">
-                Este mensaje fue generado automáticamente por el sistema Gestión Banco.
-            </p>
-            <p style="margin:5px 0 0; font-size:11px; color:#999999;">
-                © ${new Date().getFullYear()} Gestión Banco. Todos los derechos reservados.
-            </p>
-        </div>
-
-    </div>
+            htmlContent: `
+<div style="background-color:#f4f6f9;padding:40px 0;font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+<div style="background-color:#2C3E50;padding:20px 30px;">
+<h1 style="margin:0;color:#fff;font-size:20px;">Gesti\u00f3n Banco</h1>
+<p style="margin:5px 0 0;color:#dcdcdc;font-size:13px;">Sistema de Reportes Automatizados</p>
 </div>
-`,
-            attachments: [
-                {
-                    filename: pdfFilename,
-                    content: pdfBuffer,
-                    contentType: 'application/pdf'
-                }
-            ]
+<div style="padding:30px;color:#333;">
+<h2 style="margin-top:0;font-size:18px;color:#2C3E50;">${subject}</h2>
+<p style="font-size:14px;line-height:1.6;">Estimado usuario,</p>
+<p style="font-size:14px;line-height:1.6;">Se ha generado correctamente el reporte correspondiente a la entidad <strong>${entityName}</strong>.</p>
+<div style="background:#f8f9fb;padding:15px;border-left:4px solid #2C3E50;margin:20px 0;">
+<p style="margin:0;font-size:13px;"><strong>Fecha de generaci\u00f3n:</strong><br>${new Date().toLocaleString('es-GT')}</p>
+<p style="margin:8px 0 0;font-size:13px;"><strong>Total de registros incluidos:</strong><br>${Array.isArray(data) ? data.length : 1}</p>
+</div>
+<p style="font-size:14px;line-height:1.6;">El documento en formato PDF se encuentra adjunto a este correo.</p>
+<div style="margin-top:25px;padding:15px;background:#F4F6F7;border-radius:6px;">
+<p style="margin:0;font-size:13px;color:#2C3E50;font-weight:600;">Soporte / Administrador del Sistema</p>
+<p style="margin:5px 0 0;font-size:13px;">Correo de contacto:</p>
+<p style="margin:5px 0 0;"><a href="mailto:pdeleon-20213646@kinal.edu.gt" style="color:#2C3E50;text-decoration:none;font-weight:500;">pdeleon-20213646@kinal.edu.gt</a></p>
+</div>
+</div>
+<div style="background:#f1f1f1;padding:15px 30px;text-align:center;">
+<p style="margin:0;font-size:12px;color:#777;">Este mensaje fue generado autom\u00e1ticamente por el sistema Gesti\u00f3n Banco.</p>
+<p style="margin:5px 0 0;font-size:11px;color:#999;">&copy; ${new Date().getFullYear()} Gesti\u00f3n Banco. Todos los derechos reservados.</p>
+</div>
+</div>
+</div>`,
+            attachment: [{
+                name: pdfFilename,
+                content: pdfBase64
+            }]
         });
 
         return { toEmail, filename: pdfFilename, records: Array.isArray(data) ? data.length : 1 };

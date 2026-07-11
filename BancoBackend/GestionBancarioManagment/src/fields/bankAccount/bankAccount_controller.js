@@ -250,9 +250,10 @@ export const getFields = async (req, res) => {
         const limitNumber = Math.min(10, Math.max(1, parseInt(limit, 10) || 10));
 
         // Si el usuario no es ADMIN, solo ve sus propias cuentas
+        const userId = String(req.user?.id);
         const filter = req.user?.role === 'ADMIN_ROLE'
             ? {}
-            : { usuarioId: String(req.user?.id) };
+            : { $or: [{ usuarioId: userId }, { usuarioId: Number(userId) }] };
 
         const fields = await Field.find(filter)
             .limit(limitNumber)
@@ -541,6 +542,43 @@ export const aplicarInteresMensual = async (req, res) => {
  * Envía un PDF con TODOS los registros de BankAccount al correo indicado.
  * GET /bankAccount/send-pdf/all/:email
  */
+export const createMyAccount = async (req, res) => {
+    try {
+        const { nombre, tipoCuenta = 'ahorro' } = req.body;
+        if (!nombre) return res.status(400).json({ success: false, message: 'El nombre es obligatorio' });
+
+        const numeroCuenta = `ACC-${Date.now()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+        const field = new Field({
+            nombre, numeroCuenta, tipoCuenta, saldo: 100,
+            usuarioId: String(req.user.id), estado: 'activa'
+        });
+        await field.save();
+        res.status(201).json({ success: true, message: 'Cuenta creada exitosamente', data: field });
+    } catch (error) {
+        res.status(400).json({ success: false, message: 'Error al crear la cuenta', error: error.message });
+    }
+};
+
+export const closeMyAccount = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const account = await Field.findById(id);
+        if (!account) return res.status(404).json({ success: false, message: 'Cuenta no encontrada' });
+        if (String(account.usuarioId) !== String(req.user.id))
+            return res.status(403).json({ success: false, message: 'No tienes permiso para cerrar esta cuenta' });
+        if (account.saldo > 0)
+            return res.status(400).json({ success: false, message: 'Debe retirar todo el saldo antes de cerrar la cuenta' });
+        account.estado = 'cerrada';
+        account.closedAt = new Date();
+        account.closedBy = String(req.user.id);
+        account.closedReason = 'Cerrada por el usuario';
+        await account.save();
+        res.status(200).json({ success: true, message: 'Cuenta cerrada correctamente', data: account });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error al cerrar la cuenta', error: error.message });
+    }
+};
+
 export const sendAllBankAccountsPDF = async (req, res) => {
     try {
         const { email } = req.params;

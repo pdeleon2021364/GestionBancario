@@ -6,6 +6,8 @@ import * as ImagePicker from "expo-image-picker";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme";
 import { useAuthStore } from "../../../shared/store/authStore";
 import { useThemeStore } from "../../../shared/store/themeStore";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
+import { formatMoney } from "../../../shared/utils/formatMoney";
 import { getAccountsApi, updateProfileApi, getProfileApi } from "../../../shared/api/banco";
 import Button from "../../../shared/components/Button";
 import avatarDefault from "../../../../assets/avatarDefault.png";
@@ -19,7 +21,7 @@ const ProfileScreen = () => {
     const setUserField = useAuthStore((state) => state.setUserField);
     const [accounts, setAccounts] = useState([]);
     const [uploading, setUploading] = useState(false);
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState(user);
 
     const handlePickPhoto = () => {
         const options = [
@@ -116,8 +118,9 @@ const ProfileScreen = () => {
     const activeAccounts = accounts.filter((a) => a.estado === "activa");
     const totalBalance = activeAccounts.reduce((s, a) => s + Number(a.saldo || 0), 0);
 
-    const money = (value) =>
-        `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const exchangeRates = useCurrencyStore((s) => s.exchangeRates);
+    const money = (value) => formatMoney(value, selectedCurrency, exchangeRates);
 
     const handleLogout = () => {
         Alert.alert("Cerrar sesión", "¿Estás seguro?", [

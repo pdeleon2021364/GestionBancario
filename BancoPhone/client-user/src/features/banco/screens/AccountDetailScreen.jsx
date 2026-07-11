@@ -2,11 +2,13 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, M
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useCallback } from "react";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme";
-import { getMyTransactionsApi, closeAccountApi, sendAccountPDFApi } from "../../../shared/api/banco";
+import { getMyTransactionsApi, getAccountApi, closeAccountApi, sendAccountPDFApi } from "../../../shared/api/banco";
 import * as Clipboard from "expo-clipboard";
 import { useFocusEffect } from "@react-navigation/native";
 import Input from "../../../shared/components/Input";
 import Button from "../../../shared/components/Button";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
+import { formatMoney } from "../../../shared/utils/formatMoney";
 
 const TYPE_COLORS = {
     deposito: "#34d399",
@@ -21,7 +23,8 @@ const CATEGORY_ICONS = {
 };
 
 const AccountDetailScreen = ({ route, navigation }) => {
-    const { account } = route.params;
+    const { account: initialAccount } = route.params;
+    const [account, setAccount] = useState(initialAccount);
     const [transactions, setTransactions] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [closing, setClosing] = useState(false);
@@ -29,29 +32,39 @@ const AccountDetailScreen = ({ route, navigation }) => {
     const [pdfEmail, setPdfEmail] = useState("");
     const [sendingPdf, setSendingPdf] = useState(false);
 
-    const money = (value) =>
-        `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const exchangeRates = useCurrencyStore((s) => s.exchangeRates);
+    const money = (value) => formatMoney(value, selectedCurrency, exchangeRates);
 
-    const load = async () => {
+    const load = useCallback(async () => {
         try {
-            const data = await getMyTransactionsApi();
-            const list = Array.isArray(data) ? data : [];
-            const accountId = account._id || account.id;
-            const filtered = list.filter(
-                (tx) =>
-                    (tx.cuentaOrigen?._id === accountId || tx.cuentaOrigen === accountId) ||
-                    (tx.cuentaDestino?._id === accountId || tx.cuentaDestino === accountId)
-            );
-            setTransactions(filtered);
+            const accountId = initialAccount._id || initialAccount.id;
+            const [txData, accData] = await Promise.allSettled([
+                getMyTransactionsApi(),
+                getAccountApi(accountId),
+            ]);
+            if (txData.status === "fulfilled") {
+                const list = Array.isArray(txData.value) ? txData.value : [];
+                const filtered = list.filter(
+                    (tx) =>
+                        (tx.cuentaOrigen?._id === accountId || tx.cuentaOrigen === accountId) ||
+                        (tx.cuentaDestino?._id === accountId || tx.cuentaDestino === accountId)
+                );
+                setTransactions(filtered);
+            }
+            if (accData.status === "fulfilled") {
+                const result = accData.value;
+                if (result && result._id) setAccount(result);
+            }
         } catch {} finally {
             setRefreshing(false);
         }
-    };
+    }, [initialAccount]);
 
     useFocusEffect(
         useCallback(() => {
             load();
-        }, []),
+        }, [load]),
     );
 
     const onRefresh = () => {

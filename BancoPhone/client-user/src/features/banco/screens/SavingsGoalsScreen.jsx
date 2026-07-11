@@ -6,6 +6,8 @@ import { getSavingsGoalsApi, createSavingGoalApi, addFundsToGoalApi, deleteSavin
 import { useFocusEffect } from "@react-navigation/native";
 import Input from "../../../shared/components/Input";
 import Button from "../../../shared/components/Button";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
+import { formatMoney } from "../../../shared/utils/formatMoney";
 
 const PRESET_COLORS = ["#0ea5e9", "#22d3ee", "#34d399", "#fbbf24", "#fb7185", "#a78bfa", "#f97316", "#ec4899"];
 
@@ -34,8 +36,9 @@ const SavingsGoalsScreen = () => {
         monto: "",
     });
 
-    const money = (value) =>
-        `Q ${Number(value || 0).toLocaleString("es-GT", { minimumFractionDigits: 2 })}`;
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const exchangeRates = useCurrencyStore((s) => s.exchangeRates);
+    const money = (value) => formatMoney(value, selectedCurrency, exchangeRates);
 
     const load = async () => {
         try {

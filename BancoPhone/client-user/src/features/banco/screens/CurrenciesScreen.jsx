@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl, TextInput } from "react-native";
+import { View, Text, StyleSheet, FlatList, RefreshControl, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useCallback } from "react";
 import { COLORS, SPACING, FONT_SIZE, SHADOWS } from "../../../shared/constants/theme";
 import { getCurrenciesApi } from "../../../shared/api/banco";
 import { useFocusEffect } from "@react-navigation/native";
+import { useCurrencyStore } from "../../../shared/store/useCurrencyStore";
 
 const CURRENCY_FLAGS = {
     USD: "US", EUR: "EU", GBP: "GB", JPY: "JP", CAD: "CA",
@@ -22,6 +23,8 @@ const CurrenciesScreen = () => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [search, setSearch] = useState("");
+    const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
+    const setSelectedCurrency = useCurrencyStore((s) => s.setSelectedCurrency);
 
     const load = async () => {
         try {
@@ -55,20 +58,26 @@ const CurrenciesScreen = () => {
     const renderCurrency = ({ item }) => {
         const flag = CURRENCY_FLAGS[item.codigo] || "XX";
         const flagColor = FLAG_COLORS[flag] || COLORS.secondary;
+        const isSelected = selectedCurrency?._id === item._id;
 
         return (
-            <View style={styles.card}>
-                <View style={styles.cardLeft}>
-                    <View style={[styles.flagBox, { backgroundColor: flagColor + "20" }]}>
-                        <Text style={[styles.flagText, { color: flagColor }]}>{flag}</Text>
+            <TouchableOpacity onPress={() => setSelectedCurrency(item)} activeOpacity={0.7}>
+                <View style={[styles.card, isSelected && styles.cardSelected]}>
+                    <View style={styles.cardLeft}>
+                        <View style={[styles.flagBox, { backgroundColor: flagColor + "20" }]}>
+                            <Text style={[styles.flagText, { color: flagColor }]}>{flag}</Text>
+                        </View>
+                        <View style={styles.cardInfo}>
+                            <Text style={styles.name}>{item.nombre}</Text>
+                            <Text style={styles.code}>{item.codigo}</Text>
+                        </View>
                     </View>
-                    <View style={styles.cardInfo}>
-                        <Text style={styles.name}>{item.nombre}</Text>
-                        <Text style={styles.code}>{item.codigo}</Text>
+                    <View style={styles.cardRight}>
+                        <Text style={[styles.symbol, { color: flagColor }]}>{item.simbolo}</Text>
+                        {isSelected && <MaterialIcons name="check-circle" size={20} color={COLORS.success} />}
                     </View>
                 </View>
-                <Text style={[styles.symbol, { color: flagColor }]}>{item.simbolo}</Text>
-            </View>
+            </TouchableOpacity>
         );
     };
 
@@ -136,7 +145,9 @@ const styles = StyleSheet.create({
     searchBox: { flexDirection: "row", alignItems: "center", backgroundColor: COLORS.surface, borderRadius: 14, borderWidth: 1, borderColor: COLORS.border, paddingHorizontal: SPACING.md, marginBottom: SPACING.lg, gap: SPACING.sm },
     searchInput: { flex: 1, paddingVertical: SPACING.sm, fontSize: FONT_SIZE.sm, color: COLORS.text },
     card: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: COLORS.surface, borderRadius: 16, borderWidth: 1, borderColor: COLORS.border, padding: SPACING.md, marginBottom: SPACING.xs, ...SHADOWS.sm },
+    cardSelected: { borderColor: COLORS.success, borderWidth: 2, backgroundColor: COLORS.surface },
     cardLeft: { flexDirection: "row", alignItems: "center", gap: SPACING.sm },
+    cardRight: { flexDirection: "row", alignItems: "center", gap: SPACING.xs },
     flagBox: { width: 44, height: 44, borderRadius: 14, alignItems: "center", justifyContent: "center" },
     flagText: { fontSize: FONT_SIZE.sm, fontWeight: "800" },
     cardInfo: { gap: 1 },
