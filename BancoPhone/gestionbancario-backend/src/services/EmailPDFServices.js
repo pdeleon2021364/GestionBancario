@@ -8,6 +8,7 @@ const BREVO_API = 'api.brevo.com';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'pablodeleonwxz@gmail.com';
 const FROM_NAME = 'Gestión Banco';
 
+<<<<<<< HEAD
 function brevoRequest(body) {
     return new Promise((resolve, reject) => {
         const data = JSON.stringify(body);
@@ -19,6 +20,16 @@ function brevoRequest(body) {
                 'api-key': BREVO_API_KEY,
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(data)
+=======
+    constructor() {
+        this.transporter = nodemailer.createTransport({
+            host: 'smtp-relay.brevo.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+>>>>>>> ce3e9cd (feat: implementa dockerización y mejoras en configuración del sistema bancario)
             }
         };
         const req = https.request(options, (res) => {
