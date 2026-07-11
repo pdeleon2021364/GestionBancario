@@ -41,12 +41,6 @@ builder.Services.AddRateLimitingPolicies();
 builder.Services.AddSecurityPolicies(builder.Configuration, builder.Environment);
 builder.Services.AddSecurityOptions();
 
-// Configure Data Protection to persist keys to a shared folder
-var keysDir = Path.Combine(builder.Environment.ContentRootPath, "..", "DataProtectionKeys");
-builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(keysDir))
-    .SetApplicationName("GestionBancario");
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
